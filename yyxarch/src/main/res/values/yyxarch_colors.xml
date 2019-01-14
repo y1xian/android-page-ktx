@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/blue</color> <!--导航栏的底色-->
+    <color name="colorPrimaryDark">@color/colorPrimary</color> <!--状态栏颜色-->
+    <color name="colorAccent">@color/gray</color>  <!--控件选中后颜色-->
+
+    <!--常见颜色-->
+    <color name="white">#FFFFFF</color>
+    <color name="red">#e94140</color>
+    <color name="black">#333333</color>
+    <color name="blue">#00c6ff</color>
+    <color name="green">#00e099</color>
+    <color name="pink">#ff3892</color>
+    <color name="orange">#ff9602</color>
+    <color name="aqua">#02d1ac</color>
+    <color name="yellow">#ffd100</color>
+    <color name="light_yellow">#55ffd100</color>
+    <color name="gray">#f2f2f2</color>
+    <color name="translucent">#80ffffff</color>
+
+</resources>
