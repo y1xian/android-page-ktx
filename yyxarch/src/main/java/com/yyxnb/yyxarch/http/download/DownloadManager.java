@@ -27,7 +27,7 @@ public class DownloadManager {
      */
     public File saveFile(ResponseBody response, final String destFileName, ProgressListener progressListener) throws IOException {
 
-        String destFileDir = RxHttpUtils.getContext().getExternalFilesDir(null) + File.separator;
+        String destFileDir = RxHttpUtils.Companion.getContext().getExternalFilesDir(null) + File.separator;
 
         long contentLength = response.contentLength();
         InputStream is = null;

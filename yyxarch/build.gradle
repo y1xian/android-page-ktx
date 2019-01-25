@@ -29,6 +29,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    //Kotlin中使用Java8特性
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -54,9 +55,9 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+//    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
     testImplementation 'junit:junit:4.12'
     // 约束
     api libs.constraint
@@ -66,13 +67,24 @@ dependencies {
     api([libs.rxjava2, libs.rxandroid2, libs.rxbinding2])
     // retrofit2    https://github.com/square/retrofit
     api([libs.retrofit2, libs.retrofit2_rxjava, libs.retrofit2_gson])
+    api libs.retrofit2_kotlin_coroutines
     // okhttp3     https://github.com/square/okhttp
     api([libs.okhttp3, libs.okhttp3_logging])
     // jetpack
     api([libs.arch_comp_java8, libs.arch_comp_runtime, libs.arch_comp_extensions, libs.arch_comp_livedata_rx])
-    kapt libs.arch_comp_compiler
+//    kapt libs.arch_comp_compiler
     //gson  https://github.com/google/gson
     api libs.gson
     //避免65K限制       https://developer.android.com/tools/building/multidex.html
     api libs.multidex
+    //kt
+    api libs.kotlin_stdlib
+    api libs.kotlin_coroutines
+    api libs.kotlin_coroutines_core
+    // autodispose  https://github.com/uber/AutoDispose
+//    api(libs.autodispose, libs.autodispose_ktx, libs.autodispose_android_ktx, libs.autodispose_archs_ktx)
+
+    //mmkv
+    api libs.mmkv
+
 }

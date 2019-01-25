@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.yyxnb.yyxarch.base.NoFragment;
+import com.yyxnb.yyxarch.base.BaseFragment;
 import com.yyxnb.yyxarch.http.RxHttpUtils;
 import com.yyxnb.yyxarch.http.observer.CommonObserver;
 import com.yyxnb.yyxarch.utils.RxTransformerUtil;
@@ -19,7 +19,7 @@ import okhttp3.ResponseBody;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OneFragment extends NoFragment {
+public class OneFragment extends BaseFragment {
 
     private TextView tvShow;
     @Override
@@ -32,10 +32,10 @@ public class OneFragment extends NoFragment {
         super.initView(savedInstanceState);
         tvShow = fv(R.id.tvShow);
         tvShow.setOnClickListener(v -> {
-            startFragment(TwoFragment.newInstance());
+//            startFragment(TwoFragment.newInstance());
         });
 
-        RxHttpUtils.uploadImg("", "")
+        RxHttpUtils.Companion.uploadImg("", "")
                 .compose(RxTransformerUtil.<ResponseBody>switchSchedulers())
                 .subscribe(new CommonObserver<ResponseBody>() {
                     @Override

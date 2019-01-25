@@ -6,9 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 
-import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
-import com.yyxnb.yyxarch.utils.log.LogUtils;
+import com.yyxnb.yyxarch.utils.ToastUtils;
 
 
 /**
@@ -28,6 +27,12 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     public void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
         tvShow = fv(R.id.tvShow);
+
+        getMViewModel().reqTeam();
+        getMViewModel().reqTeam();
+//        getMViewModel().reqTeam();
+//        getMViewModel().reqTeam();
+//        getMViewModel().reqTeam();
     }
 
     @Override
@@ -41,31 +46,79 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //                startContainerActivityForResult(1, TestFragment.newInstance());
 
 //                startContainerActivity(OneFragment.newInstance());
+
+                ToastUtils.INSTANCE.normal("666");
             }
         });
 
-        TestDialog dialog = new TestDialog();
-        dialog.show(getFragmentManager(),dialog.getTag());
+//        Map<String, String> map = new LinkedHashMap<>();
+//        map.put("name", "李白");
+//        RxHttpUtils.createApi(api.class).getTeam(map)
+//                .compose(RxTransformerUtil.schedulersTransformer())
+//                .subscribe(new CommonObserver<TestData>() {
+//                    @Override
+//                    protected void onError(String errorMsg) {
+//                        LogUtils.e(errorMsg);
+//                    }
+//
+//                    @Override
+//                    protected void onSuccess(TestData testData) {
+//                        LogUtils.w(testData.getContent());
+//                    }
+//                });
+
+
+
+//        TestDialog dialog = new TestDialog();
+//        dialog.show(getFragmentManager(),dialog.getTag());
 
 //        if (isFirst){
 //            isFirst = false;
 //            mViewModel.reqTeam();
 //        }
+
+
+
+//        LiveDataExtKt.toReactiveStream(getMViewModel().getTeam(), RxSchedulers.INSTANCE.getUi())
+//                .doOnNext(new Consumer<Lcee<BaseDatas<List<TestData>>>>() {
+//                    @Override
+//                    public void accept(Lcee<BaseDatas<List<TestData>>> baseDataLcee) throws Exception {
+//                        switch (baseDataLcee.getStatus()) {
+//                            case LceeStatus.Content:
+//                                tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+//                                LogUtils.i("Content " + LceeStatus.Content);
+//                                break;
+//                            case LceeStatus.Empty:
+//                                LogUtils.i("Empty");
+//                                break;
+//                            case LceeStatus.Error:
+//                                LogUtils.i("Error");
+//                                break;
+//                            case LceeStatus.Loading:
+//                                LogUtils.i("Loading " + LceeStatus.Loading);
+//                                break;
+//                        }
+//                    }
+//                }).subscribe();
+
+
+
+
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        mViewModel.getTeam().observe(this,baseDataLcee -> {
+        getMViewModel().getTeam().observe(this,baseDataLcee -> {
             if (baseDataLcee != null){
                 tvShow.setText(baseDataLcee.getResult().get(0).getContent());
             }
         });
 
-//        mViewModel.getTeam().observe(this,baseDataLcee -> {
-//            switch (baseDataLcee.status) {
+//        getMViewModel().getTeam().observe(this, baseDataLcee -> {
+//            switch (baseDataLcee.getStatus()) {
 //                case LceeStatus.Content:
-//                    tvShow.setText(baseDataLcee.data.getResult().get(0).getContent());
+//                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
 //                    LogUtils.i("Content " + LceeStatus.Content);
 //                    break;
 //                case LceeStatus.Empty:

@@ -17,7 +17,7 @@ import java.text.ParseException;
 import retrofit2.HttpException;
 
 /**
- *    统一处理了API异常错误
+ * 统一处理了API异常错误
  */
 
 public class ApiException extends Exception {
@@ -46,10 +46,10 @@ public class ApiException extends Exception {
             HttpException httpException = (HttpException) e;
             ex = new ApiException(httpException, httpException.code());
             try {
-                ex.message = httpException.response().errorBody().string();
+                ex.message = "httpException "+httpException.response().errorBody().string();
             } catch (IOException e1) {
                 e1.printStackTrace();
-                ex.message = e1.getMessage();
+                ex.message = "IOException " + e1.getMessage();
             }
             return ex;
         } else if (e instanceof SocketTimeoutException) {

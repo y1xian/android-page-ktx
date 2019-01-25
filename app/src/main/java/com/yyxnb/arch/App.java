@@ -12,17 +12,17 @@ public class App extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         initRxHttp();
-        AppUtils.init(this);
+        AppUtils.Companion.init(this);
     }
 
     private void initRxHttp() {
-        RxHttpUtils
+        RxHttpUtils.Companion
                 .getInstance()
                 .init(this)
                 //开启全局配置
                 .config()
                 //全局的BaseUrl
                 .setBaseUrl(BASE_URL)
-                .setOkClient(okHttpClient);
+                .setOkClient(getOkHttpClient());
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 
+
 /**
  * Description: 解决滑动recyclerView时有卡顿的问题
  *

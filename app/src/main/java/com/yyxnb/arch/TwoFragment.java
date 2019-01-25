@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
-import com.yyxnb.yyxarch.base.NoFragment;
+import com.yyxnb.yyxarch.base.BaseFragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TwoFragment extends NoFragment {
+public class TwoFragment extends BaseFragment {
 
     private TextView tvShow;
 
@@ -25,7 +25,7 @@ public class TwoFragment extends NoFragment {
         super.initView(savedInstanceState);
         tvShow = fv(R.id.tvShow);
         tvShow.setOnClickListener(v -> {
-            startFragment(OneFragment.newInstance());
+//            startFragment(OneFragment.newInstance());
         });
     }
 

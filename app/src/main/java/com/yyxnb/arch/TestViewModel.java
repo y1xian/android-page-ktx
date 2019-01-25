@@ -7,7 +7,6 @@ import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
 import com.yyxnb.yyxarch.base.mvvm.BaseViewModel;
-import com.yyxnb.yyxarch.bean.Lcee;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,9 +20,13 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
 
     private MutableLiveData<Map<String,String>> reqTeam = new MutableLiveData<>();
 
+//    public LiveData<BaseDatas<List<TestData>>> getTeam(){
+//        return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
+//    }
     public LiveData<BaseDatas<List<TestData>>> getTeam(){
-        return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
+        return Transformations.switchMap(reqTeam, input -> getMRepository().getTeam2(input));
     }
+
 
     public void reqTeam(){
         Map<String, String> map = new LinkedHashMap<>();
