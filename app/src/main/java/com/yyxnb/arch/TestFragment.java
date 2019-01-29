@@ -113,6 +113,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //        AsyncExtKt.Async(Deferred.class,t -> )
 
 
+
     }
 
     @Override

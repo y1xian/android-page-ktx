@@ -49,7 +49,7 @@ class AppUtils private constructor() {
          */
         val context: Context
             get() {
-                if (mWeakReferenceContext != null) {
+                if (null != mWeakReferenceContext) {
                     return mWeakReferenceContext.get()!!.getApplicationContext()
                 }
                 throw NullPointerException("u should init first")
