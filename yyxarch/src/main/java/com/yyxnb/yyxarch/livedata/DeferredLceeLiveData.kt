@@ -4,9 +4,10 @@ import android.arch.lifecycle.LiveData
 import com.yyxnb.yyxarch.bean.Lcee
 import com.yyxnb.yyxarch.http.exception.ApiException
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
 
 
 /**
@@ -18,24 +19,29 @@ internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : Live
 
     override fun onActive() {
         super.onActive()
-
         runBlocking {
-            coroutineScope{
-                async {
-                    try {
-                        postValue(Lcee.loading())
+            coroutineScope {
 
-                        val value = deferred.await()
+                val time = measureTimeMillis {
+                    launch {
+                        try {
 
-                        if (value == null) {
-                            postValue(Lcee.empty())
-                        } else {
-                            postValue(Lcee.content(value))
+                            setValue(Lcee.loading())
+
+                            val value = deferred.await()
+
+                            if (value == null) {
+                                postValue(Lcee.empty())
+                            } else {
+                                postValue(Lcee.content(value))
+                            }
+                        } catch (t: Throwable) {
+                            postValue(Lcee.error(ApiException.handleException(t).message!!))
                         }
-                    } catch (t: Throwable) {
-                        postValue(Lcee.error(ApiException.handleException(t).message!!))
                     }
+
                 }
+                println("Completed in $time ms")
 
             }
 

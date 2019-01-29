@@ -5,6 +5,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
 
 /**
  * @author yyx
@@ -17,14 +18,19 @@ internal class DeferredLiveData<T>(private val deferred: Deferred<T>) : LiveData
         super.onActive()
 
         runBlocking {
+
             coroutineScope{
-                async {
+                val time = measureTimeMillis {
+                async{
+//                    delay(100)
                     try {
                         postValue(deferred.await())
                     }catch (t:Throwable){
 
                     }
                 }
+                }
+                println("Completed in $time ms")
 
             }
 

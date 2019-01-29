@@ -38,7 +38,7 @@ internal class ObservableLiveData<T>(private var mObservable: Observable<T>) : L
                     mDisposableRef = null
                 }
                 // Errors should be handled upstream, so propagate as a crash.
-                LogUtils.e(ApiException.handleException(t).message)
+                LogUtils.e(ApiException.handleException(t).message!!)
             }
 
             override fun onComplete() {

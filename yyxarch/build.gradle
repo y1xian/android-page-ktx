@@ -19,7 +19,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            // 混淆
+            minifyEnabled true
+            // Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件 library报错
+//            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -55,9 +60,9 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-//    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     testImplementation 'junit:junit:4.12'
     // 约束
     api libs.constraint
@@ -83,8 +88,9 @@ dependencies {
     api libs.kotlin_coroutines_core
     // autodispose  https://github.com/uber/AutoDispose
 //    api(libs.autodispose, libs.autodispose_ktx, libs.autodispose_android_ktx, libs.autodispose_archs_ktx)
-
     //mmkv
     api libs.mmkv
+    //消息总线
+    api libs.live_event_bus
 
 }

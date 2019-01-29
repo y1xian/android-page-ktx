@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.RxView
 import com.yyxnb.yyxarch.ContainerActivity
-import com.yyxnb.yyxarch.common.Config.BUNDLE
-import com.yyxnb.yyxarch.common.Config.FRAGMENT
+import com.yyxnb.yyxarch.common.AppConfig.BUNDLE
+import com.yyxnb.yyxarch.common.AppConfig.FRAGMENT
 import java.util.concurrent.TimeUnit
 
 

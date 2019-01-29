@@ -16,13 +16,13 @@ object ToastUtils {
     private var mToast: Toast? = null
 
     fun normal(message: String) {
-        if (mToast == null) {
-            mToast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT)
-        } else {
+        mToast?.apply {
             //如果当前Toast没有消失， 直接显示内容，不需要重新设置
-            mToast!!.setText(message)
+            setText(message)
+        } ?: apply {
+            mToast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT)
         }
-        mToast!!.show()
+        mToast?.show()
     }
 
 

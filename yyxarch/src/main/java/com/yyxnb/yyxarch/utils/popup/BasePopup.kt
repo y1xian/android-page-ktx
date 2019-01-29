@@ -928,14 +928,3 @@ abstract class BasePopup<T : BasePopup<T>> : PopupWindow.OnDismissListener {
     }
 
 }
-/**
- * 相对anchor view显示，适用 宽高不为match_parent
- *
- *
- * 注意：如果使用 VerticalGravity 和 HorizontalGravity 时，请确保使用之后 PopupWindow 没有超出屏幕边界，
- * 如果超出屏幕边界，VerticalGravity 和 HorizontalGravity 可能无效，从而达不到你想要的效果。     *
- *
- * @param anchor
- * @param vertGravity
- * @param horizGravity
- */

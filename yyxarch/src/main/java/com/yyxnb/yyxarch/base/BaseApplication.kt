@@ -62,7 +62,7 @@ open class BaseApplication : Application() {
         AppUtils.init(this)
         LogUtils.init()
                 .setTag("Test")//设置全局tag
-                .setShowThreadInfo(true).isDebug = AppUtils.isDebug//是否显示日志，默认true，发布时最好关闭
+                .setShowThreadInfo(true).setDebug(AppUtils.isDebug) //是否显示日志，默认true，发布时最好关闭
 
     }
 

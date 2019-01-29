@@ -259,7 +259,7 @@ public class BitmapUtils {
         view.buildDrawingCache();
         Bitmap cacheBitmap = view.getDrawingCache();
         if (cacheBitmap == null) {
-            LogUtils.e( "failed getViewBitmap(" + view + ") -->"+
+            LogUtils.INSTANCE.e( "failed getViewBitmap(" + view + ") -->"+
                         new RuntimeException());
             return null;
         }

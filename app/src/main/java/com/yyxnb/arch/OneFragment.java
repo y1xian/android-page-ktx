@@ -36,7 +36,7 @@ public class OneFragment extends BaseFragment {
         });
 
         RxHttpUtils.Companion.uploadImg("", "")
-                .compose(RxTransformerUtil.<ResponseBody>switchSchedulers())
+                .compose(RxTransformerUtil.INSTANCE.<ResponseBody>switchSchedulers())
                 .subscribe(new CommonObserver<ResponseBody>() {
                     @Override
                     protected void onError(String errorMsg) {

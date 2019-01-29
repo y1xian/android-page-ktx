@@ -3,14 +3,14 @@ package com.yyxnb.yyxarch.ext
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
-import com.yyxnb.yyxarch.utils.RxSchedulers
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
-import io.reactivex.Scheduler
 import io.reactivex.android.MainThreadDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
-fun <T> LiveData<T>.toReactiveStream(observerScheduler: Scheduler = RxSchedulers.ui): Flowable<T> = Flowable
+fun <T> LiveData<T>.toReactiveStream(): Flowable<T> = Flowable
         .create({ emitter: FlowableEmitter<T> ->
             val observer = Observer<T> { data ->
                 data?.let {
@@ -27,8 +27,11 @@ fun <T> LiveData<T>.toReactiveStream(observerScheduler: Scheduler = RxSchedulers
                 }
             }
         }, BackpressureStrategy.LATEST)
-        .subscribeOn(RxSchedulers.ui)
-        .observeOn(observerScheduler)
+//        .subscribeOn(RxSchedulers.ui)
+//        .observeOn(observerScheduler)
+        .unsubscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun <X, Y> LiveData<X>.map(function: (X) -> Y): LiveData<Y> =
         Transformations.map(this, function)

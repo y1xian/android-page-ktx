@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.yyxnb.yyxarch.base.BaseActivity
 import com.yyxnb.yyxarch.base.BaseFragment
-import com.yyxnb.yyxarch.common.Config
+import com.yyxnb.yyxarch.common.AppConfig
 
 
 /**
@@ -29,13 +29,13 @@ class ContainerActivity : BaseActivity() {
                 if (null == intent) {
                     throw RuntimeException("you must provide a page info to display")
                 }
-                val fragmentName = intent.getStringExtra(Config.FRAGMENT)
+                val fragmentName = intent.getStringExtra(AppConfig.FRAGMENT)
                 if (null == fragmentName || "" == fragmentName) {
                     throw IllegalArgumentException("can not find page fragmentName")
                 }
                 val fragmentClass = Class.forName(fragmentName)
                 val fragment = fragmentClass.newInstance() as BaseFragment
-                val args = intent.getBundleExtra(Config.BUNDLE)
+                val args = intent.getBundleExtra(AppConfig.BUNDLE)
                 if (null != args) {
                     fragment.arguments = args
                 }

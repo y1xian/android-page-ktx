@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 
+import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
 import com.yyxnb.yyxarch.utils.ToastUtils;
+import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 
 /**
@@ -29,7 +31,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
         tvShow = fv(R.id.tvShow);
 
         getMViewModel().reqTeam();
-        getMViewModel().reqTeam();
+        getMViewModel().reqTeam2();
 //        getMViewModel().reqTeam();
 //        getMViewModel().reqTeam();
 //        getMViewModel().reqTeam();
@@ -51,6 +53,8 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
             }
         });
 
+//        LogUtils.w(StringExtKt.upperFirstLetter("hello"));
+
 //        Map<String, String> map = new LinkedHashMap<>();
 //        map.put("name", "李白");
 //        RxHttpUtils.createApi(api.class).getTeam(map)
@@ -68,7 +72,6 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //                });
 
 
-
 //        TestDialog dialog = new TestDialog();
 //        dialog.show(getFragmentManager(),dialog.getTag());
 
@@ -76,7 +79,6 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //            isFirst = false;
 //            mViewModel.reqTeam();
 //        }
-
 
 
 //        LiveDataExtKt.toReactiveStream(getMViewModel().getTeam(), RxSchedulers.INSTANCE.getUi())
@@ -101,7 +103,14 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //                    }
 //                }).subscribe();
 
+//        LiveDataExtKt.toReactiveStream(getMViewModel().getTeam()).doOnNext(baseDataLcee -> {
+//            if (baseDataLcee != null) {
+//                tvShow.setText(baseDataLcee.getResult().get(0).getContent());
+//            }
+//        }).subscribe();
 
+
+//        AsyncExtKt.Async(Deferred.class,t -> )
 
 
     }
@@ -109,29 +118,47 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        getMViewModel().getTeam().observe(this,baseDataLcee -> {
-            if (baseDataLcee != null){
-                tvShow.setText(baseDataLcee.getResult().get(0).getContent());
+//        getMViewModel().getTeam().observe(this,baseDataLcee -> {
+//            if (baseDataLcee != null){
+//                tvShow.setText(baseDataLcee.getResult().get(0).getContent());
+//            }
+//        });
+
+        getMViewModel().getTeam().observe(this, baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("Content " + LceeStatus.Content);
+                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("Loading " + LceeStatus.Loading);
+                    break;
             }
         });
 
-//        getMViewModel().getTeam().observe(this, baseDataLcee -> {
-//            switch (baseDataLcee.getStatus()) {
-//                case LceeStatus.Content:
-//                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
-//                    LogUtils.i("Content " + LceeStatus.Content);
-//                    break;
-//                case LceeStatus.Empty:
-//                    LogUtils.i("Empty");
-//                    break;
-//                case LceeStatus.Error:
-//                    LogUtils.i("Error");
-//                    break;
-//                case LceeStatus.Loading:
-//                    LogUtils.i("Loading " + LceeStatus.Loading);
-//                    break;
-//            }
-//        });
+        getMViewModel().getTeam2().observe(this, baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
+                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("2 Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("2 Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
+                    break;
+            }
+        });
     }
 
     public static TestFragment newInstance() {

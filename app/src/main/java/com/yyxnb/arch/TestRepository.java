@@ -11,10 +11,11 @@ import java.util.Map;
 public class TestRepository extends BaseRepository<api> {
 
     public LiveData getTeam(Map map){
-        return LiveDataObservableAdapter.INSTANCE.fromObservable(getMApiServer().getTeam(map).compose(RxTransformerUtil.schedulersTransformer()));
+        return LiveDataObservableAdapter.INSTANCE.fromObservableLcee(getMApiServer().getTeam(map).compose(RxTransformerUtil.INSTANCE.schedulersTransformer()));
+//        return LiveDataObservableAdapter.INSTANCE.fromDeferredLcee(getMApiServer().getTeam2(map));
     }
 
     public LiveData getTeam2(Map map){
-        return LiveDataObservableAdapter.INSTANCE.fromDeferred(getMApiServer().getTeam2(map));
+        return LiveDataObservableAdapter.INSTANCE.fromDeferredLcee(getMApiServer().getTeam2(map));
     }
 }

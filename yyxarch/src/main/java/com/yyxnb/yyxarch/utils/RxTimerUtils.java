@@ -25,7 +25,7 @@ public class RxTimerUtils {
      */
     public static void timer(long milliseconds, final IRxNext next) {
         Observable.timer(milliseconds, TimeUnit.MILLISECONDS)
-                .compose(RxTransformerUtil.schedulersTransformer())
+                .compose(RxTransformerUtil.INSTANCE.schedulersTransformer())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable disposable) {
@@ -62,7 +62,7 @@ public class RxTimerUtils {
      */
     public static void interval(long milliseconds, final IRxNext next) {
         Observable.interval(milliseconds, TimeUnit.MILLISECONDS)
-                .compose(RxTransformerUtil.schedulersTransformer())
+                .compose(RxTransformerUtil.INSTANCE.schedulersTransformer())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable disposable) {
@@ -97,7 +97,7 @@ public class RxTimerUtils {
     public static void interval(long milliseconds, int count, final IRxNext next) {
         Observable.interval(0, milliseconds, TimeUnit.MILLISECONDS)
                 .take(count)
-                .compose(RxTransformerUtil.schedulersTransformer())
+                .compose(RxTransformerUtil.INSTANCE.schedulersTransformer())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable disposable) {
@@ -134,7 +134,7 @@ public class RxTimerUtils {
      */
     public static void intervalRange (long milliseconds, int count, final IRxNext next) {
         Observable.intervalRange (0,count,0, milliseconds, TimeUnit.MILLISECONDS)
-                .compose(RxTransformerUtil.schedulersTransformer())
+                .compose(RxTransformerUtil.INSTANCE.schedulersTransformer())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable disposable) {
@@ -170,7 +170,7 @@ public class RxTimerUtils {
     public static void cancel() {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
-            LogUtils.e("====定时器取消======");
+            LogUtils.INSTANCE.e("====定时器取消======");
         }
     }
 

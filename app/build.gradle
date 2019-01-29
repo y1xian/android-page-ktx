@@ -41,5 +41,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'com.github.Bakumon:StatusLayoutManager:1.0.4'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc12'
     implementation project(":yyxarch")
 }
