@@ -25,32 +25,5 @@ public class MainActivity extends AppCompatActivity {
                 .runtime()
                 .permission(permission)
                 .start();
-//        Observable.interval(1, TimeUnit.SECONDS)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                //AutoDispose的使用就是这句
-////                .as(AutoDispose.<Long>autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-//                .subscribe(new Observer<Long>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Long aLong) {
-//                        Log.i("接收数据,当前线程"+Thread.currentThread().getName(), String.valueOf(aLong));
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-
     }
 }

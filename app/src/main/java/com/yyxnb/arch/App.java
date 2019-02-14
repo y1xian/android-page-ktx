@@ -1,5 +1,6 @@
 package com.yyxnb.arch;
 
+import com.squareup.leakcanary.LeakCanary;
 import com.yyxnb.yyxarch.AppUtils;
 import com.yyxnb.yyxarch.base.BaseApplication;
 import com.yyxnb.yyxarch.http.RxHttpUtils;
@@ -13,6 +14,13 @@ public class App extends BaseApplication {
         super.onCreate();
         initRxHttp();
         AppUtils.Companion.init(this);
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
 
     private void initRxHttp() {

@@ -72,7 +72,7 @@ object ScreenUtils {
     /**
      * 根据手机分辨率将dp转为px单位
      */
-    fun dip2px(dpValue: Float): Int {
+    open fun dip2px(dpValue: Float): Int {
         val scale = mContext.resources
                 .displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
@@ -81,7 +81,7 @@ object ScreenUtils {
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
-    fun px2dip(pxValue: Float): Int {
+    open fun px2dip(pxValue: Float): Int {
         val scale = mContext.resources
                 .displayMetrics.density
         return (pxValue / scale + 0.5f).toInt()

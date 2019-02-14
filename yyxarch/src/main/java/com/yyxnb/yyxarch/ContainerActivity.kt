@@ -40,25 +40,12 @@ class ContainerActivity : BaseActivity() {
                     fragment.arguments = args
                 }
 
-//                startFragment(fragment)
-                //                FragmentUtils.add(getSupportFragmentManager(), fragment, getFragmentContainer().getId());
+                startFragment(fragment)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
         }
     }
-
-    //    @Override
-    //    public void onBackPressed() {
-    //        Fragment  fragment = getSupportFragmentManager().findFragmentById(getFragmentContainer().getId());
-    //        if (fragment instanceof BaseFragment) {
-    //            if (!((BaseFragment) fragment).isBackPressed()) {
-    //                super.onBackPressed();
-    //            }
-    //        } else {
-    //            super.onBackPressed();
-    //        }
-    //    }
 
 }

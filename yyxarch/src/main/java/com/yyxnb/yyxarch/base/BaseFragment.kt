@@ -1,19 +1,20 @@
 package com.yyxnb.yyxarch.base
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
+import android.support.annotation.NonNull
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jakewharton.rxbinding2.view.RxView
 import com.yyxnb.yyxarch.ContainerActivity
-import com.yyxnb.yyxarch.common.AppConfig.BUNDLE
-import com.yyxnb.yyxarch.common.AppConfig.FRAGMENT
-import java.util.concurrent.TimeUnit
+import com.yyxnb.yyxarch.annotation.ResultCode
+import com.yyxnb.yyxarch.common.AppConfig
 
 
 /**
@@ -22,14 +23,14 @@ import java.util.concurrent.TimeUnit
  * @author : yyx
  * @date ：2018/6/10
  */
-abstract class BaseFragment : Fragment(), View.OnClickListener {
+abstract class BaseFragment : Fragment() {
 
-    protected var mActivity: FragmentActivity? = null
+    protected lateinit var mActivity: FragmentActivity
 
-    private val TAG = javaClass.simpleName
+    protected val TAG = javaClass.canonicalName
 
-    var rootView: View? = null
-        private set
+    protected var rootView: View? = null
+
     //是否可见状态
     private var mIsVisible: Boolean = false
     //标志位，View已经初始化完成
@@ -37,8 +38,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     //是否第一次加载
     private var mIsFirstVisible = true
 
-    val isBackPressed: Boolean
-        get() = false
+    private val REQUEST_CODE_INVALID = BaseActivity.REQUEST_CODE_INVALID
 
     init {
         lifecycle.addObserver(Java8Observer())
@@ -50,7 +50,6 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         if (bundle != null && bundle.size() > 0) {
             initVariables(bundle)
         }
-        mActivity = activity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,7 +69,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initViewData(savedInstanceState)
+        mIsPrepared = true
     }
 
 
@@ -117,109 +116,31 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
      * args.putParcelable(KEY, info);
      * }
      */
-    fun initVariables(bundle: Bundle) {}
+    open fun initVariables(bundle: Bundle) {}
 
     /**
      * 当界面可见时的操作
      */
-    protected fun onVisible() {
+    open fun onVisible() {
         initLazyLoadView()
     }
 
     /**
      * 当界面不可见时的操作
      */
-    protected fun onInVisible() {}
+    open fun onInVisible() {}
 
     /**
      * 数据懒加载
      */
-    protected fun initLazyLoadView() {
-        if (!mIsPrepared || !mIsVisible || mIsFirstVisible) {
+    private fun initLazyLoadView() {
+        if (!mIsPrepared || !mIsVisible || !mIsFirstVisible) {
             return
         }
+        initViewData()
         mIsFirstVisible = false
     }
 
-    override fun onClick(v: View) {
-        RxView.clicks(v).throttleFirst(1, TimeUnit.SECONDS).subscribe { o -> onClickWidget(v) }
-    }
-
-    /*
-      防止快速点击
-    */
-    fun onClickWidget(v: View) {
-
-    }
-
-    /**
-     * 跳转页面
-     *
-     * @param clz    所跳转的目的Activity类
-     * @param bundle 跳转所携带的信息
-     */
-    @JvmOverloads
-    fun startActivity(clz: Class<*>, bundle: Bundle? = null) {
-        val intent = Intent(mActivity, clz)
-        if (null != bundle) {
-            intent.putExtra(BUNDLE, bundle)
-        }
-        startActivity(intent)
-    }
-
-    /**
-     * 跳转容器页面
-     *
-     * @param fragment 规范名 : Fragment.newInstance()
-     * @param bundle   跳转所携带的信息
-     */
-    @JvmOverloads
-    fun startContainerActivity(fragment: BaseFragment, bundle: Bundle? = null) {
-        startContainerActivity(fragment.javaClass.canonicalName, bundle)
-    }
-
-    /**
-     * 跳转容器页面
-     *
-     * @param canonicalName 规范名 : com.yyxnb.yyxarch.base.BaseFragment
-     * @param bundle        跳转所携带的信息
-     */
-    @JvmOverloads
-    fun startContainerActivity(canonicalName: String?, bundle: Bundle? = null) {
-        val intent = Intent(mActivity, ContainerActivity::class.java)
-        intent.putExtra(FRAGMENT, canonicalName)
-        if (bundle != null) {
-            intent.putExtra(BUNDLE, bundle)
-        }
-        startActivity(intent)
-    }
-
-    /**
-     * 跳转容器页面
-     *
-     * @param requestCode requestCode
-     * @param fragment    规范名 : Fragment.newInstance()
-     */
-    fun startContainerActivityForResult(requestCode: Int, fragment: BaseFragment) {
-        startContainerActivityForResult(requestCode, fragment.javaClass.canonicalName, null)
-    }
-
-    /**
-     * 跳转容器页面
-     *
-     * @param requestCode   requestCode
-     * @param canonicalName 规范名 : com.yyxnb.yyxarch.base.BaseFragment
-     * @param bundle        跳转所携带的信息
-     */
-    @JvmOverloads
-    fun startContainerActivityForResult(requestCode: Int, canonicalName: String?, bundle: Bundle? = null) {
-        val intent = Intent(mActivity, ContainerActivity::class.java)
-        intent.putExtra(FRAGMENT, canonicalName)
-        if (bundle != null) {
-            intent.putExtra(BUNDLE, bundle)
-        }
-        startActivityForResult(intent, requestCode)
-    }
 
     /**
      * 初始化根布局
@@ -235,43 +156,292 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     open fun initView(savedInstanceState: Bundle?) {}
 
     /**
-     * 初始化复杂数据
+     * 初始化复杂数据 懒加载
      */
-    open fun initViewData(savedInstanceState: Bundle?) {}
+    open fun initViewData() {}
 
     /**
      * 回调网络数据
      */
     open fun initViewObservable() {}
 
-    protected fun <T> fv(@IdRes resid: Int): T {
+    open fun <T> fv(@IdRes resid: Int): T {
         return rootView!!.findViewById<View>(resid) as T
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (userVisibleHint) {
+            userVisibleHint = true
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mIsVisible = false
         mIsPrepared = false
     }
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mActivity = context as FragmentActivity
+    }
+
+    /**
+     * Destroy me.
+     */
+    fun finish() {
+        mActivity.onBackPressed()
+    }
+
+
+    //*******************跳转*************
+
+    companion object {
+        @JvmField
+        val RESULT_OK = Activity.RESULT_OK
+        @JvmField
+        val RESULT_CANCELED = Activity.RESULT_CANCELED
+    }
+
+    /**
+     * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
+     *
+     * @param fragmentClass class of fragment.
+     * @param <T>           subclass of [BaseFragment].
+     * @return new instance.
+    </T> */
+    fun <T : BaseFragment> fragment(fragmentClass: Class<T>): T {
+
+        return Fragment.instantiate(context, fragmentClass.canonicalName, null) as T
+    }
+
+    /**
+     * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
+     *
+     * @param fragmentClass class of fragment.
+     * @param bundle        argument.
+     * @param <T>           subclass of [BaseFragment].
+     * @return new instance.
+    </T> */
+    fun <T : BaseFragment> fragment(fragmentClass: Class<T>, bundle: Bundle): T {
+
+        return Fragment.instantiate(context, fragmentClass.canonicalName, bundle) as T
+    }
+
+
+    /**
+     * Start activity.
+     *
+     * @param clazz class for activity.
+     * @param <T>   [Activity].
+    </T> */
+    protected fun <T : Activity> startActivity(clazz: Class<T>) {
+        startActivity(Intent(mActivity, clazz))
+    }
+
+    /**
+     * 启动 activity 并 finish.
+     *
+     * @param clazz class for activity.
+     * @param <T>   [Activity].
+    </T> */
+    protected fun <T : Activity> startActivityFinish(clazz: Class<T>) {
+        startActivity(Intent(mActivity, clazz))
+        mActivity.finish()
+    }
+
+
+    /**
+     * 跳转容器页面
+     *
+     * @param targetFragment fragment
+     * @param result   跳转所携带的信息
+     */
+    open fun <T : BaseFragment> startContainerActivity(targetFragment: T) {
+        startContainerActivity(targetFragment, null)
+        val intent = Intent(mActivity, ContainerActivity::class.java)
+        intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
+        startActivity(intent)
+    }
+
+    /**
+     * 跳转容器页面
+     *
+     * @param targetFragment fragment
+     * @param result        跳转所携带的信息
+     */
+    open fun <T : BaseFragment> startContainerActivity(targetFragment: T, result: Bundle?) {
+        val intent = Intent(mActivity, ContainerActivity::class.java)
+        intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
+        if (result != null) {
+            intent.putExtra(AppConfig.BUNDLE, result)
+        }
+        startActivity(intent)
+    }
+
+
+
+    // ------------------------- Stack ------------------------- //
+
+    /**
+     * Stack info.
+     */
+    private lateinit var mStackEntity: BaseActivity.FragmentStackEntity
+
+    /**
+     * Set result.
+     *
+     * @param resultCode result code, one of [BaseFragment.RESULT_OK], [BaseFragment.RESULT_CANCELED].
+     */
+    open fun setResult(@ResultCode resultCode: Int) {
+        mStackEntity.resultCode = resultCode
+    }
+
+    /**
+     * Set result.
+     *
+     * @param resultCode resultCode, use [].
+     * @param result     跳转所携带的信息
+     */
+    open fun setResult(@ResultCode resultCode: Int, @NonNull result: Bundle) {
+        mStackEntity.resultCode = resultCode
+        mStackEntity.result = result
+    }
+
+    /**
+     * Get the resultCode for requestCode.
+     */
+    open fun setStackEntity(@NonNull stackEntity: BaseActivity.FragmentStackEntity) {
+        this.mStackEntity = stackEntity
+    }
+
+    /**
+     * You should override it.
+     *
+     * @param resultCode resultCode.
+     * @param result     跳转所携带的信息
+     */
+    open fun onFragmentResult(requestCode: Int, @ResultCode resultCode: Int, result: Bundle) {}
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param clazz fragment class.
+     * @param <T>   [BaseFragment].
+    </T> */
+    open fun <T : BaseFragment> startFragment(clazz: Class<T>) {
+        try {
+            val targetFragment = clazz.newInstance()
+            startFragment<BaseFragment>(targetFragment, true, REQUEST_CODE_INVALID)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param clazz       fragment class.
+     * @param stickyStack 加入回退栈.
+     * @param <T>         [BaseFragment].
+    </T> */
+    open fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
+        try {
+            val targetFragment = clazz.newInstance()
+            startFragment<BaseFragment>(targetFragment, stickyStack, REQUEST_CODE_INVALID)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param targetFragment fragment to display.
+     * @param <T>            [BaseFragment].
+    </T> */
+    open fun <T : BaseFragment> startFragment(targetFragment: T) {
+        startFragment(targetFragment, true, REQUEST_CODE_INVALID)
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param targetFragment fragment to display.
+     * @param stickyStack    sticky back stack.
+     * @param <T>            [BaseFragment].
+    </T> */
+    open fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
+        startFragment(targetFragment, stickyStack, REQUEST_CODE_INVALID)
+    }
+
+    /**
+     * Show a fragment for result.
+     *
+     * @param clazz       fragment to display.
+     * @param requestCode requestCode.
+     * @param <T>         [BaseFragment].
+    </T> */
+    @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
+    open fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
+        startFragmentForResult(clazz, requestCode)
+    }
+
+    /**
+     * 跳转 fragment for result.
+     *
+     * @param targetFragment fragment to display.
+     * @param requestCode    requestCode.
+     * @param <T>            [BaseFragment].
+    </T> */
+    @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
+    open fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
+        startFragmentForResult(targetFragment, requestCode)
+    }
+
+    /**
+     * 跳转 fragment for result.
+     *
+     * @param clazz       fragment to display.
+     * @param requestCode requestCode.
+     * @param <T>         [BaseFragment].
+    </T> */
+    open fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
+        try {
+            val targetFragment = clazz.newInstance()
+            startFragment<BaseFragment>(targetFragment, true, requestCode)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * 跳转 fragment for result.
+     *
+     * @param targetFragment fragment to display.
+     * @param requestCode    requestCode.
+     * @param <T>            [BaseFragment].
+    </T> */
+    open fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
+        startFragment(targetFragment, true, requestCode)
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param targetFragment fragment to display.
+     * @param stickyStack    加入回退栈.
+     * @param requestCode    requestCode.
+     * @param <T>            [BaseFragment].
+    </T> */
+    private fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean, requestCode: Int) {
+        (mActivity as? BaseActivity)?.startFragment(this, targetFragment, stickyStack, requestCode)
+    }
+
+
 }
-/**
- * 跳转页面
- *
- * @param clz 所跳转的目的Activity类
- */
-/**
- * 跳转容器页面
- *
- * @param canonicalName 规范名 : com.yyxnb.yyxarch.base.BaseFragment
- */
-/**
- * 跳转容器页面
- *
- * @param fragment 规范名 : Fragment.newInstance()
- */
-/**
- * 跳转容器页面
- *
- * @param requestCode   requestCode
- * @param canonicalName 规范名 : com.yyxnb.yyxarch.base.BaseFragment
- */

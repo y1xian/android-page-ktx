@@ -34,8 +34,8 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
      *
      * @return ViewModel
      */
-    private fun initViewModel(fragment: BaseFragment, modelClass: Class<VM>): VM {
-        return ViewModelProviders.of(fragment).get(modelClass)
+    private fun initViewModel(targetFragment: BaseFragment, modelClass: Class<VM>): VM {
+        return ViewModelProviders.of(targetFragment).get(modelClass)
     }
 
     override fun onDestroy() {

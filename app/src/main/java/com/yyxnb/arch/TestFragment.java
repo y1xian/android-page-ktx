@@ -20,6 +20,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     private TextView tvShow;
     private boolean isFirst = true;
 
+
     @Override
     public int initLayoutResID() {
         return R.layout.fragment_test;
@@ -28,7 +29,11 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     @Override
     public void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
+
+        LogUtils.INSTANCE.w("initView");
+
         tvShow = fv(R.id.tvShow);
+
 
         getMViewModel().reqTeam();
         getMViewModel().reqTeam2();
@@ -38,8 +43,23 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     }
 
     @Override
-    public void initViewData(Bundle savedInstanceState) {
-        super.initViewData(savedInstanceState);
+    public void onVisible() {
+        super.onVisible();
+        LogUtils.INSTANCE.w("onVisible");
+    }
+
+    @Override
+    public void onInVisible() {
+        super.onInVisible();
+        LogUtils.INSTANCE.w("onInVisible");
+    }
+
+    @Override
+    public void initViewData() {
+        super.initViewData();
+
+        LogUtils.INSTANCE.w("initViewData");
+
         tvShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +67,11 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //                startContainerActivity("com.y1xian.myapplication.arch.ArchOneFragment");
 //                startContainerActivityForResult(1, TestFragment.newInstance());
 
-//                startContainerActivity(OneFragment.newInstance());
+                Bundle bundle = new Bundle();
+                bundle.putString("msg",tvShow.getText().toString());
+
+                startContainerActivity(OneFragment.newInstance(),bundle);
+//                startFragment(fragment(OneFragment.class));
 
                 ToastUtils.INSTANCE.normal("666");
             }
@@ -72,8 +96,8 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //                });
 
 
-//        TestDialog dialog = new TestDialog();
-//        dialog.show(getFragmentManager(),dialog.getTag());
+        TestDialog dialog = new TestDialog();
+        dialog.show(getFragmentManager(),dialog.getTag());
 
 //        if (isFirst){
 //            isFirst = false;
@@ -115,6 +139,8 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
 
     }
+
+
 
     @Override
     public void initViewObservable() {

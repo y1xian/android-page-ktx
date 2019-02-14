@@ -1,14 +1,14 @@
 package com.yyxnb.yyxarch.base
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.FrameLayout
-import com.jakewharton.rxbinding2.view.RxView
 import com.yyxnb.yyxarch.utils.ActivityStack
-import com.yyxnb.yyxarch.utils.FragmentUtils
-import java.util.concurrent.TimeUnit
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
@@ -17,22 +17,20 @@ import java.util.concurrent.TimeUnit
  * @author : yyx
  * @date : 2018/6/10
  */
-abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
+abstract class BaseActivity : AppCompatActivity() {
 
-    private val TAG = javaClass.simpleName
+
+    protected val TAG = javaClass.canonicalName
 
     private val generateViewId = android.view.View.generateViewId()
 
+    protected var fragmentContainer: FrameLayout? = null
 
-//    protected val scopeProvider: AndroidLifecycleScopeProvider by lazy {
-//        AndroidLifecycleScopeProvider.from(this)
-//    }
-
-    var fragmentContainer: FrameLayout? = null
-        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mFManager = supportFragmentManager
 
         lifecycle.addObserver(Java8Observer())
 
@@ -74,18 +72,228 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
      */
     fun initViewObservable() {}
 
+    //*************************跳转*************
 
-    @SuppressLint("AutoDispose")
-    override fun onClick(v: View) {
-        RxView.clicks(v).throttleFirst(1, TimeUnit.SECONDS).subscribe { o -> onClickWidget(v) }
+    private lateinit var mFManager: FragmentManager
+    private val mAtomicInteger = AtomicInteger()
+    private val mFragmentStack = ArrayList<BaseFragment>()
+    private val mFragmentEntityMap = HashMap<BaseFragment, FragmentStackEntity>()
+
+    companion object {
+
+        val REQUEST_CODE_INVALID = -1
+
     }
 
-    /*
-      防止快速点击
-    */
-    fun onClickWidget(v: View) {}
+    inner class FragmentStackEntity constructor() {
+        var isSticky = false
+        var requestCode = REQUEST_CODE_INVALID
+        var resultCode = Activity.RESULT_CANCELED
+        var result: Bundle? = null
 
-    fun startFragment(fragment: BaseFragment, containerViewId: Int) {
-        FragmentUtils.add(supportFragmentManager, fragment, containerViewId)
+    }
+
+    fun <T : BaseFragment> fragment(fragmentClass: Class<T>): Fragment? {
+
+        return Fragment.instantiate(this, fragmentClass.canonicalName)
+    }
+
+    fun <T : BaseFragment> fragment(fragmentClass: Class<T>, bundle: Bundle): Fragment? {
+
+        return Fragment.instantiate(this, fragmentClass.canonicalName, bundle)
+    }
+
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param clazz fragment class.
+     */
+    fun <T : BaseFragment> startFragment(clazz: Class<T>) {
+        try {
+            val targetFragment = clazz.newInstance()
+            startFragment<BaseFragment>(null, targetFragment, true, REQUEST_CODE_INVALID)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param clazz       fragment class.
+     * @param stickyStack sticky to back stack.
+     */
+    fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
+        try {
+            val targetFragment = clazz.newInstance()
+            startFragment<BaseFragment>(null, targetFragment, stickyStack, REQUEST_CODE_INVALID)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param targetFragment fragment to display.
+     * @param <T>            [BaseFragment].
+    </T> */
+    fun <T : BaseFragment> startFragment(targetFragment: T) {
+        startFragment(null, targetFragment, true, REQUEST_CODE_INVALID)
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param targetFragment fragment to display.
+     * @param stickyStack    sticky back stack.
+     * @param <T>            [BaseFragment].
+    </T> */
+    fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
+        startFragment(null, targetFragment, stickyStack, REQUEST_CODE_INVALID)
+    }
+
+    /**
+     * 跳转 fragment for result.
+     *
+     * @param clazz       fragment to display.
+     * @param requestCode requestCode.
+     * @param <T>         [BaseFragment].
+    </T> */
+    @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
+    fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
+        startFragmentForResult(clazz, requestCode)
+    }
+
+    /**
+     * 跳转 fragment for result.
+     *
+     * @param targetFragment fragment to display.
+     * @param requestCode    requestCode.
+     * @param <T>            [BaseFragment].
+    </T> */
+    @Deprecated("use {@link #startFragmentForResult(BaseFragment, int)} instead.")
+    fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
+        startFragmentForResult(targetFragment, requestCode)
+    }
+
+    /**
+     * 跳转 fragment for result.
+     *
+     * @param clazz       fragment to display.
+     * @param requestCode requestCode.
+     * @param <T>         [BaseFragment].
+    </T> */
+    fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
+        if (requestCode == REQUEST_CODE_INVALID)
+            throw IllegalArgumentException("The requestCode must be positive integer.")
+        try {
+            val targetFragment = clazz.newInstance()
+            startFragment<BaseFragment>(null, targetFragment, true, requestCode)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * Show a fragment for result.
+     *
+     * @param targetFragment fragment to display.
+     * @param requestCode    requestCode.
+     * @param <T>            [BaseFragment].
+    </T> */
+    fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
+        if (requestCode == REQUEST_CODE_INVALID)
+            throw IllegalArgumentException("The requestCode must be positive integer.")
+        startFragment(null, targetFragment, true, requestCode)
+    }
+
+    /**
+     * 跳转 fragment.
+     *
+     * @param thisFragment Now show fragment, can be null.
+     * @param thatFragment fragment to display.
+     * @param stickyStack  sticky back stack.
+     * @param requestCode  requestCode.
+     * @param <T>          [BaseFragment].
+    </T> */
+    public fun <T : BaseFragment> startFragment(thisFragment: T?, thatFragment: T,
+                                                stickyStack: Boolean, requestCode: Int) {
+        var fragmentTransaction = mFManager.beginTransaction()
+        if (thisFragment != null) {
+            val thisStackEntity = mFragmentEntityMap.get(thisFragment)
+            if (thisStackEntity != null) {
+                if (thisStackEntity.isSticky) {
+                    thisFragment.onPause()
+                    thisFragment.onStop()
+                    fragmentTransaction.hide(thisFragment)
+                } else {
+                    fragmentTransaction.remove(thisFragment).commit()
+                    fragmentTransaction.commitNow()
+                    fragmentTransaction = mFManager.beginTransaction()
+
+                    mFragmentEntityMap.remove(thisFragment)
+                    mFragmentStack.remove(thisFragment)
+                }
+            }
+        }
+
+        val fragmentTag = thatFragment.javaClass.canonicalName!! + mAtomicInteger.incrementAndGet()
+
+        if (initLayoutResID() == 0) {
+
+            fragmentTransaction.add(fragmentContainer!!.id, thatFragment, fragmentTag)
+        } else {
+
+            fragmentTransaction.add(initLayoutResID(), thatFragment, fragmentTag)
+        }
+
+        fragmentTransaction.addToBackStack(fragmentTag)
+        fragmentTransaction.commit()
+
+        val fragmentStackEntity = FragmentStackEntity()
+        fragmentStackEntity.isSticky = stickyStack
+        fragmentStackEntity.requestCode = requestCode
+        thatFragment.setStackEntity(fragmentStackEntity)
+        mFragmentEntityMap[thatFragment] = fragmentStackEntity
+
+        mFragmentStack.add(thatFragment)
+    }
+
+    /**
+     * When the back off.
+     */
+    protected fun onBackStackFragment(): Boolean {
+        if (mFragmentStack.size > 1) {
+            mFManager.popBackStack()
+            val inFragment = mFragmentStack[mFragmentStack.size - 2]
+
+            val fragmentTransaction = mFManager.beginTransaction()
+            fragmentTransaction.show(inFragment)
+            fragmentTransaction.commit()
+
+            val outFragment = mFragmentStack[mFragmentStack.size - 1]
+            inFragment.onResume()
+
+            val stackEntity = mFragmentEntityMap[outFragment]
+            mFragmentStack.remove(outFragment)
+            mFragmentEntityMap.remove(outFragment)
+
+            if (stackEntity!!.requestCode != REQUEST_CODE_INVALID && stackEntity.resultCode != Activity.RESULT_CANCELED) {
+                inFragment.onFragmentResult(stackEntity.requestCode, stackEntity.resultCode, stackEntity.result!!)
+            }
+            return true
+        }
+        return false
+    }
+
+    override fun onBackPressed() {
+        if (!onBackStackFragment()) {
+            finish()
+        }
     }
 }
