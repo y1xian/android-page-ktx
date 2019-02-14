@@ -6,9 +6,8 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.yyxnb.yyxarch.base.BaseFragment;
-import com.yyxnb.yyxarch.utils.ToastUtils;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -59,12 +58,17 @@ public class OneFragment extends BaseFragment {
     }
 
     @Override
-    public void onFragmentResult(int requestCode, int resultCode, @NotNull Bundle result) {
+    public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
         super.onFragmentResult(requestCode, resultCode, result);
-        if (requestCode == 0x11 && resultCode == RESULT_OK){
-            ToastUtils.INSTANCE.normal(result.getString("msg","?"));
-        }
     }
+
+    //    @Override
+//    public void onFragmentResult(int requestCode, int resultCode, @NotNull Bundle result) {
+//        super.onFragmentResult(requestCode, resultCode, result);
+//        if (requestCode == 0x11 && resultCode == RESULT_OK){
+//            ToastUtils.INSTANCE.normal(result.getString("msg","?"));
+//        }
+//    }
 
     public static OneFragment newInstance() {
 

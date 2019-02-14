@@ -9,6 +9,8 @@ import com.yyxnb.yyxarch.base.BaseFragment;
 
 import java.util.Random;
 
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * A simple {@link Fragment} subclass.

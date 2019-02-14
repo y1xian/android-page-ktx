@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.yyxnb.yyxarch.ContainerActivity
-import com.yyxnb.yyxarch.annotation.ResultCode
 import com.yyxnb.yyxarch.common.AppConfig
 
 
@@ -198,13 +197,6 @@ abstract class BaseFragment : Fragment() {
 
     //*******************跳转*************
 
-    companion object {
-        @JvmField
-        val RESULT_OK = Activity.RESULT_OK
-        @JvmField
-        val RESULT_CANCELED = Activity.RESULT_CANCELED
-    }
-
     /**
      * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
      *
@@ -293,9 +285,9 @@ abstract class BaseFragment : Fragment() {
     /**
      * Set result.
      *
-     * @param resultCode result code, one of [BaseFragment.RESULT_OK], [BaseFragment.RESULT_CANCELED].
+     * @param resultCode result code, one of [RESULT_OK], [RESULT_CANCELED].
      */
-    open fun setResult(@ResultCode resultCode: Int) {
+    open fun setResult(resultCode: Int) {
         mStackEntity.resultCode = resultCode
     }
 
@@ -305,7 +297,7 @@ abstract class BaseFragment : Fragment() {
      * @param resultCode resultCode, use [].
      * @param result     跳转所携带的信息
      */
-    open fun setResult(@ResultCode resultCode: Int, @NonNull result: Bundle) {
+    open fun setResult(resultCode: Int, @NonNull result: Bundle) {
         mStackEntity.resultCode = resultCode
         mStackEntity.result = result
     }
@@ -323,7 +315,7 @@ abstract class BaseFragment : Fragment() {
      * @param resultCode resultCode.
      * @param result     跳转所携带的信息
      */
-    open fun onFragmentResult(requestCode: Int, @ResultCode resultCode: Int, result: Bundle) {}
+    open fun onFragmentResult(requestCode: Int, resultCode: Int, result: Bundle?) {}
 
     /**
      * 跳转 fragment.

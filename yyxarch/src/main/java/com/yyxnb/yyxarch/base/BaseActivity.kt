@@ -284,7 +284,7 @@ abstract class BaseActivity : AppCompatActivity() {
             mFragmentEntityMap.remove(outFragment)
 
             if (stackEntity!!.requestCode != REQUEST_CODE_INVALID && stackEntity.resultCode != Activity.RESULT_CANCELED) {
-                inFragment.onFragmentResult(stackEntity.requestCode, stackEntity.resultCode, stackEntity.result!!)
+                inFragment.onFragmentResult(stackEntity.requestCode, stackEntity.resultCode, stackEntity.result)
             }
             return true
         }

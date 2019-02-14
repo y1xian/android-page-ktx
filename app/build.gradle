@@ -55,6 +55,8 @@ dependencies {
     implementation 'com.yanzhenjie:permission:2.0.0-rc12'
     implementation project(':yyxarch')
 
+//    implementation 'com.github.y1xian:arch-kt:1.0.1'
+
 //    api(name: 'yyxarch-release', ext: 'aar')
 //    implementation (name:'yyxarch-release',ext:'aar')
 

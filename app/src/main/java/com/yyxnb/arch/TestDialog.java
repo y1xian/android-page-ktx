@@ -28,16 +28,13 @@ public class TestDialog extends BaseSheetDialog<TestDialog> {
         mViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
 
 
-
-//        if (isFirst){
-            isFirst = false;
-            mViewModel.reqTeam();
-//        }
+        isFirst = false;
+        mViewModel.reqTeam();
 
         TextView tvShow = view.findViewById(R.id.tvShow);
 
         StatusLayoutManager statusLayoutManager = new StatusLayoutManager.Builder(tvShow)
-                .setDefaultLayoutsBackgroundColor(Color.BLACK)
+                .setDefaultLayoutsBackgroundColor(Color.TRANSPARENT)
                 .build();
         statusLayoutManager.showLoadingLayout();
 //        mViewModel.getTeam().observeForever(baseDataLcee -> {
