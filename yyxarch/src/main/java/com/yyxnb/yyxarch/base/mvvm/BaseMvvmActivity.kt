@@ -2,7 +2,7 @@ package com.yyxnb.yyxarch.base.mvvm
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseActivity
 
@@ -25,7 +25,7 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
      *
      * @return ViewModel
      */
-    private fun initViewModel(activity: FragmentActivity, modelClass: Class<VM>): VM {
+    private fun initViewModel(activity: AppCompatActivity, modelClass: Class<VM>): VM {
         return ViewModelProviders.of(activity).get(modelClass)
     }
 

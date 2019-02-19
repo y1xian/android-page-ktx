@@ -8,7 +8,7 @@ import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.annotation.NonNull
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +24,7 @@ import com.yyxnb.yyxarch.common.AppConfig
  */
 abstract class BaseFragment : Fragment() {
 
-    protected lateinit var mActivity: FragmentActivity
+    protected lateinit var mActivity: AppCompatActivity
 
     protected val TAG = javaClass.canonicalName
 
@@ -184,7 +184,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mActivity = context as FragmentActivity
+        mActivity = context as AppCompatActivity
     }
 
     /**
