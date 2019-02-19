@@ -70,7 +70,7 @@ abstract class BaseActivity : AppCompatActivity() {
      * 初始化界面观察者的监听
      * 接收数据结果
      */
-    fun initViewObservable() {}
+    open fun initViewObservable() {}
 
     //*************************跳转*************
 

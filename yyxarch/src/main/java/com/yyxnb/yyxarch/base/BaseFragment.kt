@@ -251,7 +251,7 @@ abstract class BaseFragment : Fragment() {
      * @param targetFragment fragment
      * @param result   跳转所携带的信息
      */
-    open fun <T : BaseFragment> startContainerActivity(targetFragment: T) {
+    fun <T : BaseFragment> startContainerActivity(targetFragment: T) {
         startContainerActivity(targetFragment, null)
         val intent = Intent(mActivity, ContainerActivity::class.java)
         intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
@@ -264,7 +264,7 @@ abstract class BaseFragment : Fragment() {
      * @param targetFragment fragment
      * @param result        跳转所携带的信息
      */
-    open fun <T : BaseFragment> startContainerActivity(targetFragment: T, result: Bundle?) {
+    fun <T : BaseFragment> startContainerActivity(targetFragment: T, result: Bundle?) {
         val intent = Intent(mActivity, ContainerActivity::class.java)
         intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
         if (result != null) {
@@ -286,7 +286,7 @@ abstract class BaseFragment : Fragment() {
      *
      * @param resultCode result code, one of [RESULT_OK], [RESULT_CANCELED].
      */
-    open fun setResult(resultCode: Int) {
+    fun setResult(resultCode: Int) {
         mStackEntity.resultCode = resultCode
     }
 
@@ -296,7 +296,7 @@ abstract class BaseFragment : Fragment() {
      * @param resultCode resultCode, use [].
      * @param result     跳转所携带的信息
      */
-    open fun setResult(resultCode: Int, @NonNull result: Bundle) {
+    fun setResult(resultCode: Int, @NonNull result: Bundle) {
         mStackEntity.resultCode = resultCode
         mStackEntity.result = result
     }
@@ -304,7 +304,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * Get the resultCode for requestCode.
      */
-    open fun setStackEntity(@NonNull stackEntity: BaseActivity.FragmentStackEntity) {
+    fun setStackEntity(@NonNull stackEntity: BaseActivity.FragmentStackEntity) {
         this.mStackEntity = stackEntity
     }
 
@@ -322,7 +322,7 @@ abstract class BaseFragment : Fragment() {
      * @param clazz fragment class.
      * @param <T>   [BaseFragment].
     </T> */
-    open fun <T : BaseFragment> startFragment(clazz: Class<T>) {
+    fun <T : BaseFragment> startFragment(clazz: Class<T>) {
         try {
             val targetFragment = clazz.newInstance()
             startFragment<BaseFragment>(targetFragment, true, REQUEST_CODE_INVALID)
@@ -339,7 +339,7 @@ abstract class BaseFragment : Fragment() {
      * @param stickyStack 加入回退栈.
      * @param <T>         [BaseFragment].
     </T> */
-    open fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
+    fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
         try {
             val targetFragment = clazz.newInstance()
             startFragment<BaseFragment>(targetFragment, stickyStack, REQUEST_CODE_INVALID)
@@ -355,7 +355,7 @@ abstract class BaseFragment : Fragment() {
      * @param targetFragment fragment to display.
      * @param <T>            [BaseFragment].
     </T> */
-    open fun <T : BaseFragment> startFragment(targetFragment: T) {
+    fun <T : BaseFragment> startFragment(targetFragment: T) {
         startFragment(targetFragment, true, REQUEST_CODE_INVALID)
     }
 
@@ -366,7 +366,7 @@ abstract class BaseFragment : Fragment() {
      * @param stickyStack    sticky back stack.
      * @param <T>            [BaseFragment].
     </T> */
-    open fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
+    fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
         startFragment(targetFragment, stickyStack, REQUEST_CODE_INVALID)
     }
 
@@ -378,7 +378,7 @@ abstract class BaseFragment : Fragment() {
      * @param <T>         [BaseFragment].
     </T> */
     @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
-    open fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
+    fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
         startFragmentForResult(clazz, requestCode)
     }
 
@@ -390,7 +390,7 @@ abstract class BaseFragment : Fragment() {
      * @param <T>            [BaseFragment].
     </T> */
     @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
-    open fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
+    fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
         startFragmentForResult(targetFragment, requestCode)
     }
 
@@ -401,7 +401,7 @@ abstract class BaseFragment : Fragment() {
      * @param requestCode requestCode.
      * @param <T>         [BaseFragment].
     </T> */
-    open fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
+    fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
         try {
             val targetFragment = clazz.newInstance()
             startFragment<BaseFragment>(targetFragment, true, requestCode)
@@ -418,7 +418,7 @@ abstract class BaseFragment : Fragment() {
      * @param requestCode    requestCode.
      * @param <T>            [BaseFragment].
     </T> */
-    open fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
+    fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
         startFragment(targetFragment, true, requestCode)
     }
 
