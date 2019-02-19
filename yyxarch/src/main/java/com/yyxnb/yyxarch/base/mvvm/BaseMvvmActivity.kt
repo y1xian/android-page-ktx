@@ -11,14 +11,12 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
     /**
      * ViewModel
      */
-    protected var mViewModel: VM? = null
+    protected lateinit var mViewModel: VM
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
-        if (mViewModel != null) {
-            lifecycle.addObserver(mViewModel!!)
-        }
+        lifecycle.addObserver(mViewModel)
     }
 
     /**
@@ -34,9 +32,7 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         //移除LifecycleObserver
-        if (mViewModel != null) {
-            lifecycle.removeObserver(mViewModel!!)
-        }
-        this.mViewModel = null
+        lifecycle.removeObserver(mViewModel)
+        this.mViewModel to null
     }
 }
