@@ -12,7 +12,7 @@ import retrofit2.http.Url
  * 文件上传
  */
 
-interface UploadFileApi {
+interface IUploadFileApi {
 
     /**
      * 上传

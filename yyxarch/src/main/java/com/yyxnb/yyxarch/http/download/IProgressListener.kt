@@ -4,7 +4,7 @@ package com.yyxnb.yyxarch.http.download
  * 下载监听
  */
 
-interface ProgressListener {
+interface IProgressListener {
 
     /**
      * 载进度监听

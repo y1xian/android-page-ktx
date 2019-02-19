@@ -3,7 +3,7 @@ package com.yyxnb.yyxarch.http.interceptor
 
 import android.text.TextUtils
 import com.tencent.mmkv.MMKV
-import com.yyxnb.yyxarch.http.constant.SPKeys
+import com.yyxnb.yyxarch.interfaces.ISPKeys
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -27,12 +27,12 @@ class ReceivedCookiesInterceptor : Interceptor {
             for (header in originalResponse.headers("Set-Cookie")) {
                 cookies.add(header)
             }
-            MMKV.defaultMMKV().encode(SPKeys.COOKIE, cookies)
+            MMKV.defaultMMKV().encode(ISPKeys.COOKIE, cookies)
         }
         //获取服务器相应时间--用于计算倒计时的时间差
         if (!TextUtils.isEmpty(originalResponse.header("Date"))) {
             val date = dateToStamp(originalResponse.header("Date"))
-            MMKV.defaultMMKV().encode(SPKeys.DATE, date)
+            MMKV.defaultMMKV().encode(ISPKeys.DATE, date)
         }
 
         return originalResponse

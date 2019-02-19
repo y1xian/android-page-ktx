@@ -104,7 +104,7 @@ public abstract class DownloadObserver extends BaseDownloadObserver {
                     @Override
                     public void accept(@NonNull ResponseBody responseBody) throws Exception {
                         try {
-                            new DownloadManager().saveFile(responseBody, fileName, new ProgressListener() {
+                            new DownloadManager().saveFile(responseBody, fileName, new IProgressListener() {
                                 @Override
                                 public void onResponseProgress(final long bytesRead, final long contentLength, final int progress, final boolean done, final String filePath) {
                                     Observable

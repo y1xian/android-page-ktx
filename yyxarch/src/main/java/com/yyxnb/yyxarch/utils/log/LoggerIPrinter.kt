@@ -2,6 +2,7 @@ package com.yyxnb.yyxarch.utils.log
 
 import android.text.TextUtils
 import android.util.Log
+import com.yyxnb.yyxarch.interfaces.IPrinter
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.StringReader
@@ -12,7 +13,7 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
- class LoggerPrinter : Printer {
+ class LoggerIPrinter : IPrinter {
 
     private val logStr = StringBuilder()
 

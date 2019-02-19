@@ -23,11 +23,11 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
     private MutableLiveData<Map<String,String>> reqTeam2 = new MutableLiveData<>();
 
     public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam(){
-        return Transformations.switchMap(reqTeam, input -> getMRepository().getTeam(input));
+        return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
     }
 
     public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam2(){
-        return Transformations.switchMap(reqTeam2, input -> getMRepository().getTeam2(input));
+        return Transformations.switchMap(reqTeam2, input -> mRepository.getTeam2(input));
     }
 
 

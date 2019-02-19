@@ -10,7 +10,7 @@ import retrofit2.http.Url
  * 下载文件
  */
 
-interface DownloadApi {
+interface IDownloadApi {
 
 
     /**

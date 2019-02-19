@@ -48,7 +48,7 @@ class DownloadRetrofit {
             return DownloadRetrofit
                     .getInstance()
                     .retrofit
-                    .create(DownloadApi::class.java)
+                    .create(IDownloadApi::class.java)
                     .downloadFile(fileUrl)
                     .compose(RxTransformerUtil.switchSchedulers())
         }

@@ -17,15 +17,13 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
     /**
      * ViewModel
      */
-    protected var mViewModel: VM? = null
+    protected lateinit var mViewModel: VM
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
-        if (null != mViewModel) {
-            lifecycle.addObserver(mViewModel!!)
-            initViewObservable()
-        }
+        lifecycle.addObserver(mViewModel)
+        initViewObservable()
     }
 
     /**
@@ -41,9 +39,7 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         //移除LifecycleObserver
-        if (mViewModel != null) {
-            lifecycle.removeObserver(mViewModel!!)
-        }
-        this.mViewModel = null
+        lifecycle.removeObserver(mViewModel)
+        this.mViewModel to null
     }
 }

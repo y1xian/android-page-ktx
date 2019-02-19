@@ -2,7 +2,7 @@ package com.yyxnb.yyxarch.utils.log
 
 object LogUtils {
 
-    private val printer = LoggerPrinter()
+    private val printer = LoggerIPrinter()
 
     val formatLog: String
         get() = printer.formatLog

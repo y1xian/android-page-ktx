@@ -1,10 +1,10 @@
-package com.yyxnb.yyxarch.http.constant
+package com.yyxnb.yyxarch.interfaces
 
 /**
  * 存放SharedPreferences文件的所有Key值
  */
 
-interface SPKeys {
+interface ISPKeys {
     companion object {
 
         /**

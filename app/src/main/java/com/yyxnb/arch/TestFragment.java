@@ -35,8 +35,8 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
         tvShow = fv(R.id.tvShow);
 
 
-        getMViewModel().reqTeam();
-        getMViewModel().reqTeam2();
+        mViewModel.reqTeam();
+        mViewModel.reqTeam2();
 //        getMViewModel().reqTeam();
 //        getMViewModel().reqTeam();
 //        getMViewModel().reqTeam();
@@ -151,7 +151,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //            }
 //        });
 
-        getMViewModel().getTeam().observe(this, baseDataLcee -> {
+        mViewModel.getTeam().observe(this, baseDataLcee -> {
             switch (baseDataLcee.getStatus()) {
                 case LceeStatus.Content:
                     tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
@@ -169,7 +169,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
             }
         });
 
-        getMViewModel().getTeam2().observe(this, baseDataLcee -> {
+        mViewModel.getTeam2().observe(this, baseDataLcee -> {
             switch (baseDataLcee.getStatus()) {
                 case LceeStatus.Content:
                     tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());

@@ -25,7 +25,7 @@ public class DownloadManager {
      * @return 返回
      * @throws IOException
      */
-    public File saveFile(ResponseBody response, final String destFileName, ProgressListener progressListener) throws IOException {
+    public File saveFile(ResponseBody response, final String destFileName, IProgressListener IProgressListener) throws IOException {
 
         String destFileDir = RxHttpUtils.Companion.getContext().getExternalFilesDir(null) + File.separator;
 
@@ -51,7 +51,7 @@ public class DownloadManager {
 
                 final long finalSum = sum;
 
-                progressListener.onResponseProgress(finalSum, contentLength, (int) ((finalSum * 1.0f / contentLength) * 100), finalSum == contentLength, file.getAbsolutePath());
+                IProgressListener.onResponseProgress(finalSum, contentLength, (int) ((finalSum * 1.0f / contentLength) * 100), finalSum == contentLength, file.getAbsolutePath());
             }
             fos.flush();
 

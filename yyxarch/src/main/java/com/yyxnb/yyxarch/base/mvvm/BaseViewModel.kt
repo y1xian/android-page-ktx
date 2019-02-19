@@ -9,24 +9,25 @@ import com.yyxnb.yyxarch.base.BaseRepository
 
 
 /**
- * Description: BaseViewModel
+ * 逻辑处理
  *
+ * 负责数据处理和View层与Model层的交互。
+ * ViewModel通过数据仓库Repository获取数据来源，处理来自View的事件命令，同时更新数据。
  * @author : yyx
  * @date ：2018/6/13
  */
-open class BaseViewModel<T : BaseRepository<*>>(application: Application) : AndroidViewModel(application), DefaultLifecycleObserver {
+abstract class BaseViewModel<T : BaseRepository<*>>(application: Application) : AndroidViewModel(application), DefaultLifecycleObserver {
 
-    protected var mRepository: T? = null
-
-    init {
-        mRepository = AppUtils.getNewInstance<T>(this, 0)
-    }
+    protected lateinit var mRepository: T
 
     override fun onCreate(owner: LifecycleOwner) {
-        owner.lifecycle.addObserver(mRepository!!)
+        super.onCreate(owner)
+        mRepository = AppUtils.getNewInstance<T>(this, 0)!!
+        owner.lifecycle.addObserver(mRepository)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        owner.lifecycle.removeObserver(mRepository!!)
+        super.onDestroy(owner)
+        owner.lifecycle.removeObserver(mRepository)
     }
 }

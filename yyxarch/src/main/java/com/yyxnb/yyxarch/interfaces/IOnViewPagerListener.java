@@ -1,8 +1,8 @@
-package com.yyxnb.yyxarch.utils.layoutmanager;
+package com.yyxnb.yyxarch.interfaces;
 
 import android.view.View;
 
-public interface OnViewPagerListener {
+public interface IOnViewPagerListener {
     /**
      * 初始化
      */

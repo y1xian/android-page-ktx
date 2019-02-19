@@ -105,7 +105,7 @@ class UploadRetrofit {
             return UploadRetrofit
                     .getInstance()
                     .retrofit
-                    .create(UploadFileApi::class.java)
+                    .create(IUploadFileApi::class.java)
                     .uploadImgs(uploadUrl, parts)
         }
     }

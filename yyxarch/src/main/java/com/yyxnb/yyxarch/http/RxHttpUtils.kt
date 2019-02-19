@@ -5,9 +5,9 @@ import android.app.Application
 import android.content.Context
 import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.http.client.GlobalRxHttp
-import com.yyxnb.yyxarch.http.constant.SPKeys
 import com.yyxnb.yyxarch.http.download.DownloadRetrofit
 import com.yyxnb.yyxarch.http.upload.UploadRetrofit
+import com.yyxnb.yyxarch.interfaces.ISPKeys
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -130,7 +130,7 @@ class RxHttpUtils {
          * @return HashSet
          */
         val cookie: HashSet<String>
-            get() = MMKV.defaultMMKV().decodeStringSet(SPKeys.COOKIE, HashSet<String>()) as HashSet<String>
+            get() = MMKV.defaultMMKV().decodeStringSet(ISPKeys.COOKIE, HashSet<String>()) as HashSet<String>
 
         /**
          * 获取disposable 在onDestroy方法中取消订阅disposable.dispose()

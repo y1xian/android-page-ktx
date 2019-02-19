@@ -245,10 +245,8 @@ abstract class BaseActivity : AppCompatActivity() {
         val fragmentTag = thatFragment.javaClass.canonicalName!! + mAtomicInteger.incrementAndGet()
 
         if (initLayoutResID() == 0) {
-
             fragmentTransaction.add(fragmentContainer!!.id, thatFragment, fragmentTag)
         } else {
-
             fragmentTransaction.add(initLayoutResID(), thatFragment, fragmentTag)
         }
 

@@ -274,7 +274,6 @@ abstract class BaseFragment : Fragment() {
     }
 
 
-
     // ------------------------- Stack ------------------------- //
 
     /**

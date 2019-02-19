@@ -1,6 +1,8 @@
-package com.yyxnb.yyxarch.utils.log
+package com.yyxnb.yyxarch.interfaces
 
-interface Printer {
+import com.yyxnb.yyxarch.utils.log.LogConfig
+
+interface IPrinter {
 
     val formatLog: String
 

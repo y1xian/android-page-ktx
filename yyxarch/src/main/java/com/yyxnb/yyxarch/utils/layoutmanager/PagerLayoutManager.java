@@ -6,6 +6,8 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.yyxnb.yyxarch.interfaces.IOnViewPagerListener;
+
 /**
  * Description: 抖音列表
  *
@@ -14,7 +16,7 @@ import android.view.View;
  */
 public class PagerLayoutManager extends LinearLayoutManager {
     private PagerSnapHelper mPagerSnapHelper;
-    private OnViewPagerListener mOnViewPagerListener;
+    private IOnViewPagerListener mIOnViewPagerListener;
     private RecyclerView mRecyclerView;
     private int mDrift;//位移，用来判断移动方向
     private boolean isSelected;
@@ -61,8 +63,8 @@ public class PagerLayoutManager extends LinearLayoutManager {
                 View viewIdle = mPagerSnapHelper.findSnapView(this);
                 if (viewIdle != null) {
                     int positionIdle = getPosition(viewIdle);
-                    if (mOnViewPagerListener != null && getChildCount() == 1) {
-                        mOnViewPagerListener.onPageSelected(positionIdle, isSelected, positionIdle == getItemCount() - 1, viewIdle);
+                    if (mIOnViewPagerListener != null && getChildCount() == 1) {
+                        mIOnViewPagerListener.onPageSelected(positionIdle, isSelected, positionIdle == getItemCount() - 1, viewIdle);
                     }
                 }
                 break;
@@ -103,8 +105,8 @@ public class PagerLayoutManager extends LinearLayoutManager {
      *
      * @param listener
      */
-    public void setOnViewPagerListener(OnViewPagerListener listener) {
-        this.mOnViewPagerListener = listener;
+    public void setOnViewPagerListener(IOnViewPagerListener listener) {
+        this.mIOnViewPagerListener = listener;
     }
 
     private RecyclerView.OnChildAttachStateChangeListener mChildAttachStateChangeListener = new RecyclerView.OnChildAttachStateChangeListener() {
@@ -114,21 +116,21 @@ public class PagerLayoutManager extends LinearLayoutManager {
          */
         @Override
         public void onChildViewAttachedToWindow(View view) {
-            if (mOnViewPagerListener != null && getChildCount() == 1) {
-                mOnViewPagerListener.onInitComplete(view);
+            if (mIOnViewPagerListener != null && getChildCount() == 1) {
+                mIOnViewPagerListener.onInitComplete(view);
             }
 
             if (mDrift > 0) {
 //            向上
-                if (mOnViewPagerListener != null) {
+                if (mIOnViewPagerListener != null) {
                     isSelected = true;
-//                    mOnViewPagerListener.onPageSelected(getPosition(android.support.v4.view), true,android.support.v4.view);
+//                    mIOnViewPagerListener.onPageSelected(getPosition(android.support.v4.view), true,android.support.v4.view);
                 }
 
             } else {
-                if (mOnViewPagerListener != null) {
+                if (mIOnViewPagerListener != null) {
                     isSelected = false;
-//                    mOnViewPagerListener.onPageSelected(getPosition(android.support.v4.view), false,android.support.v4.view);
+//                    mIOnViewPagerListener.onPageSelected(getPosition(android.support.v4.view), false,android.support.v4.view);
                 }
             }
         }
@@ -140,12 +142,12 @@ public class PagerLayoutManager extends LinearLayoutManager {
         @Override
         public void onChildViewDetachedFromWindow(View view) {
             if (mDrift >= 0) {
-                if (mOnViewPagerListener != null) {
-                    mOnViewPagerListener.onPageRelease(true, getPosition(view), view);
+                if (mIOnViewPagerListener != null) {
+                    mIOnViewPagerListener.onPageRelease(true, getPosition(view), view);
                 }
             } else {
-                if (mOnViewPagerListener != null) {
-                    mOnViewPagerListener.onPageRelease(false, getPosition(view), view);
+                if (mIOnViewPagerListener != null) {
+                    mIOnViewPagerListener.onPageRelease(false, getPosition(view), view);
                 }
             }
 
