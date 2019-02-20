@@ -2,8 +2,8 @@ package com.yyx.yyxbase.livedata
 
 import android.arch.lifecycle.LiveData
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
@@ -19,16 +19,15 @@ internal class DeferredLiveData<T>(private val deferred: Deferred<T>) : LiveData
 
         runBlocking {
 
-            coroutineScope{
+            coroutineScope {
                 val time = measureTimeMillis {
-                async{
-//                    delay(100)
-                    try {
-                        postValue(deferred.await())
-                    }catch (t:Throwable){
+                    launch {
+                        try {
+                            postValue(deferred.await())
+                        } catch (t: Throwable) {
 
+                        }
                     }
-                }
                 }
                 println("Completed in $time ms")
 

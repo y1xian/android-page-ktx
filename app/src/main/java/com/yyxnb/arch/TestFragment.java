@@ -155,16 +155,16 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
             switch (baseDataLcee.getStatus()) {
                 case LceeStatus.Content:
                     tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
-                    LogUtils.INSTANCE.i("Content " + LceeStatus.Content);
+                    LogUtils.INSTANCE.i("1 Content " + LceeStatus.Content);
                     break;
                 case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("Empty");
+                    LogUtils.INSTANCE.i("1 Empty");
                     break;
                 case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("Error");
+                    LogUtils.INSTANCE.i("1 Error");
                     break;
                 case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("Loading " + LceeStatus.Loading);
+                    LogUtils.INSTANCE.e("1 Loading " + LceeStatus.Loading);
                     break;
             }
         });

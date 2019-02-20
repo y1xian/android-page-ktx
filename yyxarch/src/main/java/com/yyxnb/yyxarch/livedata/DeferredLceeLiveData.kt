@@ -26,6 +26,8 @@ internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : Live
                     launch {
                         try {
 
+                            postValue(Lcee.loading())
+
                             val value = deferred.await()
 
                             if (value == null) {
@@ -42,7 +44,7 @@ internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : Live
                 println("Completed in $time ms")
 
             }
-            postValue(Lcee.loading())
+
         }
 
     }
