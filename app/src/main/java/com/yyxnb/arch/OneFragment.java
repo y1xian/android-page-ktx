@@ -58,6 +58,11 @@ public class OneFragment extends BaseFragment {
     }
 
     @Override
+    public void onVisible() {
+        super.onVisible();
+    }
+
+    @Override
     public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
         super.onFragmentResult(requestCode, resultCode, result);
     }

@@ -17,9 +17,9 @@ public interface api {
      */
     @FormUrlEncoded
     @POST("searchPoetry")
-    public abstract Observable<BaseDatas<List<TestData>>> getTeam(@FieldMap Map<String, String> map);
+    Observable<BaseDatas<List<TestData>>> getTeam(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("searchPoetry")
-    public abstract Deferred<BaseDatas<List<TestData>>> getTeam2(@FieldMap Map<String, String> map);
+    Deferred<BaseDatas<List<TestData>>> getTeam2(@FieldMap Map<String, String> map);
 }
