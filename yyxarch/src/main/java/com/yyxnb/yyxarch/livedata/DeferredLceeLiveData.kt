@@ -3,10 +3,7 @@ package com.yyx.yyxbase.livedata
 import android.arch.lifecycle.LiveData
 import com.yyxnb.yyxarch.bean.Lcee
 import com.yyxnb.yyxarch.http.exception.ApiException
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
 
@@ -17,39 +14,37 @@ import kotlin.system.measureTimeMillis
 
 internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : LiveData<Lcee<T>>() {
 
+    lateinit var job: Job
+
     override fun onActive() {
         super.onActive()
-        runBlocking {
-            coroutineScope {
 
-                val time = measureTimeMillis {
-                    launch {
-                        try {
+        job = GlobalScope.launch(Dispatchers.Main) {
+            val time = measureTimeMillis {
 
-                            postValue(Lcee.loading())
+                try {
 
-                            val value = deferred.await()
+                    postValue(Lcee.loading())
 
-                            if (value == null) {
-                                postValue(Lcee.empty())
-                            } else {
-                                postValue(Lcee.content(value))
-                            }
-                        } catch (t: Throwable) {
-                            postValue(Lcee.error(ApiException.handleException(t).message!!))
-                        }
+                    val value = deferred.await()
+
+                    if (value == null) {
+                        postValue(Lcee.empty())
+                    } else {
+                        postValue(Lcee.content(value))
                     }
-
+                } catch (t: Throwable) {
+                    postValue(Lcee.error(ApiException.handleException(t).message!!))
                 }
-                println("Completed in $time ms")
 
             }
-
+            println("Completed in $time ms")
         }
 
     }
 
     override fun onInactive() {
         super.onInactive()
+        job.cancel()
     }
 }

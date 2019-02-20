@@ -2,10 +2,14 @@ package com.yyxnb.arch;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
 import com.yyxnb.yyxarch.utils.ToastUtils;
@@ -17,6 +21,7 @@ import com.yyxnb.yyxarch.utils.log.LogUtils;
  */
 public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
+    private SmartRefreshLayout mSmartRefreshLayout;
     private TextView tvShow;
     private boolean isFirst = true;
 
@@ -33,6 +38,9 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
         LogUtils.INSTANCE.w("initView");
 
         tvShow = fv(R.id.tvShow);
+        mSmartRefreshLayout = fv(R.id.mSmartRefreshLayout);
+
+
 
 
         mViewModel.reqTeam();
@@ -57,6 +65,21 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     @Override
     public void initViewData() {
         super.initViewData();
+
+        mSmartRefreshLayout.setEnableLoadMore(false);
+
+        mSmartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mViewModel.reqTeam();
+                mViewModel.reqTeam2();
+            }
+        });
 
         LogUtils.INSTANCE.w("initViewData");
 
@@ -155,6 +178,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
             switch (baseDataLcee.getStatus()) {
                 case LceeStatus.Content:
                     tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    mSmartRefreshLayout.finishRefresh();
                     LogUtils.INSTANCE.i("1 Content " + LceeStatus.Content);
                     break;
                 case LceeStatus.Empty:
@@ -174,6 +198,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
                 case LceeStatus.Content:
                     tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
                     LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
+                    mSmartRefreshLayout.finishRefresh();
                     break;
                 case LceeStatus.Empty:
                     LogUtils.INSTANCE.i("2 Empty");

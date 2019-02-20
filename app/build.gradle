@@ -60,6 +60,8 @@ dependencies {
 //    api(name: 'yyxarch-release', ext: 'aar')
 //    implementation (name:'yyxarch-release',ext:'aar')
 
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-7'
+
     debugImplementation libs.leak_canary_debug
     releaseImplementation libs.leak_canary_release
     // Optional, if you use support library fragments:
