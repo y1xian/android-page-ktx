@@ -14,6 +14,6 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.y1xian:arch-kt:1.0.7'
+    implementation 'com.github.y1xian:arch-kt:1.0.8'
 }
 ```

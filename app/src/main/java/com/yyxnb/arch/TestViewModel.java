@@ -34,12 +34,12 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
     public void reqTeam(){
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "李白");
-        reqTeam.setValue(map);
+        reqTeam.postValue(map);
     }
     public void reqTeam2(){
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "杜甫");
-        reqTeam2.setValue(map);
+        reqTeam2.postValue(map);
     }
 
 }

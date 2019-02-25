@@ -20,9 +20,12 @@ abstract class BaseViewModel<T : BaseRepository<*>>(application: Application) : 
 
     protected lateinit var mRepository: T
 
+    init {
+        mRepository = AppUtils.getNewInstance<T>(this, 0)!!
+    }
+
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
-        mRepository = AppUtils.getNewInstance<T>(this, 0)!!
         owner.lifecycle.addObserver(mRepository)
     }
 

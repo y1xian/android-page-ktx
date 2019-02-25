@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
+import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.utils.ScreenUtils;
 import com.yyxnb.yyxarch.utils.dialog.BaseSheetDialog;
+import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import me.bakumon.statuslayoutmanager.library.StatusLayoutManager;
 
@@ -36,34 +38,34 @@ public class TestDialog extends BaseSheetDialog<TestDialog> {
         StatusLayoutManager statusLayoutManager = new StatusLayoutManager.Builder(tvShow)
                 .setDefaultLayoutsBackgroundColor(Color.TRANSPARENT)
                 .build();
-        statusLayoutManager.showLoadingLayout();
+//        statusLayoutManager.showLoadingLayout();
 //        mViewModel.getTeam().observeForever(baseDataLcee -> {
 //            if (baseDataLcee != null){
 //                tvShow.setText(baseDataLcee.getResult().get(0).getContent());
 //                statusLayoutManager.showSuccessLayout();
 //            }
 //        });
-//        mViewModel.getTeam().observeForever(baseDataLcee -> {
-//            switch (baseDataLcee.getStatus()) {
-//                case LceeStatus.Content:
-//                    statusLayoutManager.showSuccessLayout();
-//                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
-//                    LogUtils.i("Content " + LceeStatus.Content);
-//                    break;
-//                case LceeStatus.Empty:
-//                    statusLayoutManager.showEmptyLayout();
-//                    LogUtils.i("Empty");
-//                    break;
-//                case LceeStatus.Error:
-//                    statusLayoutManager.showErrorLayout();
-//                    LogUtils.i("Error");
-//                    break;
-//                case LceeStatus.Loading:
-//                    statusLayoutManager.showLoadingLayout();
-//                    LogUtils.i("Loading " + LceeStatus.Loading);
-//                    break;
-//            }
-//        });
+        mViewModel.getTeam().observeForever(baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+                    statusLayoutManager.showSuccessLayout();
+                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("Content " + LceeStatus.Content);
+                    break;
+                case LceeStatus.Empty:
+                    statusLayoutManager.showEmptyLayout();
+                    LogUtils.INSTANCE.i("Empty");
+                    break;
+                case LceeStatus.Error:
+                    statusLayoutManager.showErrorLayout();
+                    LogUtils.INSTANCE.i("Error");
+                    break;
+                case LceeStatus.Loading:
+                    statusLayoutManager.showLoadingLayout();
+                    LogUtils.INSTANCE.i("Loading " + LceeStatus.Loading);
+                    break;
+            }
+        });
 
     }
 }

@@ -1,7 +1,6 @@
 package com.yyxnb.yyxarch.base
 
 import android.arch.lifecycle.DefaultLifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.http.RxHttpUtils
 
@@ -19,8 +18,7 @@ abstract class BaseRepository<T : Any> : DefaultLifecycleObserver {
 
     protected lateinit var mApi: T
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
         mApi = initApiServer(AppUtils.getInstance<Class<T>>(this, 0)!!)
     }
 
