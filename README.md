@@ -14,6 +14,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.y1xian:arch-kt:1.0.8'
+    //选择最新版本
+    implementation 'com.github.y1xian:arch-kt:+'
 }
 ```
