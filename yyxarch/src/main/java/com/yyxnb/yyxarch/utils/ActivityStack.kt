@@ -8,7 +8,9 @@ import java.util.*
  * 应用程序Activity管理类：用于Activity管理和应用程序退出
  * @author yyx
  */
-class ActivityStack private constructor() {
+object ActivityStack {
+
+    private var activityStack: Stack<Activity>? = null
 
     /**
      * 获取当前Activity栈中元素个数
@@ -32,7 +34,7 @@ class ActivityStack private constructor() {
     fun topActivity(): Activity? {
         if (activityStack == null) {
             throw NullPointerException(
-                    "Activity stack is Null,your Activity must extend YActivity")
+                    "Activity stack is Null,your Activity must extend BaseActivity")
         }
         return if (activityStack!!.isEmpty()) {
             null
@@ -129,8 +131,5 @@ class ActivityStack private constructor() {
 
     }
 
-    companion object {
-        private var activityStack: Stack<Activity>? = null
-        val instance = ActivityStack()
-    }
+
 }

@@ -23,7 +23,6 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
         super.initView(savedInstanceState)
         mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
-        initViewObservable()
     }
 
     /**

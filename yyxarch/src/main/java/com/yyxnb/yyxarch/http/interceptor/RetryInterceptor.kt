@@ -59,13 +59,8 @@ class RetryInterceptor internal constructor(builder: Builder) : Interceptor {
     }
 
     class Builder {
-        var executionCount: Int = 0
-        var retryInterval: Long = 0
-
-        init {
-            executionCount = 3
-            retryInterval = 2000
-        }
+        var executionCount: Int = 3
+        var retryInterval: Long = 2000
 
         fun executionCount(executionCount: Int): RetryInterceptor.Builder {
             this.executionCount = executionCount

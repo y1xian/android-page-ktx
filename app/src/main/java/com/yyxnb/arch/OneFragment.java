@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.yyxnb.yyxarch.base.BaseFragment;
+import com.yyxnb.yyxarch.utils.ActivityStack;
+import com.yyxnb.yyxarch.utils.ToastUtils;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +34,7 @@ public class OneFragment extends BaseFragment {
             bundle.putString("hehe", "呵呵哒");
             startFragmentForResult(fragment(TwoFragment.class,bundle),0x11);
 //            startFragment(TwoFragment.class);
+            ToastUtils.INSTANCE.normal( ""+ ActivityStack.INSTANCE.topActivity());
         });
 
         msg = getArguments().getString("msg");
@@ -54,6 +57,8 @@ public class OneFragment extends BaseFragment {
 //                        }
 //                    }
 //                });
+
+//        LogUtils.INSTANCE.w(" " + NetworkUtils.INSTANCE.ping("www.baidu.com",3));
 
     }
 

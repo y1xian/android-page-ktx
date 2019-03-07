@@ -40,7 +40,7 @@ abstract class BaseFragment : Fragment() {
     private val REQUEST_CODE_INVALID = BaseActivity.REQUEST_CODE_INVALID
 
     init {
-        lifecycle.addObserver(Java8Observer())
+        lifecycle.addObserver(Java8Observer)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +69,7 @@ abstract class BaseFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mIsPrepared = true
+        initViewObservable()
     }
 
 
@@ -92,6 +93,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * 如果是通过FragmentTransaction的show和hide的方法来控制显示，调用的是onHiddenChanged.
      * 若是初始就show的Fragment 为了触发该事件 需要先hide再show
+     * @param hidden  如果该Fragment对象已经被隐藏，那么它返回true。
      */
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -106,6 +108,7 @@ abstract class BaseFragment : Fragment() {
             onInVisible()
         }
     }
+
 
     /**
      * 被ViewPager移出的Fragment 下次显示时会从getArguments()中重新获取数据
@@ -175,6 +178,12 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        mIsVisible = false
+        onInVisible()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mIsVisible = false
@@ -188,7 +197,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * Destroy me.
+     * 返回.
      */
     fun finish() {
         mActivity.onBackPressed()
@@ -200,10 +209,10 @@ abstract class BaseFragment : Fragment() {
     /**
      * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
      *
-     * @param fragmentClass class of fragment.
-     * @param <T>           subclass of [BaseFragment].
+     * @param fragmentClass 目标 fragment.
+     * @param T          [BaseFragment].
      * @return new instance.
-    </T> */
+     */
     fun <T : BaseFragment> fragment(fragmentClass: Class<T>): T {
 
         return Fragment.instantiate(context, fragmentClass.canonicalName, null) as T
@@ -212,11 +221,11 @@ abstract class BaseFragment : Fragment() {
     /**
      * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
      *
-     * @param fragmentClass class of fragment.
+     * @param fragmentClass 目标fragment class.
      * @param bundle        argument.
-     * @param <T>           subclass of [BaseFragment].
+     * @param T           [BaseFragment].
      * @return new instance.
-    </T> */
+     */
     fun <T : BaseFragment> fragment(fragmentClass: Class<T>, bundle: Bundle): T {
 
         return Fragment.instantiate(context, fragmentClass.canonicalName, bundle) as T
@@ -224,9 +233,9 @@ abstract class BaseFragment : Fragment() {
 
 
     /**
-     * Start activity.
+     * 跳转 activity.
      *
-     * @param clazz class for activity.
+     * @param clazz 目标activity class.
      * @param <T>   [Activity].
     </T> */
     protected fun <T : Activity> startActivity(clazz: Class<T>) {
@@ -234,9 +243,9 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * 启动 activity 并 finish.
+     * 跳转 activity 并 finish.
      *
-     * @param clazz class for activity.
+     * @param clazz 目标activity class.
      * @param <T>   [Activity].
     </T> */
     protected fun <T : Activity> startActivityFinish(clazz: Class<T>) {
@@ -246,9 +255,9 @@ abstract class BaseFragment : Fragment() {
 
 
     /**
-     * 跳转容器页面
+     * 跳转容器页面.
      *
-     * @param targetFragment fragment
+     * @param targetFragment 目标fragment.
      * @param result   跳转所携带的信息
      */
     fun <T : BaseFragment> startContainerActivity(targetFragment: T) {
@@ -259,9 +268,9 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * 跳转容器页面
+     * 跳转容器页面.
      *
-     * @param targetFragment fragment
+     * @param targetFragment 目标fragment.
      * @param result        跳转所携带的信息
      */
     fun <T : BaseFragment> startContainerActivity(targetFragment: T, result: Bundle?) {
@@ -277,24 +286,32 @@ abstract class BaseFragment : Fragment() {
     // ------------------------- Stack ------------------------- //
 
     /**
-     * Stack info.
+     * 堆栈信息.
      */
     private lateinit var mStackEntity: BaseActivity.FragmentStackEntity
 
+
     /**
-     * Set result.
+     * 设置堆栈信息.
+     */
+    fun setStackEntity(@NonNull stackEntity: BaseActivity.FragmentStackEntity) {
+        this.mStackEntity = stackEntity
+    }
+
+    /**
+     * 设置结果码.
      *
-     * @param resultCode result code, one of [RESULT_OK], [RESULT_CANCELED].
+     * @param resultCode [RESULT_OK], [RESULT_CANCELED].
      */
     fun setResult(resultCode: Int) {
         mStackEntity.resultCode = resultCode
     }
 
     /**
-     * Set result.
+     * 设置结果码和回传结果.
      *
-     * @param resultCode resultCode, use [].
-     * @param result     跳转所携带的信息
+     * @param resultCode 结果码.
+     * @param result     跳转所携带的信息.
      */
     fun setResult(resultCode: Int, @NonNull result: Bundle) {
         mStackEntity.resultCode = resultCode
@@ -302,26 +319,19 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * Get the resultCode for requestCode.
-     */
-    fun setStackEntity(@NonNull stackEntity: BaseActivity.FragmentStackEntity) {
-        this.mStackEntity = stackEntity
-    }
-
-    /**
-     * You should override it.
+     * 处理返回结果.
      *
-     * @param resultCode resultCode.
-     * @param result     跳转所携带的信息
+     * @param resultCode 结果码.
+     * @param result     跳转所携带的信息.
      */
     open fun onFragmentResult(requestCode: Int, resultCode: Int, result: Bundle?) {}
 
     /**
      * 跳转 fragment.
      *
-     * @param clazz fragment class.
-     * @param <T>   [BaseFragment].
-    </T> */
+     * @param clazz 目标fragment class.
+     * @param T   [BaseFragment].
+     */
     fun <T : BaseFragment> startFragment(clazz: Class<T>) {
         try {
             val targetFragment = clazz.newInstance()
@@ -335,10 +345,10 @@ abstract class BaseFragment : Fragment() {
     /**
      * 跳转 fragment.
      *
-     * @param clazz       fragment class.
-     * @param stickyStack 加入回退栈.
-     * @param <T>         [BaseFragment].
-    </T> */
+     * @param clazz       目标fragment class.
+     * @param stickyStack 是否加入堆栈.
+     * @param T         [BaseFragment].
+     */
     fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
         try {
             val targetFragment = clazz.newInstance()
@@ -352,9 +362,9 @@ abstract class BaseFragment : Fragment() {
     /**
      * 跳转 fragment.
      *
-     * @param targetFragment fragment to display.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param T            [BaseFragment].
+     */
     fun <T : BaseFragment> startFragment(targetFragment: T) {
         startFragment(targetFragment, true, REQUEST_CODE_INVALID)
     }
@@ -362,45 +372,45 @@ abstract class BaseFragment : Fragment() {
     /**
      * 跳转 fragment.
      *
-     * @param targetFragment fragment to display.
-     * @param stickyStack    sticky back stack.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param stickyStack    是否加入堆栈.
+     * @param T            [BaseFragment].
+     */
     fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
         startFragment(targetFragment, stickyStack, REQUEST_CODE_INVALID)
     }
 
     /**
-     * Show a fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param clazz       fragment to display.
-     * @param requestCode requestCode.
-     * @param <T>         [BaseFragment].
-    </T> */
+     * @param clazz       目标fragment class.
+     * @param requestCode 请求码.
+     * @param T         [BaseFragment].
+     */
     @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
     fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
         startFragmentForResult(clazz, requestCode)
     }
 
     /**
-     * 跳转 fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param targetFragment fragment to display.
-     * @param requestCode    requestCode.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param requestCode    请求码.
+     * @param T            [BaseFragment].
+     */
     @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
     fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
         startFragmentForResult(targetFragment, requestCode)
     }
 
     /**
-     * 跳转 fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param clazz       fragment to display.
-     * @param requestCode requestCode.
-     * @param <T>         [BaseFragment].
-    </T> */
+     * @param clazz       目标fragment class.
+     * @param requestCode 请求码.
+     * @param T         [BaseFragment].
+     */
     fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
         try {
             val targetFragment = clazz.newInstance()
@@ -412,12 +422,12 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * 跳转 fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param targetFragment fragment to display.
-     * @param requestCode    requestCode.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param requestCode    请求码.
+     * @param T           [BaseFragment].
+     */
     fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
         startFragment(targetFragment, true, requestCode)
     }
@@ -425,11 +435,11 @@ abstract class BaseFragment : Fragment() {
     /**
      * 跳转 fragment.
      *
-     * @param targetFragment fragment to display.
-     * @param stickyStack    加入回退栈.
-     * @param requestCode    requestCode.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param stickyStack    是否加入堆栈.
+     * @param requestCode    请求码.
+     * @param T          [BaseFragment].
+     */
     private fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean, requestCode: Int) {
         (mActivity as? BaseActivity)?.startFragment(this, targetFragment, stickyStack, requestCode)
     }

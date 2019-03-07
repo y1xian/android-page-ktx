@@ -12,7 +12,7 @@ import android.view.animation.TranslateAnimation
  * @author : yyx
  * @date : 2018/7/16
  */
-class AnimationUtils {
+object AnimationUtils {
 
     //从下面显示隐藏view动画
     val hiddenBottomAction: TranslateAnimation
@@ -108,26 +108,24 @@ class AnimationUtils {
             return mAction
         }
 
-    companion object {
+    //从上面显示隐藏view动画
+    val hiddenTopAction: TranslateAnimation
+        get() {
+            val mAction = TranslateAnimation(Animation.RELATIVE_TO_SELF,
+                    0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                    -1.0f)
+            mAction.duration = 300
+            return mAction
+        }
+    val showTopAction: TranslateAnimation
+        get() {
+            val mAction = TranslateAnimation(Animation.RELATIVE_TO_SELF,
+                    0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF,
+                    0f)
+            mAction.duration = 300
+            return mAction
+        }
 
-        //从上面显示隐藏view动画
-        val hiddenTopAction: TranslateAnimation
-            get() {
-                val mAction = TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                        0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                        Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                        -1.0f)
-                mAction.duration = 300
-                return mAction
-            }
-        val showTopAction: TranslateAnimation
-            get() {
-                val mAction = TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                        0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                        Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF,
-                        0f)
-                mAction.duration = 300
-                return mAction
-            }
-    }
 }

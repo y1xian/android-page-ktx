@@ -12,7 +12,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
-import com.yyxnb.yyxarch.utils.ToastUtils;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 
@@ -62,6 +61,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
         LogUtils.INSTANCE.w("onInVisible");
     }
 
+
     @Override
     public void initViewData() {
         super.initViewData();
@@ -95,8 +95,6 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
                 startContainerActivity(OneFragment.newInstance(),bundle);
 //                startFragment(fragment(OneFragment.class));
-
-                ToastUtils.INSTANCE.normal("666");
             }
         });
 

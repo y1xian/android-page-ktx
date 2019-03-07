@@ -13,7 +13,7 @@ public class App extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         initRxHttp();
-        AppUtils.Companion.init(this);
+        AppUtils.INSTANCE.init(this);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

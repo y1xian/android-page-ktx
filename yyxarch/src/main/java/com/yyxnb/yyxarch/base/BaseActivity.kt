@@ -32,7 +32,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
         mFManager = supportFragmentManager
 
-        lifecycle.addObserver(Java8Observer())
+        lifecycle.addObserver(Java8Observer)
 
         if (initLayoutResID() == 0) {
             fragmentContainer = FrameLayout(this)
@@ -46,12 +46,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
         initViewObservable()
 
-        ActivityStack.instance.addActivity(this)
+        ActivityStack.addActivity(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        ActivityStack.instance.finishActivity(this)
+        ActivityStack.finishActivity(this)
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-    inner class FragmentStackEntity constructor() {
+    open class FragmentStackEntity constructor() {
         var isSticky = false
         var requestCode = REQUEST_CODE_INVALID
         var resultCode = Activity.RESULT_CANCELED
@@ -107,7 +107,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 跳转 fragment.
      *
-     * @param clazz fragment class.
+     * @param clazz 目标fragment class.
      */
     fun <T : BaseFragment> startFragment(clazz: Class<T>) {
         try {
@@ -122,8 +122,8 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 跳转 fragment.
      *
-     * @param clazz       fragment class.
-     * @param stickyStack sticky to back stack.
+     * @param clazz       目标fragment class.
+     * @param stickyStack 是否加入堆栈.
      */
     fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
         try {
@@ -138,9 +138,9 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 跳转 fragment.
      *
-     * @param targetFragment fragment to display.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param T            [BaseFragment].
+     */
     fun <T : BaseFragment> startFragment(targetFragment: T) {
         startFragment(null, targetFragment, true, REQUEST_CODE_INVALID)
     }
@@ -148,45 +148,45 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 跳转 fragment.
      *
-     * @param targetFragment fragment to display.
-     * @param stickyStack    sticky back stack.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param stickyStack    是否加入堆栈.
+     * @param T            [BaseFragment].
+     */
     fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
         startFragment(null, targetFragment, stickyStack, REQUEST_CODE_INVALID)
     }
 
     /**
-     * 跳转 fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param clazz       fragment to display.
+     * @param clazz       目标fragment.
      * @param requestCode requestCode.
-     * @param <T>         [BaseFragment].
-    </T> */
+     * @param T         [BaseFragment].
+     */
     @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
     fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
         startFragmentForResult(clazz, requestCode)
     }
 
     /**
-     * 跳转 fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param targetFragment fragment to display.
-     * @param requestCode    requestCode.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param requestCode    请求码.
+     * @param T           [BaseFragment].
+     */
     @Deprecated("use {@link #startFragmentForResult(BaseFragment, int)} instead.")
     fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
         startFragmentForResult(targetFragment, requestCode)
     }
 
     /**
-     * 跳转 fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param clazz       fragment to display.
-     * @param requestCode requestCode.
-     * @param <T>         [BaseFragment].
-    </T> */
+     * @param clazz       目标fragment.
+     * @param requestCode 请求码.
+     * @param T        [BaseFragment].
+     */
     fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
         if (requestCode == REQUEST_CODE_INVALID)
             throw IllegalArgumentException("The requestCode must be positive integer.")
@@ -200,12 +200,12 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     /**
-     * Show a fragment for result.
+     * 跳转 fragment 返回结果.
      *
-     * @param targetFragment fragment to display.
-     * @param requestCode    requestCode.
-     * @param <T>            [BaseFragment].
-    </T> */
+     * @param targetFragment 目标fragment.
+     * @param requestCode    请求码.
+     * @param T            [BaseFragment].
+     */
     fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
         if (requestCode == REQUEST_CODE_INVALID)
             throw IllegalArgumentException("The requestCode must be positive integer.")
@@ -215,12 +215,12 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 跳转 fragment.
      *
-     * @param thisFragment Now show fragment, can be null.
-     * @param thatFragment fragment to display.
-     * @param stickyStack  sticky back stack.
-     * @param requestCode  requestCode.
-     * @param <T>          [BaseFragment].
-    </T> */
+     * @param thisFragment 当前fragment.
+     * @param thatFragment 目标fragment.
+     * @param stickyStack  是否加入堆栈.
+     * @param requestCode  请求码.
+     * @param T          [BaseFragment].
+     */
     public fun <T : BaseFragment> startFragment(thisFragment: T?, thatFragment: T,
                                                 stickyStack: Boolean, requestCode: Int) {
         var fragmentTransaction = mFManager.beginTransaction()
@@ -263,7 +263,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     /**
-     * When the back off.
+     * 回退
      */
     protected fun onBackStackFragment(): Boolean {
         if (mFragmentStack.size > 1) {

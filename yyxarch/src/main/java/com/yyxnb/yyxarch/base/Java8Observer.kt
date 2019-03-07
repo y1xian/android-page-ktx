@@ -4,7 +4,7 @@ import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.util.Log
 
-class Java8Observer : DefaultLifecycleObserver {
+object Java8Observer : DefaultLifecycleObserver {
 
     override fun onCreate(owner: LifecycleOwner) {
         Log.d("---", "onCreate")
