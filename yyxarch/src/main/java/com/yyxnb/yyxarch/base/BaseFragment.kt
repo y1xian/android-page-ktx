@@ -204,6 +204,8 @@ abstract class BaseFragment : Fragment() {
     }
 
 
+    fun getIsVisible():Boolean = mIsVisible;
+
     //*******************跳转*************
 
     /**
