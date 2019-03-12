@@ -2,18 +2,20 @@ package com.yyxnb.yyxarch.base
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.PagerAdapter
+
 
 /**
- * Description:每页都是一个Fragment，并且所有的Fragment实例一直保存在Fragment manager中。所以它适用于少量固定的fragment，
- * 比如一组用于分页显示的标签。除了当Fragment不可见时，它的视图层（view hierarchy）有可能被销毁外，每页的Fragment都会被保存在内存中
+ * Description:每页都是一个Fragment，当Fragment不被需要时（比如不可见），整个Fragment都会被销毁，
+ * 除了saved state被保存外（保存下来的bundle用于恢复Fragment实例）。所以它适用于很多页的情况
  *
- * ps: FragmentPagerAdapter 继承自 PagerAdapter，该类内的每一个生成的 Fragment 都将保存在内存之中，因此适用于那些相对静态的页，数量也比较少的那种
- *
+ * ps: FragmentStatePagerAdapter 继承自 PagerAdapter,当页面离开视线后，就会被消除，释放其资源；而在页面需要显示时，
+ *  生成新的页面(就像 ListView 的实现一样)。这么实现的好处就是当拥有大量的页面时，不必在内存中占用大量的内存。
  * @author : yyx
  * @date ：2018/6/9
  */
-class BaseFragmentPagerAdapter : FragmentPagerAdapter {
+class BaseFragmentStatePagerAdapter : FragmentStatePagerAdapter {
 
     private var list: List<Fragment>? = null
     private lateinit var titles: Any
@@ -25,6 +27,7 @@ class BaseFragmentPagerAdapter : FragmentPagerAdapter {
     constructor(fm: FragmentManager, titles: Any, list: List<Fragment>) : super(fm) {
         this.list = list
         this.titles = titles
+        notifyDataSetChanged()
     }
 
     //设置每页的标题
@@ -48,5 +51,9 @@ class BaseFragmentPagerAdapter : FragmentPagerAdapter {
     //fragment的数量
     override fun getCount(): Int {
         return list!!.size
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return PagerAdapter.POSITION_NONE
     }
 }

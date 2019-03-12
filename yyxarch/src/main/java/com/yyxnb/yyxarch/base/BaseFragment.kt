@@ -56,7 +56,6 @@ abstract class BaseFragment : Fragment() {
         if (null == rootView) {
             mIsFirstVisible = true
             rootView = inflater.inflate(initLayoutResID(), container, false)
-            mIsPrepared = true
         }
         return rootView
     }
@@ -69,7 +68,6 @@ abstract class BaseFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mIsPrepared = true
-        initViewObservable()
     }
 
 
@@ -140,6 +138,7 @@ abstract class BaseFragment : Fragment() {
             return
         }
         initViewData()
+        initViewObservable()
         mIsFirstVisible = false
     }
 
