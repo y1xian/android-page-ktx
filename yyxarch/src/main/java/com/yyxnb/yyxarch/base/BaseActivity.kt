@@ -161,30 +161,6 @@ abstract class BaseActivity : AppCompatActivity() {
      * 跳转 fragment 返回结果.
      *
      * @param clazz       目标fragment.
-     * @param requestCode requestCode.
-     * @param T         [BaseFragment].
-     */
-    @Deprecated("use {@link #startFragmentForResult(Class, int)} instead.")
-    fun <T : BaseFragment> startFragmentForResquest(clazz: Class<T>, requestCode: Int) {
-        startFragmentForResult(clazz, requestCode)
-    }
-
-    /**
-     * 跳转 fragment 返回结果.
-     *
-     * @param targetFragment 目标fragment.
-     * @param requestCode    请求码.
-     * @param T           [BaseFragment].
-     */
-    @Deprecated("use {@link #startFragmentForResult(BaseFragment, int)} instead.")
-    fun <T : BaseFragment> startFragmentForResquest(targetFragment: T, requestCode: Int) {
-        startFragmentForResult(targetFragment, requestCode)
-    }
-
-    /**
-     * 跳转 fragment 返回结果.
-     *
-     * @param clazz       目标fragment.
      * @param requestCode 请求码.
      * @param T        [BaseFragment].
      */
