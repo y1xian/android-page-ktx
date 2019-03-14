@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import com.yyxnb.yyxarch.base.BaseFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
@@ -26,12 +28,22 @@ public class TwoFragment extends BaseFragment {
     }
 
     @Override
+    public void initVariables(@NotNull Bundle bundle) {
+        super.initVariables(bundle);
+        hehe = bundle.getString("hehe");
+    }
+
+    @Override
     public void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
 
-        hehe = getArguments().getString("hehe");
-
         tvShow = fv(R.id.tvShow);
+
+    }
+
+    @Override
+    public void initViewData() {
+        super.initViewData();
         tvShow.setOnClickListener(v -> {
 //            startFragment(OneFragment.newInstance());
             Bundle bundle = new Bundle();

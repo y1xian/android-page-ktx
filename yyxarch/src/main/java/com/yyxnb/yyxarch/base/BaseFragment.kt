@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.yyxnb.yyxarch.ContainerActivity
+import com.yyxnb.yyxarch.base.BaseActivity.FragmentStackEntity
 import com.yyxnb.yyxarch.common.AppConfig
 
 
@@ -36,11 +37,19 @@ abstract class BaseFragment : Fragment() {
     private var mIsPrepared: Boolean = false
     //是否第一次加载
     private var mIsFirstVisible = true
+    //是否ViewPage
+    private var mIsInViewPager: Boolean = false
 
     private val REQUEST_CODE_INVALID = BaseActivity.REQUEST_CODE_INVALID
 
     init {
         lifecycle.addObserver(Java8Observer)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mActivity = context as AppCompatActivity
+        mIsFirstVisible = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,9 +61,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         if (null == rootView) {
-            mIsFirstVisible = true
             rootView = inflater.inflate(initLayoutResID(), container, false)
         }
         return rootView
@@ -63,13 +70,13 @@ abstract class BaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         mIsPrepared = true
+        if (isSingleFragment() && !mIsVisible) {
+            if (userVisibleHint || isVisible || !isHidden) {
+                onVisibleChanged(true)
+            }
+        }
     }
-
 
     /**
      * 如果是与ViewPager一起使用，调用的是setUserVisibleHint
@@ -79,12 +86,11 @@ abstract class BaseFragment : Fragment() {
         if (null == rootView) {
             return
         }
-        if (userVisibleHint) {
-            mIsVisible = true
-            onVisible()
+        mIsInViewPager = true
+        if (!mIsPrepared) {
+            userVisibleHint = isVisibleToUser
         } else {
-            mIsVisible = false
-            onInVisible()
+            onVisibleChanged(isVisibleToUser)
         }
     }
 
@@ -98,12 +104,11 @@ abstract class BaseFragment : Fragment() {
         if (null == rootView) {
             return
         }
-        if (!hidden) {
-            mIsVisible = true
-            onVisible()
+        mIsInViewPager = false
+        if (!mIsPrepared) {
+            onHiddenChanged(hidden)
         } else {
-            mIsVisible = false
-            onInVisible()
+            onVisibleChanged(!hidden)
         }
     }
 
@@ -131,17 +136,32 @@ abstract class BaseFragment : Fragment() {
     open fun onInVisible() {}
 
     /**
+     * 用户可见变化回调
+     */
+    private fun onVisibleChanged(isVisibleToUser: Boolean) {
+        mIsVisible = true
+        if (isVisibleToUser) {
+            //避免因视图未加载子类刷新UI抛出异常
+            if (!mIsPrepared) {
+                onVisibleChanged(isVisibleToUser)
+            } else {
+                onVisible()
+            }
+        } else {
+            onInVisible()
+        }
+    }
+
+    /**
      * 数据懒加载
      */
     private fun initLazyLoadView() {
-        if (!mIsPrepared || !mIsVisible || !mIsFirstVisible) {
-            return
+        if (mIsFirstVisible && mIsPrepared && mIsVisible) {
+            mIsFirstVisible = false
+            initViewData()
+            initViewObservable()
         }
-        initViewData()
-        initViewObservable()
-        mIsFirstVisible = false
     }
-
 
     /**
      * 初始化根布局
@@ -166,33 +186,49 @@ abstract class BaseFragment : Fragment() {
      */
     open fun initViewObservable() {}
 
-    open fun <T> fv(@IdRes resid: Int): T {
-        return rootView!!.findViewById<View>(resid) as T
+    open fun <T> fv(@IdRes resId: Int): T {
+        return rootView!!.findViewById<View>(resId) as T
     }
 
     override fun onResume() {
         super.onResume()
-        if (userVisibleHint) {
-            userVisibleHint = true
+        if (isAdded && isVisibleToUser(this)) {
+            onVisibleChanged(userVisibleHint && !isHidden)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        mIsVisible = false
-        onInVisible()
+        if (isAdded && !isVisibleToUser(this)) {
+            onVisibleChanged(false)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         mIsVisible = false
         mIsPrepared = false
+        rootView = null
     }
 
+    /**
+     * @param fragment
+     */
+    private fun isVisibleToUser(fragment: BaseFragment?): Boolean {
+        if (fragment == null) {
+            return false
+        }
+        if (fragment.parentFragment != null) {
+            return isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+        }
+        return if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+    }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mActivity = context as AppCompatActivity
+    /**
+     * 是否在ViewPager
+     */
+    open fun isInViewPager(): Boolean {
+        return mIsInViewPager
     }
 
     /**
@@ -203,7 +239,19 @@ abstract class BaseFragment : Fragment() {
     }
 
 
-    fun getIsVisible():Boolean = mIsVisible;
+    fun getIsVisible(): Boolean = mIsVisible
+
+    /**
+     * 检查Fragment或FragmentActivity承载的Fragment是否只有一个
+     */
+    protected fun isSingleFragment(): Boolean {
+        var size = 0
+        val manager = fragmentManager
+        if (manager != null && manager.fragments.isNotEmpty()) {
+            size = manager.fragments.size
+        }
+        return size <= 1
+    }
 
     //*******************跳转*************
 
@@ -263,9 +311,6 @@ abstract class BaseFragment : Fragment() {
      */
     fun <T : BaseFragment> startContainerActivity(targetFragment: T) {
         startContainerActivity(targetFragment, null)
-        val intent = Intent(mActivity, ContainerActivity::class.java)
-        intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
-        startActivity(intent)
     }
 
     /**
@@ -289,13 +334,13 @@ abstract class BaseFragment : Fragment() {
     /**
      * 堆栈信息.
      */
-    private lateinit var mStackEntity: BaseActivity.FragmentStackEntity
+    private var mStackEntity = FragmentStackEntity()
 
 
     /**
      * 设置堆栈信息.
      */
-    fun setStackEntity(@NonNull stackEntity: BaseActivity.FragmentStackEntity) {
+    fun setStackEntity(@NonNull stackEntity: FragmentStackEntity) {
         this.mStackEntity = stackEntity
     }
 
@@ -321,6 +366,7 @@ abstract class BaseFragment : Fragment() {
 
     /**
      * 处理返回结果.
+     * BaseActivity上才有效
      *
      * @param resultCode 结果码.
      * @param result     跳转所携带的信息.
@@ -442,7 +488,14 @@ abstract class BaseFragment : Fragment() {
      * @param T          [BaseFragment].
      */
     private fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean, requestCode: Int) {
-        (mActivity as? BaseActivity)?.startFragment(this, targetFragment, stickyStack, requestCode)
+        if (mActivity is BaseActivity) {
+            (mActivity as? BaseActivity)?.startFragment(this, targetFragment, stickyStack, requestCode)
+        } else {
+            val intent = Intent(mActivity, ContainerActivity::class.java)
+            intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
+            intent.putExtra(AppConfig.REQUEST_CODE, requestCode)
+            mActivity.startActivity(intent)
+        }
     }
 
 

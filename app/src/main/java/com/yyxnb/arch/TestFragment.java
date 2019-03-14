@@ -34,7 +34,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
     public void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
 
-        LogUtils.INSTANCE.w("initView");
+//        LogUtils.INSTANCE.w("initView");
 
         tvShow = fv(R.id.tvShow);
         mSmartRefreshLayout = fv(R.id.mSmartRefreshLayout);
@@ -44,22 +44,23 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
         mViewModel.reqTeam();
         mViewModel.reqTeam2();
+
 //        getMViewModel().reqTeam();
 //        getMViewModel().reqTeam();
 //        getMViewModel().reqTeam();
     }
 
-    @Override
-    public void onVisible() {
-        super.onVisible();
-        LogUtils.INSTANCE.w("onVisible");
-    }
-
-    @Override
-    public void onInVisible() {
-        super.onInVisible();
-        LogUtils.INSTANCE.w("onInVisible");
-    }
+//    @Override
+//    public void onVisible() {
+//        super.onVisible();
+//        LogUtils.INSTANCE.w("onVisible");
+//    }
+//
+//    @Override
+//    public void onInVisible() {
+//        super.onInVisible();
+//        LogUtils.INSTANCE.w("onInVisible");
+//    }
 
 
     @Override
@@ -81,8 +82,6 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
             }
         });
 
-        LogUtils.INSTANCE.w("initViewData");
-
         tvShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,8 +92,9 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
                 Bundle bundle = new Bundle();
                 bundle.putString("msg",tvShow.getText().toString());
 
-                startContainerActivity(OneFragment.newInstance(),bundle);
-//                startFragment(fragment(OneFragment.class));
+//                startContainerActivity(OneFragment.newInstance(),bundle);
+                startContainerActivity(fragment(OneFragment.class,bundle));
+//                startFragment(fragment(OneFragment.class,bundle));
             }
         });
 
@@ -180,13 +180,13 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
                     LogUtils.INSTANCE.i("1 Content " + LceeStatus.Content);
                     break;
                 case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("1 Empty");
+//                    LogUtils.INSTANCE.i("1 Empty");
                     break;
                 case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("1 Error");
+//                    LogUtils.INSTANCE.i("1 Error");
                     break;
                 case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("1 Loading " + LceeStatus.Loading);
+//                    LogUtils.INSTANCE.e("1 Loading " + LceeStatus.Loading);
                     break;
             }
         });
@@ -198,15 +198,15 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
                     LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
                     mSmartRefreshLayout.finishRefresh();
                     break;
-                case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("2 Empty");
-                    break;
-                case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("2 Error");
-                    break;
-                case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
-                    break;
+//                case LceeStatus.Empty:
+//                    LogUtils.INSTANCE.i("2 Empty");
+//                    break;
+//                case LceeStatus.Error:
+//                    LogUtils.INSTANCE.i("2 Error");
+//                    break;
+//                case LceeStatus.Loading:
+//                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
+//                    break;
             }
         });
     }

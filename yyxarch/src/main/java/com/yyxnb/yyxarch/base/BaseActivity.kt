@@ -72,6 +72,7 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     open fun initViewObservable() {}
 
+
     //*************************跳转*************
 
     private lateinit var mFManager: FragmentManager
@@ -221,11 +222,11 @@ abstract class BaseActivity : AppCompatActivity() {
      * @param requestCode  请求码.
      * @param T          [BaseFragment].
      */
-    public fun <T : BaseFragment> startFragment(thisFragment: T?, thatFragment: T,
-                                                stickyStack: Boolean, requestCode: Int) {
+    fun <T : BaseFragment> startFragment(thisFragment: T?, thatFragment: T,
+                                         stickyStack: Boolean, requestCode: Int) {
         var fragmentTransaction = mFManager.beginTransaction()
         if (thisFragment != null) {
-            val thisStackEntity = mFragmentEntityMap.get(thisFragment)
+            val thisStackEntity = mFragmentEntityMap[thisFragment]
             if (thisStackEntity != null) {
                 if (thisStackEntity.isSticky) {
                     thisFragment.onPause()

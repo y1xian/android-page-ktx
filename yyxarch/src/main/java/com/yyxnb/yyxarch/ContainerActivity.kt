@@ -36,11 +36,16 @@ class ContainerActivity : BaseActivity() {
                 val fragmentClass = Class.forName(fragmentName)
                 val fragment = fragmentClass.newInstance() as BaseFragment
                 val args = intent.getBundleExtra(AppConfig.BUNDLE)
+                val requestCode = intent.getIntExtra(AppConfig.REQUEST_CODE, REQUEST_CODE_INVALID)
                 if (null != args) {
                     fragment.arguments = args
                 }
+                if (requestCode == REQUEST_CODE_INVALID) {
+                    startFragment(fragment)
+                } else {
+                    startFragmentForResult(fragment, requestCode)
+                }
 
-                startFragment(fragment)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

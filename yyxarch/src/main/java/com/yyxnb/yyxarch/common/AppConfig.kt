@@ -8,6 +8,7 @@ package com.yyxnb.yyxarch.common
  */
 object AppConfig {
 
-    const val FRAGMENT = "fragment"
-    const val BUNDLE = "bundle"
+    const val FRAGMENT = "FRAGMENT"
+    const val BUNDLE = "BUNDLE"
+    const val REQUEST_CODE = "REQUEST_CODE"
 }

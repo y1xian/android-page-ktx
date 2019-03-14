@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentUtils.add(getSupportFragmentManager(),TestFragment.newInstance(),R.id.mFrameLayout);
+        FragmentUtils.add(getSupportFragmentManager(),ContentViewFragment.newInstance(),R.id.mFrameLayout);
 
         AndPermission.with(this)
                 .runtime()
