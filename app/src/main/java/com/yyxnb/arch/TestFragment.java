@@ -117,8 +117,8 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 //                });
 
 
-//        TestDialog dialog = new TestDialog();
-//        dialog.show(getFragmentManager(),dialog.getTag());
+        TestDialog dialog = new TestDialog();
+        dialog.show(getFragmentManager(),dialog.getTag());
 
 //        if (isFirst){
 //            isFirst = false;

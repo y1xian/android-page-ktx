@@ -218,7 +218,7 @@ abstract class BaseFragment : Fragment() {
         if (fragment == null) {
             return false
         }
-        if (fragment.parentFragment != null) {
+        if (fragment.parentFragment != null && fragment.parentFragment is BaseFragment) {
             return isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
         }
         return if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible

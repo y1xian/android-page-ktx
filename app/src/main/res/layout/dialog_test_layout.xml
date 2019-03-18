@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mFrameLayout"
     android:layout_width="match_parent"
-    android:gravity="center"
+    android:layout_height="match_parent"
     android:background="@color/black"
-    android:layout_height="match_parent">
+    android:gravity="center">
 
     <TextView
         android:id="@+id/tvShow"
-        android:text="aaa"
-        android:textColor="@color/white"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="aaa"
+        android:textColor="@color/white" />
 
-</LinearLayout>
+</FrameLayout>
