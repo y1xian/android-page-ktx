@@ -11,7 +11,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import java.io.InputStream
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -31,7 +30,7 @@ object OkHttpConfig {
 
 
     class Builder {
-        private var headerMaps: HashMap<String, Any>? = null
+        private var headerMaps = HashMap<String, Any>()
         private var logEnable: Boolean = true
         private var isCache: Boolean = true
         private var cachePath: String = defaultCachePath
