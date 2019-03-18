@@ -7,8 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 
-import com.yyxnb.yyxarch.base.BaseFragment;
 import com.yyxnb.yyxarch.base.BaseFragmentStatePagerAdapter;
+import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
+import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * ViewPager和Fragment的组合使用
  */
-public class ViewPageFragment extends BaseFragment implements View.OnClickListener {
+public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements View.OnClickListener {
 
     /**
      * 四个导航按钮
@@ -81,18 +82,19 @@ public class ViewPageFragment extends BaseFragment implements View.OnClickListen
         mViewPager.setAdapter(new BaseFragmentStatePagerAdapter(getChildFragmentManager(),fragmentList));
 
 //        LogUtils.INSTANCE.w(" " + isSingleFragment() + " , " + getClass().getSimpleName());
+        LogUtils.INSTANCE.w("initViewData");
     }
 
     @Override
     public void onVisible() {
         super.onVisible();
-
+        LogUtils.INSTANCE.w("onVisible");
     }
 
     @Override
     public void onInVisible() {
         super.onInVisible();
-
+        LogUtils.INSTANCE.w("onInVisible");
     }
 
     @Override

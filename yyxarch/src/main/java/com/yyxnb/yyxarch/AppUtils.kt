@@ -72,7 +72,7 @@ object AppUtils {
     //debug下打印
     fun debugLog(str: String) {
         if (isDebug) {
-            Log.i("---", str)
+            Log.d("---", str)
         }
     }
 

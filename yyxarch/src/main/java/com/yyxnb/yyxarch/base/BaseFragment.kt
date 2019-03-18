@@ -7,11 +7,13 @@ import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.annotation.NonNull
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.ContainerActivity
 import com.yyxnb.yyxarch.base.BaseActivity.FragmentStackEntity
 import com.yyxnb.yyxarch.common.AppConfig
@@ -69,8 +71,8 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(savedInstanceState)
         mIsPrepared = true
+        initView(savedInstanceState)
         if (isSingleFragment() && !mIsVisible) {
             if (userVisibleHint || isVisible || !isHidden) {
                 onVisibleChanged(true)
@@ -127,13 +129,14 @@ abstract class BaseFragment : Fragment() {
      * 当界面可见时的操作
      */
     open fun onVisible() {
+        AppUtils.debugLog("onVisible ${javaClass.simpleName}")
         initLazyLoadView()
     }
 
     /**
      * 当界面不可见时的操作
      */
-    open fun onInVisible() {}
+    open fun onInVisible() {AppUtils.debugLog("onInVisible ${javaClass.simpleName}")}
 
     /**
      * 用户可见变化回调
@@ -160,6 +163,7 @@ abstract class BaseFragment : Fragment() {
             mIsFirstVisible = false
             initViewData()
             initViewObservable()
+            AppUtils.debugLog("initLazyLoadView ${javaClass.simpleName}")
         }
     }
 
@@ -218,8 +222,14 @@ abstract class BaseFragment : Fragment() {
         if (fragment == null) {
             return false
         }
-        if (fragment.parentFragment != null && fragment.parentFragment is BaseFragment) {
-            return isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+        if (fragment.parentFragment != null ) {
+            return if (fragment.parentFragment is BaseFragment){
+                isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+            }else if (fragment.parentFragment is DialogFragment){
+                true
+            }else{
+                if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+            }
         }
         return if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
     }
