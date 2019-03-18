@@ -2,92 +2,163 @@ package com.yyxnb.yyxarch.http.config
 
 import android.os.Environment
 import android.text.TextUtils
-import com.yyxnb.yyxarch.http.client.HttpClient
-import com.yyxnb.yyxarch.http.client.SSLUtils
+import com.yyxnb.yyxarch.http.RetrofitMultiUrl
 import com.yyxnb.yyxarch.http.interceptor.*
+import com.yyxnb.yyxarch.utils.SSLUtils
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import java.io.InputStream
+import java.util.*
 import java.util.concurrent.TimeUnit
 
-class OkHttpConfig {
-    init {
-        okHttpClientBuilder = OkHttpClient.Builder()
-    }
+
+/**
+ * 自定义OkHttpClient
+ */
+object OkHttpConfig {
+
+    private val defaultCachePath = Environment.getExternalStorageDirectory().path + "/rxHttpCacheData"
+    private const val defaultCacheSize = (1024 * 1024 * 100).toLong()
+
+    private var okHttpClientBuilder = OkHttpClient.Builder()
+
+    lateinit var okHttpClient: OkHttpClient
+
+    private var mDelayTime: Long = 10
+
 
     class Builder {
-        private var headerMaps: Map<String, Any>? = null
-        private var isDebug: Boolean = false
-        private var isCache: Boolean = false
-        private var cachePath: String? = null
-        private var cacheMaxSize: Long = (1024 * 1024 * 100).toLong()
-        private var isSaveCookie: Boolean = false
-        private var readTimeout: Long = 10L
-        private var writeTimeout: Long = 10L
-        private var connectTimeout: Long = 30L
+        private var headerMaps: HashMap<String, Any>? = null
+        private var logEnable: Boolean = true
+        private var isCache: Boolean = true
+        private var cachePath: String = defaultCachePath
+        private var cacheMaxSize: Long = defaultCacheSize
+        private var isSaveCookie: Boolean = true
+        private var readTimeout: Long = mDelayTime
+        private var writeTimeout: Long = mDelayTime
+        private var connectTimeout: Long = mDelayTime
+        private var retryEnable: Boolean = false
+        private var retryCount: Int = 1
+        private var retryDelay: Long = 1000
         private var bksFile: InputStream? = null
         private var password: String? = null
         private var certificates: Array<out InputStream>? = null
         private var interceptors: Array<out Interceptor>? = null
 
-        fun setHeaders(headerMaps: Map<String, Any>): Builder {
+        /**
+         * 添加请求头
+         */
+        fun setHeaders(headerMaps: HashMap<String, Any>): Builder {
             this.headerMaps = headerMaps
             return this
         }
 
-        fun setDebug(isDebug: Boolean): Builder {
-            this.isDebug = isDebug
+        /**
+         * 是否打开请求log日志
+         */
+        fun setLogEnable(logEnable: Boolean): Builder {
+            this.logEnable = logEnable
             return this
         }
 
+        /**
+         * 是否缓存
+         */
         fun setCache(isCache: Boolean): Builder {
             this.isCache = isCache
             return this
         }
 
+        /**
+         * 缓存路径
+         */
         fun setCachePath(cachePath: String): Builder {
             this.cachePath = cachePath
             return this
         }
 
+        /**
+         * 缓存大小
+         */
         fun setCacheMaxSize(cacheMaxSize: Long): Builder {
             this.cacheMaxSize = cacheMaxSize
             return this
         }
 
+        /**
+         * 是否保存Cookie
+         */
         fun setSaveCookie(isSaveCookie: Boolean): Builder {
             this.isSaveCookie = isSaveCookie
             return this
         }
 
+        /**
+         * 读取超时时间
+         */
         fun setReadTimeout(readTimeout: Long): Builder {
             this.readTimeout = readTimeout
             return this
         }
 
+        /**
+         * 写入超时时间
+         */
         fun setWriteTimeout(writeTimeout: Long): Builder {
             this.writeTimeout = writeTimeout
             return this
         }
 
+        /**
+         * 连接超时时间
+         */
         fun setConnectTimeout(connectTimeout: Long): Builder {
             this.connectTimeout = connectTimeout
             return this
         }
 
+        /**
+         * 设置所有超时
+         */
+        fun setTimeout(second: Long): Builder {
+            setReadTimeout(second)
+            setWriteTimeout(second)
+            setConnectTimeout(second)
+            return this
+        }
+
+        /**
+         * 设置重连
+         */
+        fun setRetry(retryEnable: Boolean = true, retryCount: Int = 1, retryDelay: Long = 1000): Builder {
+            this.retryEnable = retryEnable
+            this.retryCount = retryCount
+            this.retryDelay = retryDelay
+            return this
+        }
+
+        /**
+         * 添加自定义拦截器
+         */
         fun setAddInterceptor(vararg interceptors: Interceptor): Builder {
             this.interceptors = interceptors
             return this
         }
 
+        /**
+         * 信任所有证书,不安全有风险（默认信任所有证书）
+         */
         fun setSslSocketFactory(vararg certificates: InputStream): Builder {
             this.certificates = certificates
             return this
         }
 
+        /**
+         * 使用bks证书和密码管理客户端证书（双向认证），使用预埋证书，校验服务端证书（自签名证书）
+         */
         fun setSslSocketFactory(bksFile: InputStream, password: String, vararg certificates: InputStream): Builder {
             this.bksFile = bksFile
             this.password = password
@@ -98,8 +169,6 @@ class OkHttpConfig {
 
         fun build(): OkHttpClient {
 
-            OkHttpConfig.getInstance()
-
             setCookieConfig()
             setCacheConfig()
             setHeadersConfig()
@@ -107,11 +176,16 @@ class OkHttpConfig {
             addInterceptors()
             setTimeout()
             setDebugConfig()
+            setRetryConfig()
+            RetrofitMultiUrl.with(okHttpClientBuilder)
 
             okHttpClient = okHttpClientBuilder.build()
             return okHttpClient
         }
 
+        /**
+         * 添加拦截器
+         */
         private fun addInterceptors() {
             if (null != interceptors) {
                 for (interceptor in interceptors!!) {
@@ -121,16 +195,26 @@ class OkHttpConfig {
         }
 
         /**
-         * 配置开发环境
+         * log
          */
         private fun setDebugConfig() {
-            if (isDebug) {
+            if (logEnable) {
                 val logInterceptor = HttpLoggingInterceptor(RxHttpLogger())
                 logInterceptor.level = HttpLoggingInterceptor.Level.BODY
                 okHttpClientBuilder.addInterceptor(logInterceptor)
             }
         }
 
+        /**
+         * Retry
+         */
+        private fun setRetryConfig() {
+            if (retryEnable) {
+                okHttpClientBuilder.addInterceptor(RetryInterceptor.Builder()
+                        .executionCount(retryCount).retryInterval(retryDelay)
+                        .build())
+            }
+        }
 
         /**
          * 配置headers
@@ -140,7 +224,7 @@ class OkHttpConfig {
         }
 
         /**
-         * 配饰cookie保存到sp文件中
+         * 配置cookie保存到sp文件中
          */
         private fun setCookieConfig() {
             if (isSaveCookie) {
@@ -198,35 +282,9 @@ class OkHttpConfig {
                 }
             }
 
-            okHttpClientBuilder.sslSocketFactory(sslParams!!.sSLSocketFactory, sslParams.trustManager)
+            okHttpClientBuilder.sslSocketFactory(sslParams.sSLSocketFactory!!, sslParams.trustManager!!)
 
         }
     }
 
-    companion object {
-
-
-        private val defaultCachePath = Environment.getExternalStorageDirectory().path + "/rxHttpCacheData"
-        private val defaultCacheSize = (1024 * 1024 * 100).toLong()
-
-
-        private var instance: OkHttpConfig? = null
-
-        private lateinit var okHttpClientBuilder: OkHttpClient.Builder
-
-        lateinit var okHttpClient: OkHttpClient
-
-        fun getInstance(): OkHttpConfig {
-
-            if (instance == null) {
-                synchronized(HttpClient::class.java) {
-                    if (instance == null) {
-                        instance = OkHttpConfig()
-                    }
-                }
-
-            }
-            return instance!!
-        }
-    }
 }

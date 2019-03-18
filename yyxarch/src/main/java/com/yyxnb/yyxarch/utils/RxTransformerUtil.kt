@@ -2,7 +2,6 @@ package com.yyxnb.yyxarch.utils
 
 
 import android.app.Dialog
-
 import io.reactivex.ObservableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -61,6 +60,7 @@ object RxTransformerUtil {
                     .unsubscribeOn(Schedulers.io())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+//                    .retryWhen(RetryWhenUtils().setRetryDelay(3).setRetryMaxTime(1000))
         }
     }
 

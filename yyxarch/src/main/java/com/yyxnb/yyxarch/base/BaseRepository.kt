@@ -2,7 +2,7 @@ package com.yyxnb.yyxarch.base
 
 import android.arch.lifecycle.DefaultLifecycleObserver
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.http.RxHttpUtils
+import com.yyxnb.yyxarch.http.RetrofitManager
 
 
 /**
@@ -23,6 +23,6 @@ abstract class BaseRepository<T : Any> : DefaultLifecycleObserver {
     }
 
     private fun initApiServer(modelClass: Class<T>): T {
-        return RxHttpUtils.createApi(modelClass)
+        return RetrofitManager.createApi(modelClass)
     }
 }

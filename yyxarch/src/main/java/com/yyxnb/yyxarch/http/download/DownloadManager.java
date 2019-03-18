@@ -1,7 +1,7 @@
 package com.yyxnb.yyxarch.http.download;
 
 
-import com.yyxnb.yyxarch.http.RxHttpUtils;
+import com.yyxnb.yyxarch.AppUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +27,7 @@ public class DownloadManager {
      */
     public File saveFile(ResponseBody response, final String destFileName, IProgressListener IProgressListener) throws IOException {
 
-        String destFileDir = RxHttpUtils.Companion.getContext().getExternalFilesDir(null) + File.separator;
+        String destFileDir = AppUtils.INSTANCE.getContext().getExternalFilesDir(null) + File.separator;
 
         long contentLength = response.contentLength();
         InputStream is = null;

@@ -2,17 +2,15 @@ package com.yyxnb.yyxarch.http.observer
 
 
 import android.text.TextUtils
-
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.http.RxHttpUtils
-
+import com.yyxnb.yyxarch.http.RetrofitManager
 import io.reactivex.disposables.Disposable
 
 /**
  * 通用的Observer
  * 用户可以根据自己需求自定义自己的类继承BaseObserver<T>即可
  *
- * RxHttpUtils
+ * RetrofitManager
  * .createApi(ApiService.class)
  * .getTestData()
  * .compose(RxTransformerUtil.<TestBean>switchSchedulers())
@@ -51,7 +49,7 @@ abstract class CommonObserver<T> : BaseObserver<T>() {
 
     override fun doOnSubscribe(d: Disposable) {
         disposable = d
-        RxHttpUtils.addDisposable(disposable)
+        RetrofitManager.addDisposable(disposable)
     }
 
     override fun doOnError(errorMsg: String) {
@@ -59,7 +57,7 @@ abstract class CommonObserver<T> : BaseObserver<T>() {
             AppUtils.debugToast(errorMsg)
         }
         onError(errorMsg)
-        RxHttpUtils.cancelSingleRequest(disposable)
+        RetrofitManager.cancelSingleRequest(disposable)
     }
 
     override fun doOnNext(t: T) {
@@ -67,7 +65,7 @@ abstract class CommonObserver<T> : BaseObserver<T>() {
     }
 
     override fun doOnCompleted() {
-        RxHttpUtils.cancelSingleRequest(disposable)
+        RetrofitManager.cancelSingleRequest(disposable)
     }
 
 }

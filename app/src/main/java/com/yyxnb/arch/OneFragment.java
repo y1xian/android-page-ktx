@@ -62,6 +62,10 @@ public class OneFragment extends BaseFragment {
 
 //        LogUtils.INSTANCE.w(" " + NetworkUtils.INSTANCE.ping("www.baidu.com",3));
 
+//        RetrofitManager.INSTANCE.createApi(api.class).getTeam2().await()
+
+
+
     }
 
     @Override

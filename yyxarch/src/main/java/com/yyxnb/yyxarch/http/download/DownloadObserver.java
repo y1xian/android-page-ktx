@@ -15,7 +15,7 @@ import okhttp3.ResponseBody;
 /**
  *         文件下载
  *
- *         RxHttpUtils
+ *         RetrofitManager
  *                         .downloadFile(url)
  *                         .subscribe(new DownloadObserver(fileName) {
  *                             //可以通过配置tag用于取消下载请求

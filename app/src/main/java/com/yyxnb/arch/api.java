@@ -11,12 +11,13 @@ import retrofit2.http.POST;
 
 public interface api {
     /**
-     *
      * @param map
      * @return
      */
     @FormUrlEncoded
-    @POST("searchPoetry")
+//    @POST("searchPoetry")
+    @POST(ApiConstant.API_UPDATE_APP)
+//    @Headers({RetrofitMultiUrl.BASE_URL_NAME_HEADER + ApiConstant.API_UPDATE_APP_KEY})
     Observable<BaseDatas<List<TestData>>> getTeam(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded

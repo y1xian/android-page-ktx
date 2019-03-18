@@ -2,7 +2,7 @@ package com.yyxnb.yyxarch.livedata
 
 import android.arch.lifecycle.LiveData
 import android.support.annotation.NonNull
-import com.yyxnb.yyxarch.http.RxHttpUtils
+import com.yyxnb.yyxarch.http.RetrofitManager
 import com.yyxnb.yyxarch.http.exception.ApiException
 import com.yyxnb.yyxarch.utils.log.LogUtils
 import io.reactivex.Observable
@@ -24,7 +24,7 @@ internal class ObservableLiveData<T>(private var mObservable: Observable<T>) : L
                 // backpressure can be handled upstream.
                 synchronized(mLock) {
                     mDisposableRef = WeakReference(d)
-                    RxHttpUtils.addDisposable(mDisposableRef!!.get())
+                    RetrofitManager.addDisposable(mDisposableRef!!.get())
                 }
             }
 
@@ -34,7 +34,7 @@ internal class ObservableLiveData<T>(private var mObservable: Observable<T>) : L
 
             override fun onError(@NonNull t: Throwable) {
                 synchronized(mLock) {
-                    RxHttpUtils.cancelSingleRequest(mDisposableRef!!.get())
+                    RetrofitManager.cancelSingleRequest(mDisposableRef!!.get())
                     mDisposableRef = null
                 }
                 // Errors should be handled upstream, so propagate as a crash.
@@ -43,7 +43,7 @@ internal class ObservableLiveData<T>(private var mObservable: Observable<T>) : L
 
             override fun onComplete() {
                 synchronized(mLock) {
-                    RxHttpUtils.cancelSingleRequest(mDisposableRef!!.get())
+                    RetrofitManager.cancelSingleRequest(mDisposableRef!!.get())
                     mDisposableRef = null
                 }
             }
@@ -58,7 +58,7 @@ internal class ObservableLiveData<T>(private var mObservable: Observable<T>) : L
             if (subscriptionRef != null) {
                 val subscription = subscriptionRef.get()
                 subscription?.dispose()
-                RxHttpUtils.cancelSingleRequest(mDisposableRef!!.get())
+                RetrofitManager.cancelSingleRequest(mDisposableRef!!.get())
                 mDisposableRef = null
             }
         }

@@ -3,12 +3,13 @@ package com.yyxnb.arch;
 import com.squareup.leakcanary.LeakCanary;
 import com.yyxnb.yyxarch.AppUtils;
 import com.yyxnb.yyxarch.base.BaseApplication;
-import com.yyxnb.yyxarch.http.RxHttpUtils;
+import com.yyxnb.yyxarch.http.RetrofitManager;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 public class App extends BaseApplication {
 
     private final String BASE_URL = "https://api.apiopen.top/";
+    private final String BASE_URL2 = "https://api.github.com/";
 
     @Override
     public void onCreate() {
@@ -26,16 +27,17 @@ public class App extends BaseApplication {
             return;
         }
         LeakCanary.install(this);
+
+
     }
 
     private void initRxHttp() {
-        RxHttpUtils.Companion
-                .getInstance()
-                .init(this)
-                //开启全局配置
-                .config()
-                //全局的BaseUrl
+//        RetrofitManager.INSTANCE.setBaseUrl(BASE_URL);
+
+        RetrofitManager.INSTANCE
                 .setBaseUrl(BASE_URL)
-                .setOkClient(getOkHttpClient());
+                .putBaseUrl(ApiConstant.API_UPDATE_APP, BASE_URL2);
+
+
     }
 }

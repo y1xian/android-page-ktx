@@ -1,4 +1,4 @@
-package com.yyxnb.yyxarch.http.client
+package com.yyxnb.yyxarch.utils
 
 import android.annotation.SuppressLint
 import android.util.Log

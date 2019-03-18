@@ -3,7 +3,7 @@ package com.yyxnb.yyxarch.livedata
 import android.arch.lifecycle.LiveData
 import android.support.annotation.NonNull
 import com.yyxnb.yyxarch.bean.Lcee
-import com.yyxnb.yyxarch.http.RxHttpUtils
+import com.yyxnb.yyxarch.http.RetrofitManager
 import com.yyxnb.yyxarch.http.exception.ApiException
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -23,7 +23,7 @@ internal class ObservableLceeLiveData<T>(private val mObservable: Observable<T>)
                 // backpressure can be handled upstream.
                 synchronized(mLock) {
                     mDisposableRef = WeakReference(d)
-                    RxHttpUtils.addDisposable(mDisposableRef!!.get())
+                    RetrofitManager.addDisposable(mDisposableRef!!.get())
                 }
                 postValue(Lcee.loading())
             }
@@ -38,7 +38,7 @@ internal class ObservableLceeLiveData<T>(private val mObservable: Observable<T>)
 
             override fun onError(@NonNull t: Throwable) {
                 synchronized(mLock) {
-                    RxHttpUtils.cancelSingleRequest(mDisposableRef!!.get())
+                    RetrofitManager.cancelSingleRequest(mDisposableRef!!.get())
                     mDisposableRef = null
                 }
                 // Errors should be handled upstream, so propagate as a crash.
@@ -47,7 +47,7 @@ internal class ObservableLceeLiveData<T>(private val mObservable: Observable<T>)
 
             override fun onComplete() {
                 synchronized(mLock) {
-                    RxHttpUtils.cancelSingleRequest(mDisposableRef!!.get())
+                    RetrofitManager.cancelSingleRequest(mDisposableRef!!.get())
                     mDisposableRef = null
                 }
             }
@@ -62,7 +62,7 @@ internal class ObservableLceeLiveData<T>(private val mObservable: Observable<T>)
             if (subscriptionRef != null) {
                 val subscription = subscriptionRef.get()
                 subscription?.dispose()
-                RxHttpUtils.cancelSingleRequest(mDisposableRef!!.get())
+                RetrofitManager.cancelSingleRequest(mDisposableRef!!.get())
                 mDisposableRef = null
             }
         }
