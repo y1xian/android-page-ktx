@@ -35,8 +35,8 @@ public class App extends BaseApplication {
 //        RetrofitManager.INSTANCE.setBaseUrl(BASE_URL);
 
         RetrofitManager.INSTANCE
-                .setBaseUrl(BASE_URL)
-                .putBaseUrl(ApiConstant.API_UPDATE_APP, BASE_URL2);
+                .setBaseUrl(BASE_URL);
+//                .putBaseUrl(ApiConstant.API_UPDATE_APP, BASE_URL2);
 
 
     }

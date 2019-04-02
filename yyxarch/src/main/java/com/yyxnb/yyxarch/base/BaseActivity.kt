@@ -242,7 +242,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 回退
      */
-    protected fun onBackStackFragment(): Boolean {
+    private fun onBackStackFragment(): Boolean {
         if (mFragmentStack.size > 1) {
             mFManager.popBackStack()
             val inFragment = mFragmentStack[mFragmentStack.size - 2]

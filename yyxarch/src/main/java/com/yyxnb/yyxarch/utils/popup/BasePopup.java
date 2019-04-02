@@ -36,7 +36,7 @@ import com.yyxnb.yyxarch.annotation.YGravity;
  * @author : yyx
  * @date ：2018/11/18
  */
-public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDismissListener {
+public abstract class BasePopup implements PopupWindow.OnDismissListener {
 
     private static final String mTag = "BasePopup";
 
@@ -104,12 +104,12 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
 
     private OnRealWHAlreadyListener mOnRealWHAlreadyListener;
 
-    protected T self() {
+    protected BasePopup self() {
         //noinspection unchecked
-        return (T) this;
+        return this;
     }
 
-    public T apply() {
+    private void apply() {
         if (mPopupWindow == null) {
             mPopupWindow = new PopupWindow();
         }
@@ -137,7 +137,7 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
             }
         }
 
-        return self();
+        self();
     }
 
     private void initContentViewAndWH() {
@@ -248,7 +248,7 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
      *
      * @param view
      */
-    protected abstract void initViews(View view, T popup);
+    protected abstract void initViews(View view, BasePopup popup);
 
     /**
      * 是否需要测量 contentView的大小
@@ -317,31 +317,31 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
 
     /****设置属性方法****/
 
-    public T setContext(Context context) {
+    public BasePopup setContext(Context context) {
         this.mContext = context;
         return self();
     }
 
-    public T setContentView(View contentView) {
+    public BasePopup setContentView(View contentView) {
         this.mContentView = contentView;
         this.mLayoutId = 0;
         return self();
     }
 
-    public T setContentView(@LayoutRes int layoutId) {
+    public BasePopup setContentView(@LayoutRes int layoutId) {
         this.mContentView = null;
         this.mLayoutId = layoutId;
         return self();
     }
 
-    public T setContentView(Context context, @LayoutRes int layoutId) {
+    public BasePopup setContentView(Context context, @LayoutRes int layoutId) {
         this.mContext = context;
         this.mContentView = null;
         this.mLayoutId = layoutId;
         return self();
     }
 
-    public T setContentView(View contentView, int width, int height) {
+    public BasePopup setContentView(View contentView, int width, int height) {
         this.mContentView = contentView;
         this.mLayoutId = 0;
         this.mWidth = width;
@@ -349,7 +349,7 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
         return self();
     }
 
-    public T setContentView(@LayoutRes int layoutId, int width, int height) {
+    public BasePopup setContentView(@LayoutRes int layoutId, int width, int height) {
         this.mContentView = null;
         this.mLayoutId = layoutId;
         this.mWidth = width;
@@ -357,7 +357,7 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
         return self();
     }
 
-    public T setContentView(Context context, @LayoutRes int layoutId, int width, int height) {
+    public BasePopup setContentView(Context context, @LayoutRes int layoutId, int width, int height) {
         this.mContext = context;
         this.mContentView = null;
         this.mLayoutId = layoutId;
@@ -366,52 +366,52 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
         return self();
     }
 
-    public T setWidth(int width) {
+    public BasePopup setWidth(int width) {
         this.mWidth = width;
         return self();
     }
 
-    public T setHeight(int height) {
+    public BasePopup setHeight(int height) {
         this.mHeight = height;
         return self();
     }
 
-    public T setAnchorView(View view) {
+    public BasePopup setAnchorView(View view) {
         this.mAnchorView = view;
         return self();
     }
 
-    public T setYGravity(@YGravity int yGravity) {
+    public BasePopup setYGravity(@YGravity int yGravity) {
         this.mYGravity = yGravity;
         return self();
     }
 
-    public T setXGravity(@XGravity int xGravity) {
+    public BasePopup setXGravity(@XGravity int xGravity) {
         this.mXGravity = xGravity;
         return self();
     }
 
-    public T setOffsetX(int offsetX) {
+    public BasePopup setOffsetX(int offsetX) {
         this.mOffsetX = offsetX;
         return self();
     }
 
-    public T setOffsetY(int offsetY) {
+    public BasePopup setOffsetY(int offsetY) {
         this.mOffsetY = offsetY;
         return self();
     }
 
-    public T setAnimationStyle(@StyleRes int animationStyle) {
+    public BasePopup setAnimationStyle(@StyleRes int animationStyle) {
         this.mAnimationStyle = animationStyle;
         return self();
     }
 
-    public T setFocusable(boolean focusable) {
+    public BasePopup setFocusable(boolean focusable) {
         this.mFocusable = focusable;
         return self();
     }
 
-    public T setOutsideTouchable(boolean outsideTouchable) {
+    public BasePopup setOutsideTouchable(boolean outsideTouchable) {
         this.mOutsideTouchable = outsideTouchable;
         return self();
     }
@@ -422,7 +422,7 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
      * @param focusAndOutsideEnable
      * @return
      */
-    public T setFocusAndOutsideEnable(boolean focusAndOutsideEnable) {
+    public BasePopup setFocusAndOutsideEnable(boolean focusAndOutsideEnable) {
         this.mFocusAndOutsideEnable = focusAndOutsideEnable;
         return self();
     }
@@ -433,44 +433,44 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
      * @param isDim
      * @return
      */
-    public T setBackgroundDimEnable(boolean isDim) {
+    public BasePopup setBackgroundDimEnable(boolean isDim) {
         this.isBackgroundDim = isDim;
         return self();
     }
 
-    public T setDimValue(@FloatRange(from = 0.0f, to = 1.0f) float dimValue) {
+    public BasePopup setDimValue(@FloatRange(from = 0.0f, to = 1.0f) float dimValue) {
         this.mDimValue = dimValue;
         return self();
     }
 
-    public T setDimColor(@ColorInt int color) {
+    public BasePopup setDimColor(@ColorInt int color) {
         this.mDimColor = color;
         return self();
     }
 
-    public T setDimView(@NonNull ViewGroup dimView) {
+    public BasePopup setDimView(@NonNull ViewGroup dimView) {
         this.mDimView = dimView;
         return self();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public T setEnterTransition(Transition enterTransition) {
+    public BasePopup setEnterTransition(Transition enterTransition) {
         this.mEnterTransition = enterTransition;
         return self();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public T setExitTransition(Transition exitTransition) {
+    public BasePopup setExitTransition(Transition exitTransition) {
         this.mExitTransition = exitTransition;
         return self();
     }
 
-    public T setInputMethodMode(int mode) {
+    public BasePopup setInputMethodMode(int mode) {
         this.mInputMethodMode = mode;
         return self();
     }
 
-    public T setSoftInputMode(int mode) {
+    public BasePopup setSoftInputMode(int mode) {
         this.mSoftInputMode = mode;
         return self();
     }
@@ -481,7 +481,7 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
      * @param needReMeasureWH
      * @return
      */
-    public T setNeedReMeasureWH(boolean needReMeasureWH) {
+    public BasePopup setNeedReMeasureWH(boolean needReMeasureWH) {
         this.isNeedReMeasureWH = needReMeasureWH;
         return self();
     }
@@ -716,12 +716,12 @@ public abstract class BasePopup<T extends BasePopup> implements PopupWindow.OnDi
      *
      * @param listener
      */
-    public T setOnDismissListener(PopupWindow.OnDismissListener listener) {
+    public BasePopup setOnDismissListener(PopupWindow.OnDismissListener listener) {
         this.mOnDismissListener = listener;
         return self();
     }
 
-    public T setOnRealWHAlreadyListener(OnRealWHAlreadyListener listener) {
+    public BasePopup setOnRealWHAlreadyListener(OnRealWHAlreadyListener listener) {
         this.mOnRealWHAlreadyListener = listener;
         return self();
     }

@@ -6,7 +6,7 @@ import com.yyxnb.yyxarch.utils.FragmentUtils;
 import com.yyxnb.yyxarch.utils.ScreenUtils;
 import com.yyxnb.yyxarch.utils.dialog.BaseSheetDialog;
 
-public class TestDialog extends BaseSheetDialog<TestDialog> {
+public class TestDialog extends BaseSheetDialog {
 
     private TestViewModel mViewModel;
     private boolean isFirst = true;

@@ -33,24 +33,26 @@ object UploadRetrofit {
      *
      * @param uploadUrl 上传图片的服务器url
      * @param filePath  图片路径
+     * @param fileName  后台协定的接受图片的name（没特殊要求就可以随便写）
      * @return Observable
      */
-    fun uploadImg(uploadUrl: String, filePath: String): Observable<ResponseBody> {
+    fun uploadImg(uploadUrl: String, filePath: String, fileName: String): Observable<ResponseBody> {
         val filePaths = ArrayList<String>()
         filePaths.add(filePath)
-        return uploadImgsWithParams(uploadUrl, "uploaded_file", null, filePaths)
+        return uploadImgsWithParams(uploadUrl, fileName, null, filePaths)
 
     }
 
     /**
-     * 只上传图片
+     * 上传多张图片
      *
      * @param uploadUrl 上传图片的服务器url
      * @param filePaths 图片路径
+     * @param fileName  后台协定的接受图片的name（没特殊要求就可以随便写）
      * @return Observable
      */
-    fun uploadImgs(uploadUrl: String, filePaths: List<String>): Observable<ResponseBody> {
-        return uploadImgsWithParams(uploadUrl, "uploaded_file", null, filePaths)
+    fun uploadImgs(uploadUrl: String, filePaths: List<String>, fileName: String): Observable<ResponseBody> {
+        return uploadImgsWithParams(uploadUrl, fileName, null, filePaths)
     }
 
     /**

@@ -21,13 +21,15 @@ import android.view.WindowManager;
 
 import com.yyxnb.yyxarch.R;
 
+import java.util.Objects;
+
 /**
  * Description: BaseDialog
  *
  * @author : yyx
  * @date ：2018/11/18
  */
-public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFragment {
+public abstract class BaseDialog extends AppCompatDialogFragment {
 
     private static final float DEFAULT_DIM_AMOUNT = 0.5f;
     private static final int DEFAULT_WH = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -42,26 +44,31 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
     private static final String KEY_GRAVITY = "keyGravity";
 
     @LayoutRes
-    private int mLayoutRes;
+    protected int mLayoutRes;
 
-    //点击外部是否可取消
-    private boolean mIsCancelOnTouchOutside = true;
+    /**
+     * 点击外部是否可取消
+     */
+    protected boolean mIsCancelOnTouchOutside = true;
 
-    private String mTag = "BaseDialog";
+    protected String mTag = "BaseDialog";
 
+    /**
+     * 阴影透明度 默认0.5f
+     */
     @FloatRange(from = 0f, to = 1.0f)
-    private float mDimAmount = DEFAULT_DIM_AMOUNT;
+    protected float mDimAmount = DEFAULT_DIM_AMOUNT;
 
-    private int mHeight = DEFAULT_WH;
+    protected int mHeight = DEFAULT_WH;
 
-    private int mWidth = DEFAULT_WH;
+    protected int mWidth = DEFAULT_WH;
 
     @StyleRes
-    private int mAnimationStyle;
+    protected int mAnimationStyle;
 
-    private boolean mIsKeyboardEnable = true;
+    protected boolean mIsKeyboardEnable = true;
 
-    private int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
+    protected int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
 
     private int mGravity = Gravity.CENTER;
 
@@ -82,11 +89,6 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
     public void onDestroy() {
         mActivity = null;
         super.onDestroy();
-    }
-
-    protected T self() {
-        //noinspection unchecked
-        return (T) this;
     }
 
     @Override
@@ -175,6 +177,7 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
     protected void initWindowLayoutParams(Window window, WindowManager.LayoutParams layoutParams) {
         if (mIsKeyboardEnable) {
             window.setSoftInputMode(mSoftInputMode);
+            Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(mSoftInputMode);
         }
 
         if (mAnimationStyle > 0) {
@@ -228,9 +231,8 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param layoutRes
      * @return
      */
-    public T setLayoutRes(@LayoutRes int layoutRes) {
+    public void setLayoutRes(@LayoutRes int layoutRes) {
         this.mLayoutRes = layoutRes;
-        return self();
     }
 
     /**
@@ -259,9 +261,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param isCancelOnTouchOutside
      * @return
      */
-    public T setCancelOnTouchOutside(boolean isCancelOnTouchOutside) {
+    public BaseDialog setCancelOnTouchOutside(boolean isCancelOnTouchOutside) {
         this.mIsCancelOnTouchOutside = isCancelOnTouchOutside;
-        return self();
+        return this;
     }
 
     /**
@@ -270,9 +272,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param tag
      * @return
      */
-    public T setFragmentTag(String tag) {
+    public BaseDialog setFragmentTag(String tag) {
         this.mTag = tag;
-        return self();
+        return this;
     }
 
     public String getFragmentTag() {
@@ -285,9 +287,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param dimAmount
      * @return
      */
-    public T setDimAmount(@FloatRange(from = 0f, to = 1.0f) float dimAmount) {
+    public BaseDialog setDimAmount(@FloatRange(from = 0f, to = 1.0f) float dimAmount) {
         this.mDimAmount = dimAmount;
-        return self();
+        return this;
     }
 
     /**
@@ -296,9 +298,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param height
      * @return
      */
-    public T setHeight(int height) {
+    public BaseDialog setHeight(int height) {
         this.mHeight = height;
-        return self();
+        return this;
     }
 
     /**
@@ -307,9 +309,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param width
      * @return
      */
-    public T setWidth(int width) {
+    public BaseDialog setWidth(int width) {
         this.mWidth = width;
-        return self();
+        return this;
     }
 
     /**
@@ -318,9 +320,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param animationStyle
      * @return
      */
-    public T setAnimationStyle(@StyleRes int animationStyle) {
+    public BaseDialog setAnimationStyle(@StyleRes int animationStyle) {
         this.mAnimationStyle = animationStyle;
-        return self();
+        return this;
     }
 
     /**
@@ -329,9 +331,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param keyboardEnable
      * @return
      */
-    public T setKeyboardEnable(boolean keyboardEnable) {
+    public BaseDialog setKeyboardEnable(boolean keyboardEnable) {
         this.mIsKeyboardEnable = keyboardEnable;
-        return self();
+        return this;
     }
 
     /**
@@ -340,9 +342,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param inputMode
      * @return
      */
-    public T setSoftInputMode(int inputMode) {
+    public BaseDialog setSoftInputMode(int inputMode) {
         this.mSoftInputMode = inputMode;
-        return self();
+        return this;
     }
 
     /**
@@ -351,9 +353,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param gravity
      * @return
      */
-    public T setGravity(int gravity) {
+    public BaseDialog setGravity(int gravity) {
         this.mGravity = gravity;
-        return self();
+        return this;
     }
 
     /**
@@ -362,9 +364,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param listener
      * @return
      */
-    public T setOnCancelListener(DialogInterface.OnCancelListener listener) {
+    public BaseDialog setOnCancelListener(DialogInterface.OnCancelListener listener) {
         this.mOnCancelListener = listener;
-        return self();
+        return this;
     }
 
     /**
@@ -373,9 +375,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param listener
      * @return
      */
-    public T setOnDismissListener(DialogInterface.OnDismissListener listener) {
+    public BaseDialog setOnDismissListener(DialogInterface.OnDismissListener listener) {
         this.mOnDismissListener = listener;
-        return self();
+        return this;
     }
 
     /**
@@ -385,9 +387,9 @@ public abstract class BaseDialog<T extends BaseDialog> extends AppCompatDialogFr
      * @param cancelable
      * @return
      */
-    public T setDialogCancelable(boolean cancelable) {
+    public BaseDialog setDialogCancelable(boolean cancelable) {
         setCancelable(cancelable);
-        return self();
+        return this;
     }
 
     /**

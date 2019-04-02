@@ -1,6 +1,7 @@
 package com.yyxnb.arch;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -43,11 +44,26 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
 
         mViewModel.reqTeam();
-        mViewModel.reqTeam2();
+//        mViewModel.reqTeam2();
 
-//        getMViewModel().reqTeam();
-//        getMViewModel().reqTeam();
-//        getMViewModel().reqTeam();
+
+//        DownloadRetrofit.INSTANCE.downloadFile("http")
+//                .subscribe(new DownloadObserver("233") {
+//                    @Override
+//                    protected void getDisposable(@NotNull Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    protected void onError(@NotNull String errorMsg) {
+//
+//                    }
+//
+//                    @Override
+//                    protected void onSuccess(long bytesRead, long contentLength, float progress, boolean done, @NotNull String filePath) {
+//
+//                    }
+//                });
     }
 
 //    @Override
@@ -118,7 +134,20 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
 
         TestDialog dialog = new TestDialog();
-        dialog.show(getFragmentManager(),dialog.getTag());
+        dialog.show(getFragmentManager());
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                LogUtils.INSTANCE.w("onCancel   " + dialog.toString());
+            }
+        });
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                LogUtils.INSTANCE.w("onDismiss  " + dialog.toString());
+            }
+        });
 
 //        if (isFirst){
 //            isFirst = false;
@@ -180,13 +209,13 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
                     LogUtils.INSTANCE.i("1 Content " + LceeStatus.Content);
                     break;
                 case LceeStatus.Empty:
-//                    LogUtils.INSTANCE.i("1 Empty");
+                    LogUtils.INSTANCE.i("1 Empty");
                     break;
                 case LceeStatus.Error:
-//                    LogUtils.INSTANCE.i("1 Error");
+                    LogUtils.INSTANCE.i("1 Error");
                     break;
                 case LceeStatus.Loading:
-//                    LogUtils.INSTANCE.e("1 Loading " + LceeStatus.Loading);
+                    LogUtils.INSTANCE.e("1 Loading " + LceeStatus.Loading);
                     break;
             }
         });
@@ -198,15 +227,15 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
                     LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
                     mSmartRefreshLayout.finishRefresh();
                     break;
-//                case LceeStatus.Empty:
-//                    LogUtils.INSTANCE.i("2 Empty");
-//                    break;
-//                case LceeStatus.Error:
-//                    LogUtils.INSTANCE.i("2 Error");
-//                    break;
-//                case LceeStatus.Loading:
-//                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
-//                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("2 Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("2 Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
+                    break;
             }
         });
     }
