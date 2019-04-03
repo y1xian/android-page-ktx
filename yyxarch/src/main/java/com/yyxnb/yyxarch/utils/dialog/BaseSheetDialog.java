@@ -105,6 +105,7 @@ public abstract class BaseSheetDialog extends BaseDialog {
                     if (mPeekHeight == 0) {
                         //则 默认高度60% 且为折叠状态
                         mPeekHeight = (int) (ScreenUtils.INSTANCE.getScreenHeight() * mDefaultHeight);
+                        //折叠
                         mState = BottomSheetBehavior.STATE_COLLAPSED;
                     }
                 } else {
@@ -196,7 +197,7 @@ public abstract class BaseSheetDialog extends BaseDialog {
     }
 
     /**
-     * 设置高度
+     * 设置折叠高度
      *
      * @param mPeekHeight
      * @return

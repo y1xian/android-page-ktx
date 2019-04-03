@@ -74,8 +74,8 @@ object RetrofitManager {
      * @param uploadUrl 地址
      * @param filePath  文件路径
      */
-    fun uploadImg(uploadUrl: String, filePath: String): Observable<ResponseBody> {
-        return UploadRetrofit.uploadImg(uploadUrl, filePath)
+    fun uploadImg(uploadUrl: String, filePath: String, fileName: String): Observable<ResponseBody> {
+        return UploadRetrofit.uploadImg(uploadUrl, filePath, fileName)
     }
 
     /**
@@ -83,8 +83,8 @@ object RetrofitManager {
      * @param uploadUrl 地址
      * @param filePaths 文件路径
      */
-    fun uploadImgs(uploadUrl: String, filePaths: List<String>): Observable<ResponseBody> {
-        return UploadRetrofit.uploadImgs(uploadUrl, filePaths)
+    fun uploadImgs(uploadUrl: String, filePaths: List<String>, fileName: String): Observable<ResponseBody> {
+        return UploadRetrofit.uploadImgs(uploadUrl, filePaths, fileName)
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.yyxnb.yyxarch.utils
 
 import android.app.Activity
+import java.lang.ref.WeakReference
 import java.util.*
 
 
@@ -10,91 +11,107 @@ import java.util.*
  */
 object ActivityStack {
 
-    private var activityStack: Stack<Activity>? = null
+    private var mActivityStack: Stack<WeakReference<Activity>>? = null
 
     /**
      * 获取当前Activity栈中元素个数
      */
     val count: Int
-        get() = activityStack!!.size
+        get() = mActivityStack!!.size
 
     /**
      * 添加Activity到栈
+     * @param activity
      */
     fun addActivity(activity: Activity) {
-        if (activityStack == null) {
-            activityStack = Stack()
+        if (mActivityStack == null) {
+            mActivityStack = Stack()
         }
-        activityStack!!.add(activity)
+        mActivityStack!!.add(WeakReference(activity))
     }
 
     /**
-     * 获取当前Activity（栈顶Activity）
+     * 检查弱引用是否释放，若释放，则从栈中清理掉该元素
      */
-    fun topActivity(): Activity? {
-        if (activityStack == null) {
-            throw NullPointerException(
-                    "Activity stack is Null,your Activity must extend BaseActivity")
-        }
-        return if (activityStack!!.isEmpty()) {
-            null
-        } else activityStack!!.lastElement()
-    }
-
-    /**
-     * 获取当前Activity（栈顶Activity） 没有找到则返回null
-     */
-    fun findActivity(cls: Class<*>): Activity? {
-        var activity: Activity? = null
-        for (aty in activityStack!!) {
-            if (aty.javaClass == cls) {
-                activity = aty
-                break
+    fun checkWeakReference() {
+        if (mActivityStack != null) {
+            // 使用迭代器进行安全删除
+            val it = mActivityStack!!.iterator()
+            while (it.hasNext()) {
+                val activityReference = it.next()
+                val temp = activityReference.get()
+                if (temp == null) {
+                    it.remove()
+                }
             }
         }
-        return activity
     }
 
     /**
-     * 结束当前Activity（栈顶Activity）
+     * 获取当前Activity（栈中最后一个压入的）
+     * @return
+     */
+    fun currentActivity(): Activity? {
+        checkWeakReference()
+        return if (mActivityStack != null && !mActivityStack!!.isEmpty()) {
+            mActivityStack!!.lastElement().get()
+        } else null
+    }
+
+    /**
+     * 关闭当前Activity（栈中最后一个压入的）
      */
     fun finishActivity() {
-        val activity = activityStack!!.lastElement()
-        finishActivity(activity)
+        val activity = currentActivity()
+        if (activity != null) {
+            finishActivity(activity)
+        }
     }
 
     /**
-     * 结束指定的Activity(重载)
+     * 关闭指定的Activity
+     * @param activity
      */
     fun finishActivity(activity: Activity?) {
-        var activity = activity
-        if (activity != null) {
-            activityStack!!.remove(activity)
-            // activity.finish();//此处不用finish
-            activity = null
-        }
-    }
-
-    /**
-     * 结束指定的Activity(重载)
-     */
-    fun finishActivity(cls: Class<*>) {
-        for (activity in activityStack!!) {
-            if (activity.javaClass == cls) {
-                finishActivity(activity)
+        if (activity != null && mActivityStack != null) {
+            // 使用迭代器进行安全删除
+            val it = mActivityStack!!.iterator()
+            while (it.hasNext()) {
+                val activityReference = it.next()
+                val temp = activityReference.get()
+                // 清理掉已经释放的activity
+                if (temp == null) {
+                    it.remove()
+                    continue
+                }
+                if (temp === activity) {
+                    it.remove()
+                }
             }
+            activity.finish()
         }
     }
 
     /**
-     * 关闭除了指定activity以外的全部activity 如果cls不存在于栈中，则栈全部清空
-     *
+     * 关闭指定类名的所有Activity
      * @param cls
      */
-    fun finishOthersActivity(cls: Class<*>) {
-        for (activity in activityStack!!) {
-            if (activity.javaClass != cls) {
-                finishActivity(activity)
+    fun finishActivity(cls: Class<*>) {
+        if (mActivityStack != null) {
+            // 使用迭代器进行安全删除
+            val it = mActivityStack!!.iterator()
+            while (it.hasNext()) {
+                val activityReference = it.next()
+                val activity = activityReference.get()
+                // 清理掉已经释放的activity
+                if (activity == null) {
+                    it.remove()
+                    continue
+                }
+                if (activity.javaClass == cls) {
+                    it.remove()
+                    activity.finish()
+                }
             }
         }
     }
@@ -103,30 +120,27 @@ object ActivityStack {
      * 结束所有Activity
      */
     fun finishAllActivity() {
-        var i = 0
-        val size = activityStack!!.size
-        while (i < size) {
-            if (null != activityStack!![i]) {
-                activityStack!![i].finish()
+        if (mActivityStack != null) {
+            for (activityReference in mActivityStack!!) {
+                val activity = activityReference.get()
+                activity?.finish()
             }
-            i++
+            mActivityStack!!.clear()
         }
-        activityStack!!.clear()
     }
 
-
     /**
-     * 应用程序退出
+     * 退出应用程序
      */
-    fun appExit() {
+    fun exitApp() {
         try {
             finishAllActivity()
-            //退出JVM(java虚拟机),释放所占内存资源,0表示正常退出(非0的都为异常退出)
+            // 退出JVM,释放所占内存资源,0表示正常退出
             System.exit(0)
-            //从操作系统中结束掉当前程序的进程
+            // 从系统中kill掉应用程序
             android.os.Process.killProcess(android.os.Process.myPid())
         } catch (e: Exception) {
-            System.exit(-1)
+            e.printStackTrace()
         }
 
     }
