@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
-import com.yyxnb.yyxarch.base.BaseFragment;
+import com.yyxnb.yyxarch.annotation.LceeStatus;
+import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
+import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +19,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TwoFragment extends BaseFragment {
+public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
 
     private TextView tvShow;
     private String hehe;
@@ -48,11 +50,35 @@ public class TwoFragment extends BaseFragment {
 //            startFragment(OneFragment.newInstance());
             Bundle bundle = new Bundle();
             bundle.putString("msg", "哈哈哈 " + new Random().nextInt(100));
-            setResult(RESULT_OK,bundle);
+            setResult(RESULT_OK, bundle);
             finish();
         });
 
         tvShow.setText(hehe);
+    }
+
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+
+        mViewModel.getTeam2().observe(this, baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("two Content " + LceeStatus.Content);
+                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("two Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("two Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("two Loading " + LceeStatus.Loading);
+                    break;
+            }
+        });
     }
 
     public static TwoFragment newInstance() {
@@ -61,13 +87,6 @@ public class TwoFragment extends BaseFragment {
         TwoFragment fragment = new TwoFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
     }
 
 }

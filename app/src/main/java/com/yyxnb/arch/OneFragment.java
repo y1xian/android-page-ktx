@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
-import com.yyxnb.yyxarch.base.BaseFragment;
+import com.yyxnb.yyxarch.annotation.LceeStatus;
+import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
 import com.yyxnb.yyxarch.utils.ToastUtils;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
@@ -17,7 +18,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OneFragment extends BaseFragment {
+public class OneFragment extends BaseMvvmFragment<TestViewModel> {
 
     private TextView tvShow;
     private TextView tvShow2;
@@ -123,6 +124,30 @@ public class OneFragment extends BaseFragment {
 //            ToastUtils.INSTANCE.normal("0x22");
 //        }
 //    }
+
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+
+        mViewModel.getTeam2().observe(this, baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("one Content " + LceeStatus.Content);
+                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("one Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("one Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("one Loading " + LceeStatus.Loading);
+                    break;
+            }
+        });
+    }
 
     @Override
     public void onFragmentResult(int requestCode, int resultCode, @NotNull Bundle result) {

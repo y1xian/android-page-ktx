@@ -21,7 +21,7 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
+        mViewModel = initViewModel(AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
     }
 
@@ -31,8 +31,8 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
      *
      * @return ViewModel
      */
-    private fun initViewModel(targetFragment: BaseFragment, modelClass: Class<VM>): VM {
-        return ViewModelProviders.of(targetFragment).get(modelClass)
+    private fun initViewModel(modelClass: Class<VM>): VM {
+        return ViewModelProviders.of(mActivity).get(modelClass)
     }
 
     override fun onDestroy() {

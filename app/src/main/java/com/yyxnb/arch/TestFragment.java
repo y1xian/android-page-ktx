@@ -43,8 +43,8 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
 
 
-        mViewModel.reqTeam();
-//        mViewModel.reqTeam2();
+//        mViewModel.reqTeam();
+        mViewModel.reqTeam2();
 
 
 //        DownloadRetrofit.INSTANCE.downloadFile("http")

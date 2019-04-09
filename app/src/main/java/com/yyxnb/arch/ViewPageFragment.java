@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 
+import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.BaseFragmentStatePagerAdapter;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
@@ -97,22 +98,28 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
         LogUtils.INSTANCE.w("onInVisible");
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void initViewObservable() {
+        super.initViewObservable();
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
+        mViewModel.getTeam2().observe(this, baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+//                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("vp Content " + baseDataLcee.getData().getResult().get(0).getContent());
+                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("vp Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("vp Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("vp Loading " + LceeStatus.Loading);
+                    break;
+            }
+        });
     }
 
     public static ViewPageFragment newInstance() {
