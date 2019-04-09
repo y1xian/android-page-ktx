@@ -2,6 +2,8 @@ package com.yyxnb.yyxarch
 
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -9,12 +11,19 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Build.BRAND
 import android.provider.Settings
 import android.support.annotation.StringRes
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.tencent.mmkv.MMKV
+import com.yyxnb.yyxarch.AppUtils.isHuawei
+import com.yyxnb.yyxarch.AppUtils.isOppo
+import com.yyxnb.yyxarch.AppUtils.isVivo
+import com.yyxnb.yyxarch.AppUtils.isXiaomi
 import com.yyxnb.yyxarch.utils.ToastUtils
 import java.lang.ref.WeakReference
 import java.lang.reflect.ParameterizedType
@@ -322,11 +331,162 @@ object AppUtils {
 
     }
 
+    fun hideSoftInput(view: View?) {
+        if (view == null || view.context == null) return
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
     fun <T> checkNotNull(reference: T?): T {
         if (reference == null) {
             throw NullPointerException()
         }
         return reference
     }
+
+    fun toGrey(rgb: Int): Int {
+        val blue = rgb and 0x000000FF
+        val green = rgb and 0x0000FF00 shr 8
+        val red = rgb and 0x00FF0000 shr 16
+        return red * 38 + green * 75 + blue * 15 shr 7
+    }
+
+    //检测是否刘海平
+
+    @Volatile
+    private var sHasCheckCutout: Boolean = false
+    @Volatile
+    private var sIsCutout: Boolean = false
+
+    private val NOTCH_IN_SCREEN_VOIO = 0x00000020//是否有凹槽
+    private val ROUNDED_IN_SCREEN_VOIO = 0x00000008//是否有圆角
+
+    private val MIUI_NOTCH = "ro.miui.notch"
+
+    private val BRAND = Build.BRAND.toLowerCase()
+
+    fun isHuawei(): Boolean = BRAND.contains("huawei") || BRAND.contains("honor")
+
+    fun isXiaomi(): Boolean = Build.MANUFACTURER.toLowerCase() == "xiaomi"
+
+    fun isVivo(): Boolean = BRAND.contains("vivo") || BRAND.contains("bbk")
+
+    fun isOppo(): Boolean = BRAND.contains("oppo")
+
+
+    // 是否刘海屏
+    fun isCutout(activity: Activity): Boolean {
+        if (sHasCheckCutout) {
+            return sIsCutout
+        }
+
+        sHasCheckCutout = true
+
+        // 低于 API 27 的，都不会是刘海屏、凹凸屏
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+            sIsCutout = false
+            return false
+        }
+
+        sIsCutout = isHuaweiCutout(activity) || isOppoCutout(activity) || isVivoCutout(activity) || isXiaomiCutout(activity)
+
+        if (!isGoogleCutoutSupport()) {
+            return sIsCutout
+        }
+
+        if (!sIsCutout) {
+            val window = activity.window
+                    ?: throw IllegalStateException("activity has not attach to window")
+            val decorView = window.decorView
+            sIsCutout = attachHasOfficialNotch(decorView)
+        }
+
+        return sIsCutout
+    }
+
+    @TargetApi(28)
+    private fun attachHasOfficialNotch(view: View): Boolean {
+        val windowInsets = view.rootWindowInsets
+        if (windowInsets != null) {
+            val displayCutout = windowInsets.displayCutout
+            return displayCutout != null
+        } else {
+            throw IllegalStateException("activity has not yet attach to window, you must call `isCutout` after `Activity#onAttachedToWindow` is called.")
+        }
+    }
+
+    fun isHuaweiCutout(context: Context): Boolean {
+        if (!isHuawei()) {
+            return false
+        }
+
+        var ret = false
+        try {
+            val cl = context.classLoader
+            val HwNotchSizeUtil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil")
+            val get = HwNotchSizeUtil.getMethod("hasNotchInScreen")
+            ret = get.invoke(HwNotchSizeUtil) as Boolean
+        } catch (e: Exception) {
+            // ignore
+        }
+
+        return ret
+    }
+
+    fun isOppoCutout(context: Context): Boolean {
+        return if (!isOppo()) {
+            false
+        } else context.packageManager.hasSystemFeature("com.oppo.feature.screen.heteromorphism")
+    }
+
+
+    fun isVivoCutout(context: Context): Boolean {
+        if (!isVivo()) {
+            return false
+        }
+
+        var ret = false
+
+        try {
+            val cl = context.classLoader
+            val ftFeature = cl.loadClass("android.util.FtFeature")
+            val methods = ftFeature.declaredMethods
+            if (methods != null) {
+                for (i in methods.indices) {
+                    val method = methods[i]
+                    if (method.name.equals("isFeatureSupport", ignoreCase = true)) {
+                        ret = method.invoke(ftFeature, NOTCH_IN_SCREEN_VOIO) as Boolean
+                        break
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // ignore
+        }
+
+        return ret
+    }
+
+
+    @SuppressLint("PrivateApi")
+    fun isXiaomiCutout(context: Context): Boolean {
+        if (!isXiaomi()) {
+            return false
+        }
+        try {
+            val spClass = Class.forName("android.os.SystemProperties")
+            val getMethod = spClass.getDeclaredMethod("getInt", String::class.java, Int::class.javaPrimitiveType)
+            getMethod.isAccessible = true
+            val hasNotch = getMethod.invoke(null, MIUI_NOTCH, 0) as Int
+            return hasNotch == 1
+        } catch (e: Exception) {
+            // ignore
+        }
+
+        return false
+    }
+
+    fun isGoogleCutoutSupport(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+
 
 }
