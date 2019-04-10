@@ -37,7 +37,6 @@ public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
 
         tvShow = fv(R.id.tvShow);
 

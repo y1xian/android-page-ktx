@@ -12,13 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
- * Description:
+ * Description: BaseActivity
  *
  * @author : yyx
  * @date : 2018/6/10
  */
 abstract class BaseActivity : AppCompatActivity() {
-
 
     protected val TAG = javaClass.canonicalName
 
@@ -59,12 +58,12 @@ abstract class BaseActivity : AppCompatActivity() {
      *
      * @return 布局layout的id
      */
-    protected abstract fun initLayoutResID(): Int
+    abstract fun initLayoutResID(): Int
 
     /**
      * 初始化
      */
-    open fun initView(savedInstanceState: Bundle?) {}
+    abstract fun initView(savedInstanceState: Bundle?)
 
     /**
      * 初始化界面观察者的监听

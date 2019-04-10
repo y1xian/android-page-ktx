@@ -20,7 +20,7 @@ import java.util.List;
 public class ContentViewFragment extends BaseFragment implements View.OnClickListener {
 
     /**
-     * 四个导航按钮
+     * 导航按钮
      */
     private Button buttonOne;
     private Button buttonTwo;
@@ -47,7 +47,6 @@ public class ContentViewFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
         buttonOne = fv(R.id.btn_one);
         buttonTwo = fv(R.id.btn_two);
         buttonThree = fv(R.id.btn_three);

@@ -14,9 +14,9 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
     protected lateinit var mViewModel: VM
 
     override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
         mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
+        initViewObservable()
     }
 
     /**

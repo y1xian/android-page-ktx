@@ -53,7 +53,6 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
         buttonOne = fv(R.id.btn_one);
         buttonTwo = fv(R.id.btn_two);
         buttonThree = fv(R.id.btn_three);

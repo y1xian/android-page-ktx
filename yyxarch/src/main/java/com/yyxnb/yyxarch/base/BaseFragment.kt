@@ -23,7 +23,7 @@ import com.yyxnb.yyxarch.common.AppConfig
  * Description:
  *
  * @author : yyx
- * @date ：2018/6/10
+ * @date ：206/10
  */
 abstract class BaseFragment : Fragment() {
 
@@ -136,7 +136,9 @@ abstract class BaseFragment : Fragment() {
     /**
      * 当界面不可见时的操作
      */
-    open fun onInVisible() {AppUtils.debugLog("onInVisible ${javaClass.simpleName}")}
+    open fun onInVisible() {
+        AppUtils.debugLog("onInVisible ${javaClass.simpleName}")
+    }
 
     /**
      * 用户可见变化回调
@@ -178,7 +180,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * 初始化控件
      */
-    open fun initView(savedInstanceState: Bundle?) {}
+    abstract fun initView(savedInstanceState: Bundle?)
 
     /**
      * 初始化复杂数据 懒加载
@@ -209,6 +211,9 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        if (view != null) {
+            AppUtils.hideSoftInput(view)
+        }
         super.onDestroyView()
         mIsVisible = false
         mIsPrepared = false
@@ -222,12 +227,12 @@ abstract class BaseFragment : Fragment() {
         if (fragment == null) {
             return false
         }
-        if (fragment.parentFragment != null ) {
-            return if (fragment.parentFragment is BaseFragment){
+        if (fragment.parentFragment != null) {
+            return if (fragment.parentFragment is BaseFragment) {
                 isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
-            }else if (fragment.parentFragment is DialogFragment){
+            } else if (fragment.parentFragment is DialogFragment) {
                 true
-            }else{
+            } else {
                 if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
             }
         }

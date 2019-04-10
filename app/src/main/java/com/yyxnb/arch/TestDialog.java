@@ -1,6 +1,6 @@
 package com.yyxnb.arch;
 
-import android.view.View;
+import android.os.Bundle;
 
 import com.yyxnb.yyxarch.utils.FragmentUtils;
 import com.yyxnb.yyxarch.utils.ScreenUtils;
@@ -9,19 +9,19 @@ import com.yyxnb.yyxarch.utils.dialog.BaseSheetDialog;
 public class TestDialog extends BaseSheetDialog {
 
     private TestViewModel mViewModel;
-    private boolean isFirst = true;
 
     @Override
-    public int initLayoutId() {
+    public int initLayoutResID() {
         return R.layout.dialog_test_layout;
     }
 
     @Override
-    public void initViews(View view) {
+    public void initView(Bundle savedInstanceState) {
 
-        setDimAmount(0f).setHeight((int) (ScreenUtils.INSTANCE.getScreenHeight() * 0.7f));
+        setDimAmount(0.5f).setHeight((int) (ScreenUtils.INSTANCE.getScreenHeight() * 0.7f));
 
-        FragmentUtils.add(getChildFragmentManager(), ViewPageFragment.newInstance(), R.id.mFrameLayout);
+        FragmentUtils.add(getChildFragmentManager(), ViewPageFragment.newInstance(), R.id.mFrameLayout1);
+//        FragmentUtils.add(getChildFragmentManager(), ContentViewFragment.newInstance(), R.id.mFrameLayout1);
 
 //        mViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
 //

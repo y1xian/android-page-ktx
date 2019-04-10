@@ -33,7 +33,6 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
 
 //        LogUtils.INSTANCE.w("initView");
 
@@ -93,7 +92,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mViewModel.reqTeam();
+//                mViewModel.reqTeam();
                 mViewModel.reqTeam2();
             }
         });
@@ -134,7 +133,7 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
 
 
         TestDialog dialog = new TestDialog();
-        dialog.show(getFragmentManager());
+        dialog.show(getChildFragmentManager());
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -149,10 +148,6 @@ public class TestFragment extends BaseMvvmFragment<TestViewModel> {
             }
         });
 
-//        if (isFirst){
-//            isFirst = false;
-//            mViewModel.reqTeam();
-//        }
 
 
 //        LiveDataExtKt.toReactiveStream(getMViewModel().getTeam(), RxSchedulers.INSTANCE.getUi())

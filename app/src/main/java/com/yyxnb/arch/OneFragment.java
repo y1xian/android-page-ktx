@@ -38,34 +38,8 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
         tvShow = fv(R.id.tvShow);
         tvShow2 = fv(R.id.tvShow2);
-
-
-//        RxHttpUtils.Companion.uploadImg("", "")
-//                .compose(RxTransformerUtil.INSTANCE.<ResponseBody>switchSchedulers())
-//                .subscribe(new CommonObserver<ResponseBody>() {
-//                    @Override
-//                    protected void onError(String errorMsg) {
-//                        Log.e("allen", "上传失败: " + errorMsg);
-//                    }
-//
-//                    @Override
-//                    protected void onSuccess(ResponseBody responseBody) {
-//                        try {
-//                            Log.e("allen", "上传完毕: " + responseBody.string());
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-
-//        LogUtils.INSTANCE.w(" " + NetworkUtils.INSTANCE.ping("www.baidu.com",3));
-
-//        RetrofitManager.INSTANCE.createApi(api.class).getTeam2().await()
-
-
 
     }
 

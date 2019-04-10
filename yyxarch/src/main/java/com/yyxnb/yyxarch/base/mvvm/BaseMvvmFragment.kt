@@ -19,8 +19,8 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
      */
     protected lateinit var mViewModel: VM
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         mViewModel = initViewModel(AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
     }

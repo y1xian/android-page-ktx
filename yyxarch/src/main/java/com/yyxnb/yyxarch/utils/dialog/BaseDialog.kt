@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.annotation.StyleRes
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.*
 import com.yyxnb.yyxarch.R
@@ -21,8 +23,7 @@ import java.util.*
  */
 abstract class BaseDialog : AppCompatDialogFragment() {
 
-    @LayoutRes
-    protected var mLayoutRes: Int = 0
+    protected var rootView: View? = null
 
     /**
      * 点击外部是否可取消
@@ -34,7 +35,6 @@ abstract class BaseDialog : AppCompatDialogFragment() {
     /**
      * 阴影透明度 默认0.5f
      */
-//    @FloatRange(from = 0.0, to = 1.0)
     protected var mDimAmount = DEFAULT_DIM_AMOUNT
 
     protected var mHeight = DEFAULT_WH
@@ -53,7 +53,7 @@ abstract class BaseDialog : AppCompatDialogFragment() {
     private var mOnCancelListener: DialogInterface.OnCancelListener? = null
     private var mOnDismissListener: DialogInterface.OnDismissListener? = null
 
-    protected var mActivity: FragmentActivity? = null
+    protected lateinit var mActivity: AppCompatActivity
 
     /**
      * 判断是否显示
@@ -63,17 +63,11 @@ abstract class BaseDialog : AppCompatDialogFragment() {
     val isShowing: Boolean
         get() = dialog != null && dialog.isShowing
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is FragmentActivity) {
-            mActivity = context as FragmentActivity?
-        }
+        mActivity = context as AppCompatActivity
     }
 
-    override fun onDestroy() {
-        mActivity = null
-        super.onDestroy()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,16 +76,15 @@ abstract class BaseDialog : AppCompatDialogFragment() {
         savedInstanceState?.let {
             mIsCancelOnTouchOutside = it.getBoolean(KEY_IS_CANCEL_ON_TOUCH_OUTSIDE, true)
             mDimAmount = it.getFloat(KEY_DIM_AMOUNT, DEFAULT_DIM_AMOUNT)
-            mHeight = it.getInt(KEY_HEIGHT, 0)
-            mWidth = it.getInt(KEY_WIDTH, 0)
+            mHeight = it.getInt(KEY_HEIGHT, DEFAULT_WH)
+            mWidth = it.getInt(KEY_WIDTH, DEFAULT_WH)
             mAnimationStyle = it.getInt(KEY_ANIMATION_STYLE, 0)
             mIsKeyboardEnable = it.getBoolean(KEY_IS_KEYBOARD_ENABLE, true)
-            mSoftInputMode = it.getInt(KEY_SOFT_INPUT_MODE, WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+            mSoftInputMode = it.getInt(KEY_SOFT_INPUT_MODE, WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
             mGravity = it.getInt(KEY_GRAVITY, Gravity.CENTER)
         }
 
         initArguments(arguments)
-        setLayoutRes(initLayoutId())
     }
 
     /**
@@ -125,12 +118,15 @@ abstract class BaseDialog : AppCompatDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(mLayoutRes, container, false)
+        if (null == rootView) {
+            rootView = inflater.inflate(initLayoutResID(), container, false)
+        }
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
+        initView(savedInstanceState)
     }
 
     override fun onStart() {
@@ -194,24 +190,15 @@ abstract class BaseDialog : AppCompatDialogFragment() {
      *
      * @return
      */
-    abstract fun initLayoutId(): Int
+    @LayoutRes
+    abstract fun initLayoutResID(): Int
 
     /**
      * 初始化 Views
      *
      * @param view
      */
-    abstract fun initViews(view: View)
-
-    /**
-     * 设置布局id
-     *
-     * @param layoutRes
-     * @return
-     */
-    fun setLayoutRes(@LayoutRes layoutRes: Int) {
-        this.mLayoutRes = layoutRes
-    }
+    abstract fun initView(savedInstanceState: Bundle?)
 
     /**
      * 显示Dialog
@@ -256,7 +243,7 @@ abstract class BaseDialog : AppCompatDialogFragment() {
      * @param dimAmount
      * @return
      */
-    fun setDimAmount(/*@FloatRange(from = 0.0, to = 1.0)*/ dimAmount: Float): BaseDialog {
+    fun setDimAmount(dimAmount: Float): BaseDialog {
         this.mDimAmount = dimAmount
         return this
     }
@@ -369,6 +356,10 @@ abstract class BaseDialog : AppCompatDialogFragment() {
         setOnDismissListener(null)
         //清除 onCancelListener 引用
         setOnCancelListener(null)
+    }
+
+    open fun <T> fv(@IdRes resId: Int): T {
+        return rootView!!.findViewById<View>(resId) as T
     }
 
     companion object {

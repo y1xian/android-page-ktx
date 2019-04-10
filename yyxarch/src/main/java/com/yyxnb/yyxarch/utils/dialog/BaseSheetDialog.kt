@@ -10,7 +10,10 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatDialog
-import android.view.*
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.widget.FrameLayout
 import com.yyxnb.yyxarch.utils.ScreenUtils
 import java.util.*
@@ -34,7 +37,6 @@ abstract class BaseSheetDialog : BaseDialog() {
     /**
      * 默认折叠高度 屏幕60%
      */
-//    @FloatRange(from = 0.0, to = 1.0)
     private var mDefaultHeight = 0.6f
 
     private var mIsTransparent = true
@@ -46,27 +48,16 @@ abstract class BaseSheetDialog : BaseDialog() {
      */
     private var mState = ViewPagerBottomSheetBehavior.STATE_EXPANDED
 
-    var behavior: ViewPagerBottomSheetBehavior<FrameLayout>? = null
-        private set
-
+    private var behavior: ViewPagerBottomSheetBehavior<FrameLayout>? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         //解决ViewPager + Fragment 无法滑动问题
         return ViewPagerBottomSheetDialog(Objects.requireNonNull<Context>(context))
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setLayoutRes(initLayoutId())
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(mLayoutRes, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
+        initView(savedInstanceState)
         //这样设置高度才会正确展示
         view.layoutParams = ViewGroup.LayoutParams(DEFAULT_WH, mHeight)
     }
@@ -197,7 +188,7 @@ abstract class BaseSheetDialog : BaseDialog() {
      * @param mDefaultHeight
      * @return
      */
-    fun setDefaultHeight(/*@FloatRange(from = 0.0f, to = 1.0f)*/ mDefaultHeight: Float): BaseSheetDialog {
+    fun setDefaultHeight(mDefaultHeight: Float): BaseSheetDialog {
         this.mDefaultHeight = mDefaultHeight
         return this
     }

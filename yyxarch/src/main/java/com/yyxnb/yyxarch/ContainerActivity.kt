@@ -22,7 +22,6 @@ class ContainerActivity : BaseActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        super.initView(savedInstanceState)
         if (null == savedInstanceState) {
 
             try {
