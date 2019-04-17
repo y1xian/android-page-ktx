@@ -1,14 +1,22 @@
 package com.yyxnb.yyxarch.base
 
-import android.app.Activity
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.transition.TransitionListenerAdapter
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
+import com.yyxnb.yyxarch.AppUtils
+import com.yyxnb.yyxarch.nav.FragmentHelper
+import com.yyxnb.yyxarch.nav.LifecycleDelegate
+import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.ActivityStack
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
@@ -19,23 +27,33 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 abstract class BaseActivity : AppCompatActivity() {
 
+
     protected val TAG = javaClass.canonicalName
 
-    private val generateViewId = android.view.View.generateViewId()
+    protected lateinit var mContext: Context
 
     protected var fragmentContainer: FrameLayout? = null
 
+    protected var delayToTransition = true
+
+    private val lifecycleDelegate = LifecycleDelegate(this)
+
+    private var hasFormerRoot: Boolean = false
+
+    private var statusBarTranslucent: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mFManager = supportFragmentManager
+        setStatusBarTranslucent(true)
+
+        mContext = this
 
         lifecycle.addObserver(Java8Observer)
 
         if (initLayoutResID() == 0) {
             fragmentContainer = FrameLayout(this)
-            fragmentContainer!!.id = generateViewId
+            fragmentContainer!!.id = android.R.id.content
             setContentView(fragmentContainer)
         } else {
             setContentView(initLayoutResID())
@@ -43,13 +61,41 @@ abstract class BaseActivity : AppCompatActivity() {
 
         initView(savedInstanceState)
 
+        if (delayToTransition) {
+            afterEnterTransition()
+        }
+
         initViewObservable()
 
         ActivityStack.addActivity(this)
     }
 
+    private var enterTransitionListener =
+            object : TransitionListenerAdapter(), android.transition.Transition.TransitionListener {
+                override fun onTransitionResume(transition: android.transition.Transition?) {}
+
+                override fun onTransitionPause(transition: android.transition.Transition?) {}
+
+                override fun onTransitionCancel(transition: android.transition.Transition?) {}
+
+                override fun onTransitionStart(transition: android.transition.Transition?) {}
+
+                override fun onTransitionEnd(transition: android.transition.Transition?) {
+                    initViewData()
+                }
+            }
+
+    private fun afterEnterTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.enterTransition.addListener(enterTransitionListener)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.enterTransition.removeListener(enterTransitionListener)
+        }
         ActivityStack.finishActivity(this)
     }
 
@@ -66,208 +112,168 @@ abstract class BaseActivity : AppCompatActivity() {
     abstract fun initView(savedInstanceState: Bundle?)
 
     /**
+     * 初始化复杂数据 懒加载
+     */
+    open fun initViewData() {}
+
+    /**
      * 初始化界面观察者的监听
      * 接收数据结果
      */
     open fun initViewObservable() {}
 
-
-    //*************************跳转*************
-
-    private lateinit var mFManager: FragmentManager
-    private val mAtomicInteger = AtomicInteger()
-    private val mFragmentStack = ArrayList<BaseFragment>()
-    private val mFragmentEntityMap = HashMap<BaseFragment, FragmentStackEntity>()
-
-    companion object {
-
-        val REQUEST_CODE_INVALID = -1
-
+    fun isStatusBarTranslucent(): Boolean {
+        return statusBarTranslucent
     }
 
-    open class FragmentStackEntity constructor() {
-        var isSticky = false
-        var requestCode = REQUEST_CODE_INVALID
-        var resultCode = Activity.RESULT_CANCELED
-        var result: Bundle? = null
-
-    }
-
-    fun <T : BaseFragment> fragment(fragmentClass: Class<T>): Fragment? {
-
-        return Fragment.instantiate(this, fragmentClass.canonicalName)
-    }
-
-    fun <T : BaseFragment> fragment(fragmentClass: Class<T>, bundle: Bundle): Fragment? {
-
-        return Fragment.instantiate(this, fragmentClass.canonicalName, bundle)
-    }
-
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param clazz 目标fragment class.
-     */
-    fun <T : BaseFragment> startFragment(clazz: Class<T>) {
-        try {
-            val targetFragment = clazz.newInstance()
-            startFragment<BaseFragment>(null, targetFragment, true, REQUEST_CODE_INVALID)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    //开启沉浸式
+    fun setStatusBarTranslucent(translucent: Boolean) {
+        if (statusBarTranslucent != translucent) {
+            statusBarTranslucent = translucent
+            AppUtils.setStatusBarTranslucent(window, translucent)
         }
-
     }
 
-    /**
-     * 跳转 fragment.
-     *
-     * @param clazz       目标fragment class.
-     * @param stickyStack 是否加入堆栈.
-     */
-    fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
-        try {
-            val targetFragment = clazz.newInstance()
-            startFragment<BaseFragment>(null, targetFragment, stickyStack, REQUEST_CODE_INVALID)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param targetFragment 目标fragment.
-     * @param T            [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(targetFragment: T) {
-        startFragment(null, targetFragment, true, REQUEST_CODE_INVALID)
-    }
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param targetFragment 目标fragment.
-     * @param stickyStack    是否加入堆栈.
-     * @param T            [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
-        startFragment(null, targetFragment, stickyStack, REQUEST_CODE_INVALID)
-    }
-
-    /**
-     * 跳转 fragment 返回结果.
-     *
-     * @param clazz       目标fragment.
-     * @param requestCode 请求码.
-     * @param T        [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
-        if (requestCode == REQUEST_CODE_INVALID)
-            throw IllegalArgumentException("The requestCode must be positive integer.")
-        try {
-            val targetFragment = clazz.newInstance()
-            startFragment<BaseFragment>(null, targetFragment, true, requestCode)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    /**
-     * 跳转 fragment 返回结果.
-     *
-     * @param targetFragment 目标fragment.
-     * @param requestCode    请求码.
-     * @param T            [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
-        if (requestCode == REQUEST_CODE_INVALID)
-            throw IllegalArgumentException("The requestCode must be positive integer.")
-        startFragment(null, targetFragment, true, requestCode)
-    }
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param thisFragment 当前fragment.
-     * @param thatFragment 目标fragment.
-     * @param stickyStack  是否加入堆栈.
-     * @param requestCode  请求码.
-     * @param T          [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(thisFragment: T?, thatFragment: T,
-                                         stickyStack: Boolean, requestCode: Int) {
-        var fragmentTransaction = mFManager.beginTransaction()
-        if (thisFragment != null) {
-            val thisStackEntity = mFragmentEntityMap[thisFragment]
-            if (thisStackEntity != null) {
-                if (thisStackEntity.isSticky) {
-                    thisFragment.onPause()
-                    thisFragment.onStop()
-                    fragmentTransaction.hide(thisFragment)
-                } else {
-                    fragmentTransaction.remove(thisFragment).commit()
-                    fragmentTransaction.commitNow()
-                    fragmentTransaction = mFManager.beginTransaction()
-
-                    mFragmentEntityMap.remove(thisFragment)
-                    mFragmentStack.remove(thisFragment)
-                }
+    fun getFragmentsAtAddedList(): List<BaseFragment> {
+        val children = ArrayList<BaseFragment>()
+        val fragments = supportFragmentManager.fragments
+        var i = 0
+        val size = fragments.size
+        while (i < size) {
+            val fragment = fragments[i]
+            if (fragment is BaseFragment) {
+                children.add(fragment as BaseFragment)
             }
+            i++
         }
-
-        val fragmentTag = thatFragment.javaClass.canonicalName!! + mAtomicInteger.incrementAndGet()
-
-        if (initLayoutResID() == 0) {
-            fragmentTransaction.add(fragmentContainer!!.id, thatFragment, fragmentTag)
-        } else {
-            fragmentTransaction.add(initLayoutResID(), thatFragment, fragmentTag)
-        }
-
-        fragmentTransaction.addToBackStack(fragmentTag)
-        fragmentTransaction.commit()
-
-        val fragmentStackEntity = FragmentStackEntity()
-        fragmentStackEntity.isSticky = stickyStack
-        fragmentStackEntity.requestCode = requestCode
-        thatFragment.setStackEntity(fragmentStackEntity)
-        mFragmentEntityMap[thatFragment] = fragmentStackEntity
-
-        mFragmentStack.add(thatFragment)
-    }
-
-    /**
-     * 回退
-     */
-    private fun onBackStackFragment(): Boolean {
-        if (mFragmentStack.size > 1) {
-            mFManager.popBackStack()
-            val inFragment = mFragmentStack[mFragmentStack.size - 2]
-
-            val fragmentTransaction = mFManager.beginTransaction()
-            fragmentTransaction.show(inFragment)
-            fragmentTransaction.commit()
-
-            val outFragment = mFragmentStack[mFragmentStack.size - 1]
-            inFragment.onResume()
-
-            val stackEntity = mFragmentEntityMap[outFragment]
-            mFragmentStack.remove(outFragment)
-            mFragmentEntityMap.remove(outFragment)
-
-            if (stackEntity!!.requestCode != REQUEST_CODE_INVALID && stackEntity.resultCode != Activity.RESULT_CANCELED) {
-                inFragment.onFragmentResult(stackEntity.requestCode, stackEntity.resultCode, stackEntity.result)
-            }
-            return true
-        }
-        return false
+        return children
     }
 
     override fun onBackPressed() {
-        if (!onBackStackFragment()) {
-            finish()
+        val fragmentManager = supportFragmentManager
+        val count = fragmentManager.backStackEntryCount
+        if (count > 0) {
+            val entry = fragmentManager.getBackStackEntryAt(count - 1)
+            val fragment = fragmentManager.findFragmentByTag(entry.name) as BaseFragment?
+            if (fragment != null && fragment.isAdded && !fragment.dispatchBackPressed()) {
+                if (count == 1) {
+                    if (!handleBackPressed()) {
+                        ActivityCompat.finishAfterTransition(this)
+                    }
+                } else {
+                    dismissFragment(fragment)
+                }
+            }
+        } else {
+            super.onBackPressed()
         }
     }
+
+    protected fun handleBackPressed(): Boolean {
+        return false
+    }
+
+    fun presentFragment(fragment: BaseFragment) {
+        scheduleTaskAtStarted(Runnable { presentFragmentInternal(fragment) }, true)
+    }
+
+    private fun presentFragmentInternal(fragment: BaseFragment) {
+        FragmentHelper.addFragmentToBackStack(supportFragmentManager, android.R.id.content, fragment, PresentAnimation.Push)
+    }
+
+    fun dismissFragment(fragment: BaseFragment) {
+        scheduleTaskAtStarted(Runnable { dismissFragmentInternal(fragment) }, true)
+    }
+
+    private fun dismissFragmentInternal(fragment: BaseFragment) {
+        if (!fragment.isAdded) {
+            return
+        }
+        val fragmentManager = supportFragmentManager
+        FragmentHelper.executePendingTransactionsSafe(fragmentManager)
+
+        val topFragment = fragmentManager.findFragmentById(android.R.id.content) as BaseFragment?
+                ?: return
+        topFragment.setAnimation(PresentAnimation.Push)
+        val presented = getPresentedFragment(fragment)
+        if (presented != null) {
+            fragment.setAnimation(PresentAnimation.Push)
+            topFragment.userVisibleHint = false
+            topFragment.onHiddenChanged(true)
+            supportFragmentManager.popBackStack(presented.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            FragmentHelper.executePendingTransactionsSafe(supportFragmentManager)
+            fragment.onFragmentResult(topFragment.getRequestCode(), topFragment.getResultCode(), topFragment.getResultData())
+        } else {
+            val presenting = getPresentingFragment(fragment)
+            presenting?.setAnimation(PresentAnimation.Push)
+            fragment.userVisibleHint = false
+            if (presenting == null) {
+                ActivityCompat.finishAfterTransition(this)
+            } else {
+                fragmentManager.popBackStack(fragment.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                FragmentHelper.executePendingTransactionsSafe(fragmentManager)
+                presenting.onFragmentResult(fragment.getRequestCode(), fragment.getResultCode(), fragment.getResultData())
+            }
+        }
+    }
+
+    fun getPresentedFragment(fragment: BaseFragment): BaseFragment? {
+        return FragmentHelper.getLatterFragment(supportFragmentManager, fragment)
+    }
+
+    fun getPresentingFragment(fragment: BaseFragment): BaseFragment? {
+        return FragmentHelper.getAheadFragment(supportFragmentManager, fragment)
+    }
+
+    @JvmOverloads
+    fun startActivityRootFragment(rootFragment: BaseFragment, containerId: Int = android.R.id.content) {
+        scheduleTaskAtStarted(Runnable { setRootFragmentInternal(rootFragment, containerId) })
+    }
+
+    private fun setRootFragmentInternal(fragment: BaseFragment, containerId: Int) {
+        val fragmentManager = supportFragmentManager
+        val count = fragmentManager.backStackEntryCount
+        if (count > 0) {
+            val tag = fragmentManager.getBackStackEntryAt(0).name
+            val former = fragmentManager.findFragmentByTag(tag) as BaseFragment?
+            if (former != null && former.isAdded) {
+                former.setAnimation(PresentAnimation.Push)
+                fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                hasFormerRoot = true
+            }
+        }
+
+        val transaction = fragmentManager.beginTransaction()
+        transaction.setReorderingAllowed(true)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        fragment.setAnimation(PresentAnimation.None)
+        transaction.add(containerId, fragment, fragment.getSceneId())
+        transaction.addToBackStack(fragment.getSceneId())
+        transaction.commit()
+    }
+
+    fun clearFragments() {
+        val fragmentManager = supportFragmentManager
+        val count = fragmentManager.backStackEntryCount
+        if (count > 0) {
+            window.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+
+            val tag = fragmentManager.getBackStackEntryAt(0).name
+            val former = fragmentManager.findFragmentByTag(tag) as BaseFragment?
+            if (former != null && former.isAdded) {
+                former.setAnimation(PresentAnimation.Push)
+                fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
+    }
+
+    fun activityHasFormerRoot(): Boolean {
+        return hasFormerRoot
+    }
+
+    @JvmOverloads
+    protected fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false) {
+        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred)
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.vm;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
@@ -6,6 +6,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
+import com.yyxnb.arch.BaseDatas;
+import com.yyxnb.arch.TestData;
 import com.yyxnb.yyxarch.base.mvvm.BaseViewModel;
 import com.yyxnb.yyxarch.bean.Lcee;
 

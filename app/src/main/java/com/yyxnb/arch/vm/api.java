@@ -1,4 +1,8 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.vm;
+
+import com.yyxnb.arch.ApiConstant;
+import com.yyxnb.arch.BaseDatas;
+import com.yyxnb.arch.TestData;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.vm;
 
 import android.arch.lifecycle.LiveData;
 

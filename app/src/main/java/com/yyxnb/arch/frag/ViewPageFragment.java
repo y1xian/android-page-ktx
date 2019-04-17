@@ -1,4 +1,4 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.frag;
 
 
 import android.os.Bundle;
@@ -7,10 +7,10 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 
-import com.yyxnb.yyxarch.annotation.LceeStatus;
+import com.yyxnb.arch.R;
+import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.base.BaseFragmentStatePagerAdapter;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
-import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -42,9 +42,9 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
     /**
      * Fragment
      */
-    private TestFragment testFragment;
     private OneFragment oneFragment;
     private TwoFragment twoFragment;
+    private ThreeFragment threeFragment;
 
     @Override
     public int initLayoutResID() {
@@ -72,53 +72,15 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
         fragmentList = new ArrayList<Fragment>();
         oneFragment = new OneFragment();
         twoFragment = new TwoFragment();
-        testFragment = new TestFragment();
+        threeFragment = new ThreeFragment();
 
         fragmentList.add(oneFragment);
         fragmentList.add(twoFragment);
-        fragmentList.add(testFragment);
+        fragmentList.add(threeFragment);
 
         mViewPager.setOffscreenPageLimit(fragmentList.size() - 1);
         mViewPager.setAdapter(new BaseFragmentStatePagerAdapter(getChildFragmentManager(),fragmentList));
 
-//        LogUtils.INSTANCE.w(" " + isSingleFragment() + " , " + getClass().getSimpleName());
-        LogUtils.INSTANCE.w("initViewData");
-    }
-
-    @Override
-    public void onVisible() {
-        super.onVisible();
-        LogUtils.INSTANCE.w("onVisible");
-    }
-
-    @Override
-    public void onInVisible() {
-        super.onInVisible();
-        LogUtils.INSTANCE.w("onInVisible");
-    }
-
-
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-
-        mViewModel.getTeam2().observe(this, baseDataLcee -> {
-            switch (baseDataLcee.getStatus()) {
-                case LceeStatus.Content:
-//                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
-                    LogUtils.INSTANCE.i("vp Content " + baseDataLcee.getData().getResult().get(0).getContent());
-                    break;
-                case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("vp Empty");
-                    break;
-                case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("vp Error");
-                    break;
-                case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("vp Loading " + LceeStatus.Loading);
-                    break;
-            }
-        });
     }
 
     public static ViewPageFragment newInstance() {
@@ -135,7 +97,7 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
         switch (v.getId()) {
             case R.id.btn_one:
 //                changeView(0);
-                setResult(0x2);
+//                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.btn_two:

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yyxnb.arch.ViewPageFragment">
+    tools:context="com.yyxnb.arch.frag.ViewPageFragment">
 
     <!-- 底部四个导航按钮 -->
     <LinearLayout

@@ -1,16 +1,19 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.frag;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
+import com.yyxnb.arch.R;
+import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
 import com.yyxnb.yyxarch.utils.ToastUtils;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -22,6 +25,7 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
 
     private TextView tvShow;
     private TextView tvShow2;
+    private TextView textView;
     private String msg;
 
     @Override
@@ -40,6 +44,7 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
     public void initView(Bundle savedInstanceState) {
         tvShow = fv(R.id.tvShow);
         tvShow2 = fv(R.id.tvShow2);
+        textView = fv(R.id.textView);
 
     }
 
@@ -47,17 +52,21 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
     public void initViewData() {
         super.initViewData();
         tvShow.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
+            Bundle bundle = initArguments();
             bundle.putString("hehe", "呵呵哒");
-            startFragmentForResult(fragment(TwoFragment.class, bundle), 0x11);
+//            startFragment(fragment(new TwoFragment(), bundle), 0x666);
 
-//            startFragment(TwoFragment.class);
+            startFragment(new TwoFragment(), 0x666);
+
+//            startFragment(fragment(new TwoFragment(), bundle));
+
+//            startFragment(new TwoFragment());
 //            ToastUtils.INSTANCE.normal( ""+ ActivityStack.INSTANCE.topActivity());
         });
 
 
-        if (mActivity.getIntent().getExtras() != null){
-            msg = mActivity.getIntent().getExtras().getString("msg", "空");
+        if (getMActivity().getIntent().getExtras() != null) {
+            msg = getMActivity().getIntent().getExtras().getString("msg", "空");
         }
 
 
@@ -66,38 +75,27 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
         tvShow2.setOnClickListener(v -> {
 //            startFragment(ViewPageFragment.class);
 
-            startFragmentForResult(ViewPageFragment.class, 0x22);
+//            startFragmentForResult(new ContentViewFragment(), 0x22);
+//            startFragmentForResult(new ViewPageFragment(), 0x22);
+
+//            NavigationFragment navigationFragment = new NavigationFragment();
+//            navigationFragment.setRootFragment(new ViewPageFragment());
+//            presentFragment(navigationFragment,1);
+
+            startFragment(new ViewPageFragment());
+
+        });
+
+        textView.setOnClickListener(v -> {
+
+//            FragmentHelper.getLatterFragment(getChildFragmentManager(),this);
+
+//            LogUtils.INSTANCE.w(" " + FragmentUtils.INSTANCE.getFragments(mActivity.getSupportFragmentManager()).size());
+//            LogUtils.INSTANCE.w(" " + ((BaseActivity) getMActivity()).getMFragmentStack().size());
         });
 
 //        LogUtils.INSTANCE.w("initViewData  msg " + msg);
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        LogUtils.INSTANCE.e("onResume 11OneFragment");
-//    }
-//
-//    @Override
-//    public void onVisible() {
-//        super.onVisible();
-//        LogUtils.INSTANCE.e("onVisible 11OneFragment");
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        LogUtils.INSTANCE.e("onPause 11OneFragment");
-//    }
-
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 0x22 && resultCode == RESULT_OK) {
-//            ToastUtils.INSTANCE.normal("0x22");
-//        }
-//    }
 
 
     @Override
@@ -124,18 +122,19 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
     }
 
     @Override
-    public void onFragmentResult(int requestCode, int resultCode, @NotNull Bundle result) {
+    public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
         super.onFragmentResult(requestCode, resultCode, result);
-        if (requestCode == 0x11 && resultCode == RESULT_OK) {
+        if (requestCode == 0x666 && resultCode == RESULT_OK) {
             ToastUtils.INSTANCE.normal(result.getString("msg", "?"));
         }
 
-        if (requestCode == 0x22 && resultCode == 0x2) {
+        if (requestCode == 0x22 && resultCode == RESULT_OK) {
             ToastUtils.INSTANCE.normal("0x22");
         }
 
         LogUtils.INSTANCE.w("requestCode " + requestCode + " ,resultCode  " + resultCode);
     }
+
 
     public static OneFragment newInstance() {
 

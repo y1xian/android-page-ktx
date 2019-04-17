@@ -1,31 +1,53 @@
 package com.yyxnb.yyxarch.base
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.CallSuper
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
-import android.support.annotation.NonNull
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.ContainerActivity
-import com.yyxnb.yyxarch.base.BaseActivity.FragmentStackEntity
+import com.yyxnb.yyxarch.R
 import com.yyxnb.yyxarch.common.AppConfig
+import com.yyxnb.yyxarch.nav.FragmentHelper
+import com.yyxnb.yyxarch.nav.LifecycleDelegate
+import com.yyxnb.yyxarch.nav.NavigationFragment
+import com.yyxnb.yyxarch.nav.PresentAnimation
+import com.yyxnb.yyxarch.utils.BarStyle
+import java.util.*
 
 
 /**
  * Description:
  *
  * @author : yyx
- * @date ：206/10
+ * @date ：2016/10
  */
 abstract class BaseFragment : Fragment() {
+
+    companion object {
+
+        const val ARGS_REQUEST_CODE = "nav_request_code"
+
+        const val REQUEST_CODE_INVALID = -1
+    }
 
     protected lateinit var mActivity: AppCompatActivity
 
@@ -42,7 +64,18 @@ abstract class BaseFragment : Fragment() {
     //是否ViewPage
     private var mIsInViewPager: Boolean = false
 
-    private val REQUEST_CODE_INVALID = BaseActivity.REQUEST_CODE_INVALID
+    private val lifecycleDelegate = LifecycleDelegate(this)
+
+    val kv = MMKV.defaultMMKV()
+
+    private var sceneId: String? = null
+
+    fun getSceneId(): String {
+        if (this.sceneId == null) {
+            this.sceneId = UUID.randomUUID().toString()
+        }
+        return sceneId as String
+    }
 
     init {
         lifecycle.addObserver(Java8Observer)
@@ -56,10 +89,22 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val bundle = arguments
-        if (bundle != null && bundle.size() > 0) {
+        val bundle = initArguments()
+        if (bundle.size() > 0) {
             initVariables(bundle)
         }
+
+        setResult(0, null)
+        requireFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
+    }
+
+    open fun initArguments(): Bundle {
+        var args = arguments
+        if (args == null) {
+            args = Bundle()
+            arguments = args
+        }
+        return args
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,6 +117,7 @@ abstract class BaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mIsPrepared = true
+        retainInstance = true
         initView(savedInstanceState)
         if (isSingleFragment() && !mIsVisible) {
             if (userVisibleHint || isVisible || !isHidden) {
@@ -80,9 +126,23 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        requireFragmentManager().unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
+    }
+
+    internal var fragmentLifecycleCallbacks: FragmentManager.FragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            if (fm === f.fragmentManager && targetFragment === f) {
+                setTargetFragment(f.targetFragment, f.targetRequestCode)
+            }
+        }
+    }
+
     /**
      * 如果是与ViewPager一起使用，调用的是setUserVisibleHint
      */
+    @CallSuper
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (null == rootView) {
@@ -94,6 +154,11 @@ abstract class BaseFragment : Fragment() {
         } else {
             onVisibleChanged(isVisibleToUser)
         }
+
+        val fragments = getChildFragmentsAtAddedList()
+        for (fragment in fragments) {
+            fragment.userVisibleHint = isVisibleToUser
+        }
     }
 
     /**
@@ -101,6 +166,7 @@ abstract class BaseFragment : Fragment() {
      * 若是初始就show的Fragment 为了触发该事件 需要先hide再show
      * @param hidden  如果该Fragment对象已经被隐藏，那么它返回true。
      */
+    @CallSuper
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (null == rootView) {
@@ -112,8 +178,12 @@ abstract class BaseFragment : Fragment() {
         } else {
             onVisibleChanged(!hidden)
         }
-    }
 
+        val fragments = getChildFragmentsAtAddedList()
+        for (fragment in fragments) {
+            fragment.onHiddenChanged(hidden)
+        }
+    }
 
     /**
      * 被ViewPager移出的Fragment 下次显示时会从getArguments()中重新获取数据
@@ -123,12 +193,19 @@ abstract class BaseFragment : Fragment() {
      * args.putParcelable(KEY, info);
      * }
      */
-    open fun initVariables(bundle: Bundle) {}
+    @CallSuper
+    open fun initVariables(bundle: Bundle) {
+    }
 
     /**
      * 当界面可见时的操作
      */
+    @CallSuper
     open fun onVisible() {
+        if (childFragmentForAppearance() == null) {
+            setNeedsStatusBarAppearanceUpdate()
+            setNeedsNavigationBarAppearanceUpdate()
+        }
         AppUtils.debugLog("onVisible ${javaClass.simpleName}")
         initLazyLoadView()
     }
@@ -136,6 +213,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * 当界面不可见时的操作
      */
+    @CallSuper
     open fun onInVisible() {
         AppUtils.debugLog("onInVisible ${javaClass.simpleName}")
     }
@@ -165,7 +243,7 @@ abstract class BaseFragment : Fragment() {
             mIsFirstVisible = false
             initViewData()
             initViewObservable()
-            AppUtils.debugLog("initLazyLoadView ${javaClass.simpleName}")
+            AppUtils.debugLog("initLazyLoadView ${getDebugTag()}")
         }
     }
 
@@ -192,17 +270,19 @@ abstract class BaseFragment : Fragment() {
      */
     open fun initViewObservable() {}
 
-    open fun <T> fv(@IdRes resId: Int): T {
+    fun <T> fv(@IdRes resId: Int): T {
         return rootView!!.findViewById<View>(resId) as T
     }
 
+    @CallSuper
     override fun onResume() {
         super.onResume()
-        if (isAdded && isVisibleToUser(this)) {
+        if (isAdded && isVisibleToUser(this) && this != getNavigationFragment() && isVisible) {
             onVisibleChanged(userVisibleHint && !isHidden)
         }
     }
 
+    @CallSuper
     override fun onPause() {
         super.onPause()
         if (isAdded && !isVisibleToUser(this)) {
@@ -210,10 +290,8 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    @CallSuper
     override fun onDestroyView() {
-        if (view != null) {
-            AppUtils.hideSoftInput(view)
-        }
         super.onDestroyView()
         mIsVisible = false
         mIsPrepared = false
@@ -242,7 +320,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * 是否在ViewPager
      */
-    open fun isInViewPager(): Boolean {
+    private fun isInViewPager(): Boolean {
         return mIsInViewPager
     }
 
@@ -250,6 +328,7 @@ abstract class BaseFragment : Fragment() {
      * 返回.
      */
     fun finish() {
+//        (mActivity as? BaseActivity)?.onBackPressed()
         mActivity.onBackPressed()
     }
 
@@ -268,33 +347,345 @@ abstract class BaseFragment : Fragment() {
         return size <= 1
     }
 
-    //*******************跳转*************
 
-    /**
-     * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
-     *
-     * @param fragmentClass 目标 fragment.
-     * @param T          [BaseFragment].
-     * @return new instance.
-     */
-    fun <T : BaseFragment> fragment(fragmentClass: Class<T>): T {
+    @CallSuper
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation {
 
-        return Fragment.instantiate(context, fragmentClass.canonicalName, null) as T
+        val animation = getAnimation()
+
+        val parent = getParentBaseFragment()
+        if (parent != null && parent.isRemoving()) {
+            return AnimationUtils.loadAnimation(context, R.anim.nav_delay)
+        }
+
+        if (transit == FragmentTransaction.TRANSIT_FRAGMENT_OPEN) {
+            return if (enter) {
+                AnimationUtils.loadAnimation(context, animation.enter)
+            } else {
+                AnimationUtils.loadAnimation(context, animation.exit)
+            }
+        } else if (transit == FragmentTransaction.TRANSIT_FRAGMENT_CLOSE) {
+            return if (enter) {
+                AnimationUtils.loadAnimation(context, animation.popEnter)
+            } else {
+                AnimationUtils.loadAnimation(context, animation.popExit)
+            }
+        }
+
+        return AnimationUtils.loadAnimation(context, animation.enter)
+    }
+
+    // ------ lifecycle arch -------
+
+    @JvmOverloads
+    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = true) {
+        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred)
+    }
+
+    // ------- navigation ------
+
+    private var definesPresentationContext: Boolean = false
+
+    fun definesPresentationContext(): Boolean {
+        return definesPresentationContext
+    }
+
+    fun setDefinesPresentationContext(defines: Boolean) {
+        definesPresentationContext = defines
+    }
+
+    fun dispatchBackPressed(): Boolean {
+        val fragmentManager = childFragmentManager
+        val count = fragmentManager.backStackEntryCount
+        val fragment = fragmentManager.primaryNavigationFragment
+
+        if (fragment is BaseFragment && fragment.definesPresentationContext() && count > 0) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(count - 1)
+            val child = fragmentManager.findFragmentByTag(backStackEntry.name) as BaseFragment?
+            return child != null && child.dispatchBackPressed() || onBackPressed()
+        } else if (fragment is BaseFragment) {
+            val child = fragment as BaseFragment?
+            return child!!.dispatchBackPressed() || onBackPressed()
+        } else if (count > 0) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(count - 1)
+            val child = fragmentManager.findFragmentByTag(backStackEntry.name) as BaseFragment?
+            return child != null && child.dispatchBackPressed() || onBackPressed()
+        } else {
+            return onBackPressed()
+        }
+    }
+
+    open fun onBackPressed(): Boolean {
+        if (definesPresentationContext) {
+            val parent = getParentBaseFragment()
+            if (parent != null) {
+                val count = parent.getChildFragmentCountAtBackStack()
+                if (count > 0) {
+                    dismissFragment()
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun presentFragment(fragment: BaseFragment) {
+        scheduleTaskAtStarted(Runnable {
+            val parent = getParentBaseFragment()
+            if (parent != null) {
+                if (definesPresentationContext()) {
+                    presentFragmentInternal(this, fragment)
+                } else {
+                    parent.presentFragment(fragment)
+                }
+                return@Runnable
+            }
+
+            (mActivity as? BaseActivity)?.presentFragment(fragment)
+        }, true)
+    }
+
+    private fun presentFragmentInternal(target: BaseFragment, fragment: BaseFragment) {
+        fragment.setTargetFragment(target, requestCode)
+        fragment.setDefinesPresentationContext(true)
+        FragmentHelper.addFragmentToBackStack(target.requireFragmentManager(), target.id, fragment, PresentAnimation.Push)
+    }
+
+    fun dismissFragment() {
+        scheduleTaskAtStarted(Runnable {
+            val parent = getParentBaseFragment()
+            if (parent != null) {
+                if (definesPresentationContext()) {
+                    val presented = getPresentedFragment()
+                    if (presented != null) {
+                        dismissFragmentInternal(null)
+                        return@Runnable
+                    }
+                    val target = targetFragment as BaseFragment?
+                    if (target != null) {
+                        dismissFragmentInternal(target)
+                    }
+                } else {
+                    parent.dismissFragment()
+                }
+                return@Runnable
+            }
+
+            if (mActivity != null) {
+                (mActivity as? BaseActivity)?.dismissFragment(this)
+            }
+        }, true)
+
+    }
+
+    private fun dismissFragmentInternal(target: BaseFragment?) {
+        if (target == null) {
+            val presented = getPresentedFragment()
+            val count = requireFragmentManager().backStackEntryCount
+            val backStackEntry = requireFragmentManager().getBackStackEntryAt(count - 1)
+            val top = requireFragmentManager().findFragmentByTag(backStackEntry.name) as BaseFragment?
+            if (top == null || presented == null) {
+                return
+            }
+            setAnimation(PresentAnimation.Push)
+            top.setAnimation(PresentAnimation.Push)
+            top.onPause()
+            top.onStop()
+            top.userVisibleHint = false
+            requireFragmentManager().popBackStack(presented.sceneId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            FragmentHelper.executePendingTransactionsSafe(requireFragmentManager())
+            onFragmentResult(top.getRequestCode(), top.getResultCode(), top.getResultData())
+        } else {
+            setAnimation(PresentAnimation.Push)
+            target.setAnimation(PresentAnimation.Push)
+            target.onPause()
+            target.onStop()
+            userVisibleHint = false
+            requireFragmentManager().popBackStack(getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            FragmentHelper.executePendingTransactionsSafe(requireFragmentManager())
+            target.onFragmentResult(getRequestCode(), getResultCode(), getResultData())
+        }
+    }
+
+    fun getPresentedFragment(): BaseFragment? {
+        val parent = getParentBaseFragment()
+        if (parent != null) {
+            if (definesPresentationContext()) {
+                if (FragmentHelper.findIndexAtBackStack(requireFragmentManager(), this) == -1) {
+                    if (parent.getChildFragmentCountAtBackStack() == 0) {
+                        return null
+                    } else {
+                        val backStackEntry = requireFragmentManager().getBackStackEntryAt(0)
+                        val presented = requireFragmentManager().findFragmentByTag(backStackEntry.name) as BaseFragment?
+                        return if (presented != null && presented.isAdded) {
+                            presented
+                        } else null
+                    }
+                } else {
+                    return FragmentHelper.getLatterFragment(requireFragmentManager(), this)
+                }
+            } else {
+                return parent.getPresentedFragment()
+            }
+        }
+
+        return if (mActivity != null) {
+            (mActivity as? BaseActivity)?.getPresentedFragment(this)
+        } else null
+
+    }
+
+    fun getPresentingFragment(): BaseFragment? {
+        val parent = getParentBaseFragment()
+        if (parent != null) {
+            if (definesPresentationContext()) {
+                val target = targetFragment as BaseFragment?
+                return if (target != null && target.isAdded) {
+                    target
+                } else null
+            } else {
+                return parent.getPresentingFragment()
+            }
+        }
+
+        return if (mActivity != null) {
+            (mActivity as? BaseActivity)?.getPresentingFragment(this)
+        } else null
+
+    }
+
+    @JvmOverloads
+    fun startActivityRootFragment(rootFragment: BaseFragment, newActivity: Boolean = false) {
+        scheduleTaskAtStarted(Runnable {
+            if (mActivity is BaseActivity && getNavigationFragment() != null && !mIsInViewPager && !newActivity) {
+                val navigationFragment = NavigationFragment()
+                navigationFragment.setRootFragment(rootFragment)
+                (mActivity as BaseActivity).startActivityRootFragment(navigationFragment)
+            } else {
+                val intent = Intent(mActivity, ContainerActivity::class.java)
+                intent.putExtra(AppConfig.FRAGMENT, rootFragment.javaClass.canonicalName)
+                mActivity.startActivity(intent)
+            }
+        })
+    }
+
+    fun getDebugTag(): String? {
+        if (activity == null) {
+            return null
+        }
+        val parent = getParentBaseFragment()
+        return if (parent == null) {
+            "#" + getIndexAtAddedList() + "-" + javaClass.simpleName
+        } else {
+            parent.getDebugTag() + "#" + getIndexAtAddedList() + "-" + javaClass.simpleName
+        }
+    }
+
+    // 可以重写这个方法来指定由那个子 Fragment 来决定系统 UI（状态栏）的样式，否则由容器本身决定
+    open fun childFragmentForAppearance(): BaseFragment? {
+        return null
+    }
+
+    fun getChildFragmentCountAtBackStack(): Int {
+        val fragmentManager = childFragmentManager
+        return fragmentManager.backStackEntryCount
+    }
+
+    fun getIndexAtBackStack(): Int {
+        return FragmentHelper.findIndexAtBackStack(requireFragmentManager(), this)
+    }
+
+    fun getIndexAtAddedList(): Int {
+        val fragments = requireFragmentManager().fragments
+        return fragments.indexOf(this)
+    }
+
+    fun getChildFragmentsAtAddedList(): List<BaseFragment> {
+        val children = ArrayList<BaseFragment>()
+        if (isAdded) {
+            val fragments = childFragmentManager.fragments
+            var i = 0
+            val size = fragments.size
+            while (i < size) {
+                val fragment = fragments[i]
+                if (fragment is BaseFragment && fragment.isAdded()) {
+                    children.add(fragment)
+                }
+                i++
+            }
+        }
+        return children
+    }
+
+    fun getParentBaseFragment(): BaseFragment? {
+        val fragment = parentFragment
+        return if (fragment is BaseFragment) {
+            fragment
+        } else null
+    }
+
+    private var animation: PresentAnimation? = null
+
+    fun setAnimation(animation: PresentAnimation) {
+        this.animation = animation
+    }
+
+    fun getAnimation(): PresentAnimation {
+        if (this.animation == null) {
+            this.animation = PresentAnimation.None
+        }
+        return animation!!
+    }
+
+    open fun isParentFragment(): Boolean {
+        return false
+    }
+
+    fun getWindow(): Window? {
+        return if (activity != null) {
+            activity!!.window
+        } else null
+
+    }
+
+    // ------ NavigationFragment -----
+    open fun getNavigationFragment(): NavigationFragment? {
+        if (this is NavigationFragment) {
+            return this
+        }
+        val parent = getParentBaseFragment()
+        return parent?.getNavigationFragment()
+    }
+
+    fun isNavigationRoot(): Boolean {
+        val navigationFragment = getNavigationFragment()
+        if (navigationFragment != null) {
+            val awesomeFragment = navigationFragment.getRootFragment()
+            return awesomeFragment === this
+        }
+        return false
+    }
+
+    fun isBackInteractive(): Boolean {
+        return true
+    }
+
+    open fun isSwipeBackEnabled(): Boolean {
+        return true
     }
 
     /**
      * 使用给定的类名创建Fragment的新实例。 这与调用其空构造函数相同。
      *
-     * @param fragmentClass 目标fragment class.
+     * @param targetFragment 目标fragment.
      * @param bundle        argument.
      * @param T           [BaseFragment].
      * @return new instance.
      */
-    fun <T : BaseFragment> fragment(fragmentClass: Class<T>, bundle: Bundle): T {
-
-        return Fragment.instantiate(context, fragmentClass.canonicalName, bundle) as T
+    @JvmOverloads
+    fun <T : BaseFragment> fragment(targetFragment: T, bundle: Bundle? = null): T {
+        return Fragment.instantiate(context, targetFragment.javaClass.canonicalName, bundle) as T
     }
-
 
     /**
      * 跳转 activity.
@@ -306,67 +697,9 @@ abstract class BaseFragment : Fragment() {
         startActivity(Intent(mActivity, clazz))
     }
 
-    /**
-     * 跳转 activity 并 finish.
-     *
-     * @param clazz 目标activity class.
-     * @param <T>   [Activity].
-    </T> */
-    protected fun <T : Activity> startActivityFinish(clazz: Class<T>) {
-        startActivity(Intent(mActivity, clazz))
-        mActivity.finish()
-    }
-
-
-    /**
-     * 跳转容器页面.
-     *
-     * @param targetFragment 目标fragment.
-     * @param result   跳转所携带的信息
-     */
-    fun <T : BaseFragment> startContainerActivity(targetFragment: T) {
-        startContainerActivity(targetFragment, null)
-    }
-
-    /**
-     * 跳转容器页面.
-     *
-     * @param targetFragment 目标fragment.
-     * @param result        跳转所携带的信息
-     */
-    fun <T : BaseFragment> startContainerActivity(targetFragment: T, result: Bundle?) {
-        val intent = Intent(mActivity, ContainerActivity::class.java)
-        intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
-        if (result != null) {
-            intent.putExtra(AppConfig.BUNDLE, result)
-        }
-        startActivity(intent)
-    }
-
-
-    // ------------------------- Stack ------------------------- //
-
-    /**
-     * 堆栈信息.
-     */
-    private var mStackEntity = FragmentStackEntity()
-
-
-    /**
-     * 设置堆栈信息.
-     */
-    fun setStackEntity(@NonNull stackEntity: FragmentStackEntity) {
-        this.mStackEntity = stackEntity
-    }
-
-    /**
-     * 设置结果码.
-     *
-     * @param resultCode [RESULT_OK], [RESULT_CANCELED].
-     */
-    fun setResult(resultCode: Int) {
-        mStackEntity.resultCode = resultCode
-    }
+    private var requestCode: Int = 0
+    private var resultCode: Int = 0
+    private var result: Bundle? = null
 
     /**
      * 设置结果码和回传结果.
@@ -374,100 +707,50 @@ abstract class BaseFragment : Fragment() {
      * @param resultCode 结果码.
      * @param result     跳转所携带的信息.
      */
-    fun setResult(resultCode: Int, @NonNull result: Bundle) {
-        mStackEntity.resultCode = resultCode
-        mStackEntity.result = result
+    @JvmOverloads
+    fun setResult(resultCode: Int, result: Bundle? = null) {
+        this.result = result
+        this.resultCode = resultCode
+        val parent = getParentBaseFragment()
+        if (parent != null && !definesPresentationContext() /*&& !showsDialog*/) {
+            parent.setResult(resultCode, result)
+        }
+    }
+
+    fun getRequestCode(): Int {
+        if (requestCode == 0) {
+            requestCode = kv.getInt(ARGS_REQUEST_CODE, REQUEST_CODE_INVALID)
+        }
+        return requestCode
+    }
+
+    fun getResultCode(): Int {
+        return resultCode
+    }
+
+    fun getResultData(): Bundle? {
+        return result
     }
 
     /**
      * 处理返回结果.
-     * BaseActivity上才有效
      *
      * @param resultCode 结果码.
      * @param result     跳转所携带的信息.
      */
-    open fun onFragmentResult(requestCode: Int, resultCode: Int, result: Bundle?) {}
+    @CallSuper
+    open fun onFragmentResult(requestCode: Int, resultCode: Int, result: Bundle? = null) {
 
-    /**
-     * 跳转 fragment.
-     *
-     * @param clazz 目标fragment class.
-     * @param T   [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(clazz: Class<T>) {
-        try {
-            val targetFragment = clazz.newInstance()
-            startFragment<BaseFragment>(targetFragment, true, REQUEST_CODE_INVALID)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (this is NavigationFragment) {
+            val child = this.getTopFragment()
+            child?.onFragmentResult(requestCode, resultCode, result)
+
+        } else {
+            val fragments = getChildFragmentsAtAddedList()
+            for (child in fragments) {
+                child.onFragmentResult(requestCode, resultCode, result)
+            }
         }
-
-    }
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param clazz       目标fragment class.
-     * @param stickyStack 是否加入堆栈.
-     * @param T         [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(clazz: Class<T>, stickyStack: Boolean) {
-        try {
-            val targetFragment = clazz.newInstance()
-            startFragment<BaseFragment>(targetFragment, stickyStack, REQUEST_CODE_INVALID)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param targetFragment 目标fragment.
-     * @param T            [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(targetFragment: T) {
-        startFragment(targetFragment, true, REQUEST_CODE_INVALID)
-    }
-
-    /**
-     * 跳转 fragment.
-     *
-     * @param targetFragment 目标fragment.
-     * @param stickyStack    是否加入堆栈.
-     * @param T            [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean) {
-        startFragment(targetFragment, stickyStack, REQUEST_CODE_INVALID)
-    }
-
-    /**
-     * 跳转 fragment 返回结果.
-     *
-     * @param clazz       目标fragment class.
-     * @param requestCode 请求码.
-     * @param T         [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragmentForResult(clazz: Class<T>, requestCode: Int) {
-        try {
-            val targetFragment = clazz.newInstance()
-            startFragment<BaseFragment>(targetFragment, true, requestCode)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    /**
-     * 跳转 fragment 返回结果.
-     *
-     * @param targetFragment 目标fragment.
-     * @param requestCode    请求码.
-     * @param T           [BaseFragment].
-     */
-    fun <T : BaseFragment> startFragmentForResult(targetFragment: T, requestCode: Int) {
-        startFragment(targetFragment, true, requestCode)
     }
 
     /**
@@ -478,16 +761,186 @@ abstract class BaseFragment : Fragment() {
      * @param requestCode    请求码.
      * @param T          [BaseFragment].
      */
-    private fun <T : BaseFragment> startFragment(targetFragment: T, stickyStack: Boolean, requestCode: Int) {
-        if (mActivity is BaseActivity) {
-            (mActivity as? BaseActivity)?.startFragment(this, targetFragment, stickyStack, requestCode)
+    @JvmOverloads
+    fun <T : BaseFragment> startFragment(targetFragment: T, requestCode: Int = REQUEST_CODE_INVALID) {
+
+        kv.encode(ARGS_REQUEST_CODE, requestCode)
+
+        if (mActivity is BaseActivity && !mIsInViewPager) {
+            if (getNavigationFragment() == null) {
+                val navigationFragment = NavigationFragment()
+                navigationFragment.setRootFragment(targetFragment)
+                presentFragment(navigationFragment)
+            } else {
+                val navigationFragment = getNavigationFragment()
+                navigationFragment?.pushFragment(targetFragment)
+            }
         } else {
-            val intent = Intent(mActivity, ContainerActivity::class.java)
-            intent.putExtra(AppConfig.FRAGMENT, targetFragment.javaClass.canonicalName)
-            intent.putExtra(AppConfig.REQUEST_CODE, requestCode)
-            mActivity.startActivity(intent)
+            startActivityRootFragment(targetFragment)
+        }
+
+    }
+
+
+    // ------- statusBar --------
+
+    fun preferredToolbarAlpha(): Int {
+        val childFragmentForToolbarColor = childFragmentForAppearance()
+        return childFragmentForToolbarColor?.preferredToolbarAlpha()
+                ?: ((1.0f * 255 + 0.5).toInt())
+    }
+
+    fun setNeedsNavigationBarAppearanceUpdate() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return
+        }
+
+        val parent = getParentBaseFragment()
+        if (parent != null) {
+            parent.setNeedsNavigationBarAppearanceUpdate()
+        } else {
+            val color = preferredNavigationBarColor()
+            if (color != null) {
+                setNavigationBarColor(color)
+            } else {
+                var fragmentForColor = this
+                var child = fragmentForColor.childFragmentForAppearance()
+                while (child != null) {
+                    fragmentForColor = child
+                    child = child.childFragmentForAppearance()
+                }
+                setNavigationBarColor(Color.WHITE)
+            }
         }
     }
 
+    //不推荐直接调用
+    @JvmOverloads
+    fun setStatusBarColor(color: Int, animated: Boolean = true) {
+        AppUtils.setStatusBarColor(getWindow()!!, color, animated)
+    }
+
+    fun setNavigationBarColor(color: Int) {
+        AppUtils.setNavigationBarColor(getWindow()!!, color)
+    }
+
+    fun setStatusBarStyle(barStyle: BarStyle) {
+        AppUtils.setStatusBarStyle(getWindow()!!, barStyle === BarStyle.DarkContent)
+    }
+
+    fun setStatusBarHidden(hidden: Boolean) {
+        AppUtils.setStatusBarHidden(getWindow()!!, hidden)
+    }
+
+    fun setStatusBarTranslucent(translucent: Boolean) {
+        (mActivity as? BaseActivity)?.setStatusBarTranslucent(translucent)
+    }
+
+    fun appendStatusBarPadding(view: View, viewHeight: Int) {
+        AppUtils.appendStatusBarPadding(view, viewHeight)
+    }
+
+    fun removeStatusBarPadding(view: View, viewHeight: Int) {
+        AppUtils.removeStatusBarPadding(view, viewHeight)
+    }
+
+    fun isStatusBarTranslucent(): Boolean {
+        if ((mActivity is BaseActivity)) {
+            return (mActivity as? BaseActivity)?.isStatusBarTranslucent()!!
+        }
+        return true
+    }
+
+    //更新状态栏样式
+    fun setNeedsStatusBarAppearanceUpdate() {
+        setNeedsStatusBarAppearanceUpdate(true)
+    }
+
+    fun setNeedsStatusBarAppearanceUpdate(colorAnimated: Boolean) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return
+        }
+
+        val parent = getParentBaseFragment()
+        if (parent != null) {
+            parent.setNeedsStatusBarAppearanceUpdate(colorAnimated)
+            return
+        }
+
+        // statusBarHidden
+        val hidden = preferredStatusBarHidden()
+        setStatusBarHidden(hidden)
+
+        // statusBarStyle
+        val statusBarStyle = preferredStatusBarStyle()
+        setStatusBarStyle(statusBarStyle)
+
+        // statusBarColor
+        val animated = preferredStatusBarColorAnimated() && colorAnimated
+        if (hidden) {
+            setStatusBarColor(Color.TRANSPARENT, animated)
+        } else {
+            var statusBarColor = preferredStatusBarColor()
+            var shouldAdjustForWhiteStatusBar = !AppUtils.isBlackColor(statusBarColor, 176)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                shouldAdjustForWhiteStatusBar = shouldAdjustForWhiteStatusBar && statusBarStyle === BarStyle.LightContent
+            }
+
+            if (shouldAdjustForWhiteStatusBar) {
+                statusBarColor = Color.WHITE
+            }
+
+            if (isStatusBarTranslucent() && statusBarColor == Color.TRANSPARENT) {
+                statusBarColor = Color.TRANSPARENT
+            }
+
+            setStatusBarColor(statusBarColor, animated)
+        }
+    }
+
+    //状态栏颜色
+    open fun preferredStatusBarColor(): Int {
+        val childFragmentForStatusBarColor = childFragmentForAppearance()
+        if (childFragmentForStatusBarColor != null) {
+            return childFragmentForStatusBarColor.preferredStatusBarColor()
+        }
+        return AppUtils.fetchContextColor(mActivity, R.attr.colorPrimaryDark)
+    }
+
+    //虚拟键颜色
+    @TargetApi(26)
+    open fun preferredNavigationBarColor(): Int? {
+        val childFragmentForAppearance = childFragmentForAppearance()
+        return if (childFragmentForAppearance != null) {
+            childFragmentForAppearance.preferredNavigationBarColor()
+        } else Color.TRANSPARENT
+    }
+
+    //是否需要对颜色做过渡动画
+    open fun preferredStatusBarColorAnimated(): Boolean {
+        val childFragmentForStatusBarColor = childFragmentForAppearance()
+        return childFragmentForStatusBarColor?.preferredStatusBarColorAnimated()
+                ?: (getAnimation() !== PresentAnimation.None)
+    }
+
+    //状态栏文字颜色
+    open fun preferredStatusBarStyle(): BarStyle {
+        val childFragmentForStatusBarStyle = childFragmentForAppearance()
+        if (childFragmentForStatusBarStyle != null) {
+            return childFragmentForStatusBarStyle.preferredStatusBarStyle()
+        }
+
+        return BarStyle.DarkContent
+    }
+
+    //状态栏是否隐藏
+    open fun preferredStatusBarHidden(): Boolean {
+        val childFragmentForStatusBarHidden = childFragmentForAppearance()
+        if (childFragmentForStatusBarHidden != null) {
+            return childFragmentForStatusBarHidden.preferredStatusBarHidden()
+        }
+        return false
+    }
 
 }

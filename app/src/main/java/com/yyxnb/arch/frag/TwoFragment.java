@@ -1,19 +1,21 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.frag;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
+import com.yyxnb.arch.R;
+import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
+import com.yyxnb.yyxarch.utils.BarStyle;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
-
-import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -22,7 +24,7 @@ import static android.app.Activity.RESULT_OK;
 public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
 
     private TextView tvShow;
-    private String hehe;
+    private String hehe = "222";
 
     @Override
     public int initLayoutResID() {
@@ -32,11 +34,13 @@ public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
     @Override
     public void initVariables(@NotNull Bundle bundle) {
         super.initVariables(bundle);
-        hehe = bundle.getString("hehe");
+        hehe = bundle.getString("hehe", "222222");
     }
 
     @Override
     public void initView(Bundle savedInstanceState) {
+
+//        hehe = getArguments().getString("hehe","");
 
         tvShow = fv(R.id.tvShow);
 
@@ -47,15 +51,38 @@ public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
         super.initViewData();
         tvShow.setOnClickListener(v -> {
 //            startFragment(OneFragment.newInstance());
-            Bundle bundle = new Bundle();
+            Bundle bundle = initArguments();
             bundle.putString("msg", "哈哈哈 " + new Random().nextInt(100));
-            setResult(RESULT_OK, bundle);
+            setResult(0x110, bundle);
+
             finish();
         });
 
-        tvShow.setText(hehe);
+//        setStatusBarColor(Color.TRANSPARENT);
+//        setStatusBarStyle(BarStyle.DarkContent);
+//        setStatusBarHidden(true);
+//        setStatusBarTranslucent(true);
+
+        tvShow.setText(getDebugTag());
+
     }
 
+    @Override
+    public int preferredStatusBarColor() {
+        return Color.TRANSPARENT;
+    }
+
+    @NotNull
+    @Override
+    public BarStyle preferredStatusBarStyle() {
+        return BarStyle.LightContent;
+    }
+
+
+    @Override
+    public boolean isSwipeBackEnabled() {
+        return true;
+    }
 
     @Override
     public void initViewObservable() {

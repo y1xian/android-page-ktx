@@ -5,6 +5,7 @@ import android.view.WindowManager
 import com.yyxnb.yyxarch.base.BaseActivity
 import com.yyxnb.yyxarch.base.BaseFragment
 import com.yyxnb.yyxarch.common.AppConfig
+import com.yyxnb.yyxarch.nav.NavigationFragment
 
 
 /**
@@ -22,6 +23,7 @@ class ContainerActivity : BaseActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         if (null == savedInstanceState) {
 
             try {
@@ -29,21 +31,19 @@ class ContainerActivity : BaseActivity() {
                     throw RuntimeException("you must provide a page info to display")
                 }
                 val fragmentName = intent.getStringExtra(AppConfig.FRAGMENT)
-                if (null == fragmentName || "" == fragmentName) {
+                if (fragmentName.isEmpty()) {
                     throw IllegalArgumentException("can not find page fragmentName")
                 }
                 val fragmentClass = Class.forName(fragmentName)
                 val fragment = fragmentClass.newInstance() as BaseFragment
                 val args = intent.getBundleExtra(AppConfig.BUNDLE)
-                val requestCode = intent.getIntExtra(AppConfig.REQUEST_CODE, REQUEST_CODE_INVALID)
                 if (null != args) {
                     fragment.arguments = args
                 }
-                if (requestCode == REQUEST_CODE_INVALID) {
-                    startFragment(fragment)
-                } else {
-                    startFragmentForResult(fragment, requestCode)
-                }
+
+                val navigationFragment = NavigationFragment()
+                navigationFragment.setRootFragment(fragment)
+                startActivityRootFragment(navigationFragment)
 
             } catch (e: Exception) {
                 e.printStackTrace()

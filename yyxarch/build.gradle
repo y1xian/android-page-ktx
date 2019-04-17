@@ -93,4 +93,9 @@ dependencies {
     //消息总线
     api libs.live_event_bus
 
+    // 基础依赖包
+    api 'com.gyf.immersionbar:immersionbar:3.0.0-beta01'
+    // fragment快速实现
+    api 'com.gyf.immersionbar:immersionbar-components:3.0.0-beta01'
+
 }

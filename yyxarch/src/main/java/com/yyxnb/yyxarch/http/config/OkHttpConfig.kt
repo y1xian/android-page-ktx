@@ -132,6 +132,7 @@ object OkHttpConfig {
         /**
          * 设置重连
          */
+        @JvmOverloads
         fun setRetry(retryEnable: Boolean = true, retryCount: Int = 1, retryDelay: Long = 1000): Builder {
             this.retryEnable = retryEnable
             this.retryCount = retryCount

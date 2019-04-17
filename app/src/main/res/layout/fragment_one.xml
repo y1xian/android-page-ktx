@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     android:orientation="vertical"
-    tools:context=".OneFragment">
+    tools:context=".frag.OneFragment">
 
     <TextView
         android:id="@+id/tvShow"
@@ -14,14 +13,24 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="one"
+        android:background="@color/black"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#f1f1f1"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="rrrrrr" />
 
     <TextView
         android:id="@+id/tvShow2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/white"
+        android:background="#ff0000"
         android:gravity="center"
         android:text="test" />
 

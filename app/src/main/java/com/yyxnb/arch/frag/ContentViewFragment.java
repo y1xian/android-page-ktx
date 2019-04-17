@@ -1,4 +1,4 @@
-package com.yyxnb.arch;
+package com.yyxnb.arch.frag;
 
 
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
 
+import com.yyxnb.arch.R;
 import com.yyxnb.yyxarch.base.BaseFragment;
 
 import org.jetbrains.annotations.Nullable;
@@ -34,9 +35,9 @@ public class ContentViewFragment extends BaseFragment implements View.OnClickLis
     /**
      * Fragment
      */
-    private TestFragment testFragment;
     private OneFragment oneFragment;
     private TwoFragment twoFragment;
+    private ThreeFragment threeFragment;
 
     private int currentIndex;
 
@@ -64,11 +65,11 @@ public class ContentViewFragment extends BaseFragment implements View.OnClickLis
         fragmentList = new ArrayList<Fragment>();
         oneFragment = new OneFragment();
         twoFragment = new TwoFragment();
-        testFragment = new TestFragment();
+        threeFragment = new ThreeFragment();
 
         fragmentList.add(oneFragment);
         fragmentList.add(twoFragment);
-        fragmentList.add(testFragment);
+        fragmentList.add(threeFragment);
 
         changeView(0);
 
@@ -76,30 +77,6 @@ public class ContentViewFragment extends BaseFragment implements View.OnClickLis
 //        mViewPager.setAdapter(new BaseFragmentPagerAdapter(getChildFragmentManager(),fragmentList));
 
 //        LogUtils.INSTANCE.w(" " + isSingleFragment() + " , " + getClass().getSimpleName());
-    }
-
-    @Override
-    public void onVisible() {
-        super.onVisible();
-
-    }
-
-    @Override
-    public void onInVisible() {
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
     }
 
     public static ContentViewFragment newInstance() {

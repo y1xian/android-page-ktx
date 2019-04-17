@@ -2,6 +2,8 @@ package com.yyxnb.arch;
 
 import android.os.Bundle;
 
+import com.yyxnb.arch.frag.ViewPageFragment;
+import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.utils.FragmentUtils;
 import com.yyxnb.yyxarch.utils.ScreenUtils;
 import com.yyxnb.yyxarch.utils.dialog.BaseSheetDialog;
@@ -20,7 +22,7 @@ public class TestDialog extends BaseSheetDialog {
 
         setDimAmount(0.5f).setHeight((int) (ScreenUtils.INSTANCE.getScreenHeight() * 0.7f));
 
-        FragmentUtils.add(getChildFragmentManager(), ViewPageFragment.newInstance(), R.id.mFrameLayout1);
+        FragmentUtils.INSTANCE.addFragment(getChildFragmentManager(), ViewPageFragment.newInstance(), R.id.mFrameLayout1);
 //        FragmentUtils.add(getChildFragmentManager(), ContentViewFragment.newInstance(), R.id.mFrameLayout1);
 
 //        mViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
