@@ -156,6 +156,9 @@ ext {
             mmkv                           : [group: 'com.tencent', name: 'mmkv', version: '1.0.18'],
 
             //https://github.com/JeremyLiao/LiveEventBus
-            live_event_bus                 : [group: 'com.jeremyliao', name: 'live-event-bus', version: '1.4.0']
+            live_event_bus                 : [group: 'com.jeremyliao', name: 'live-event-bus', version: '1.4.0'],
+
+            //https://github.com/anzewei/ParallaxBackLayout
+            parallaxbacklayout             : [group: 'com.github.anzewei', name: 'parallaxbacklayout', version: '1.1.9']
     ]
 }

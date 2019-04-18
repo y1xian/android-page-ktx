@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.view.View
-import com.yyxnb.yyxarch.AppUtils
+import com.github.anzewei.parallaxbacklayout.ParallaxHelper
 import com.yyxnb.yyxarch.R
 import com.yyxnb.yyxarch.base.BaseFragment
+import com.yyxnb.yyxarch.utils.StatusBarUtils
 
 /**
  * NavigationFragment 支持 push、pop、replace
@@ -15,6 +16,7 @@ import com.yyxnb.yyxarch.base.BaseFragment
  * @author : yyx
  * @date ：2019/4/15
  */
+@Suppress("DEPRECATED_IDENTITY_EQUALS")
 class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
 
     private var rootFragment: BaseFragment? = null
@@ -77,11 +79,12 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         }
     }
 
-    fun setRootFragment(fragment: BaseFragment) {
+    fun setRootFragment(fragment: BaseFragment): BaseFragment {
         if (isAdded) {
             throw IllegalStateException("NavigationFragment 已经出于 added 状态，不可以再设置 rootFragment")
         }
         this.rootFragment = fragment
+        return rootFragment!!
     }
 
     fun getRootFragment(): BaseFragment? {
@@ -127,6 +130,7 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         topFragment.onPause()
         topFragment.onStop()
         topFragment.userVisibleHint = false
+        topFragment.onHiddenChanged(true)
         fragmentManager.popBackStack(fragment.getSceneId(), 0)
         FragmentHelper.executePendingTransactionsSafe(fragmentManager)
 
@@ -190,6 +194,7 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         topFragment.onPause()
         topFragment.onStop()
         topFragment.userVisibleHint = false
+        topFragment.onHiddenChanged(true)
         aheadFragment?.setAnimation(PresentAnimation.Fade)
         fragmentManager.popBackStack(target.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
@@ -224,6 +229,7 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         topFragment.onPause()
         topFragment.onStop()
         topFragment.userVisibleHint = false
+        topFragment.onHiddenChanged(true)
         fragmentManager.popBackStack(rootFragment.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
         val transaction = fragmentManager.beginTransaction()
@@ -261,7 +267,7 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
             val aheadFragment = FragmentHelper.getAheadFragment(childFragmentManager, topFragment)
 
             if (aheadFragment != null && shouldTransitionWithStatusBar(aheadFragment, topFragment)) {
-                AppUtils.setStatusBarColor(getWindow()!!, topFragment.preferredStatusBarColor(), false)
+                StatusBarUtils.setStatusBarColor(getWindow()!!, topFragment.preferredStatusBarColor(), false)
             }
 
             if (aheadFragment != null && aheadFragment.view != null) {
@@ -304,20 +310,20 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
 
     override fun shouldSwipeBack(): Boolean {
         val top = getTopFragment() ?: return false
-        return (getChildFragmentCountAtBackStack() > 1
+        val isSwipeBack = (getChildFragmentCountAtBackStack() > 1
                 && top.isBackInteractive()
                 && top.isSwipeBackEnabled())
+        if (isSwipeBack) ParallaxHelper.disableParallaxBack(mActivity) else ParallaxHelper.enableParallaxBack(mActivity)
+        return isSwipeBack
     }
 
     private fun shouldTransitionWithStatusBar(aheadFragment: BaseFragment, topFragment: BaseFragment): Boolean {
-        val shouldAdjustForWhiteStatusBar = AppUtils.shouldAdjustStatusBarColor(this)
+        val shouldAdjustForWhiteStatusBar = StatusBarUtils.shouldAdjustStatusBarColor(this)
 
         return (isStatusBarTranslucent()
                 && !shouldAdjustForWhiteStatusBar
                 && aheadFragment.preferredStatusBarColor() !== Color.TRANSPARENT
-                && aheadFragment.preferredStatusBarColor() === topFragment.preferredStatusBarColor()
-                && topFragment.preferredToolbarAlpha() === 255
-                && aheadFragment.preferredToolbarAlpha() === 255)
+                && aheadFragment.preferredStatusBarColor() === topFragment.preferredStatusBarColor())
     }
 
 

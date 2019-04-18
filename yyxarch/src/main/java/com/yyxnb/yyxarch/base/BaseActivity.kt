@@ -11,11 +11,12 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
-import com.yyxnb.yyxarch.AppUtils
+import com.github.anzewei.parallaxbacklayout.ParallaxBack
 import com.yyxnb.yyxarch.nav.FragmentHelper
 import com.yyxnb.yyxarch.nav.LifecycleDelegate
 import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.ActivityStack
+import com.yyxnb.yyxarch.utils.StatusBarUtils
 import java.util.*
 
 
@@ -25,8 +26,8 @@ import java.util.*
  * @author : yyx
  * @date : 2018/6/10
  */
+@ParallaxBack
 abstract class BaseActivity : AppCompatActivity() {
-
 
     protected val TAG = javaClass.canonicalName
 
@@ -130,7 +131,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun setStatusBarTranslucent(translucent: Boolean) {
         if (statusBarTranslucent != translucent) {
             statusBarTranslucent = translucent
-            AppUtils.setStatusBarTranslucent(window, translucent)
+            StatusBarUtils.setStatusBarTranslucent(window, translucent)
         }
     }
 

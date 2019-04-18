@@ -1,6 +1,7 @@
 package com.yyxnb.arch.frag;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class TestFragment extends BaseFragment {
 
     private TextView tvShow;
-    private Button button,button1,button2,button3;
+    private Button button,button1,button2,button3,button4;
 
     @Override
     public int initLayoutResID() {
@@ -36,6 +37,7 @@ public class TestFragment extends BaseFragment {
         button1 = fv(R.id.button1);
         button2 = fv(R.id.button2);
         button3 = fv(R.id.button3);
+        button4 = fv(R.id.button4);
 
     }
 
@@ -76,7 +78,17 @@ public class TestFragment extends BaseFragment {
             }
         });
 
+        button4.setOnClickListener(v -> {
 
+            finish();
+        });
+
+
+    }
+
+    @Override
+    public int preferredStatusBarColor() {
+        return Color.TRANSPARENT;
     }
 
     @Override

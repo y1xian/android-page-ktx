@@ -2,9 +2,9 @@ package com.yyxnb.arch;
 
 import android.os.Bundle;
 
-import com.yyxnb.arch.frag.ViewPageFragment;
+import com.yyxnb.arch.frag.ThreeFragment;
 import com.yyxnb.arch.vm.TestViewModel;
-import com.yyxnb.yyxarch.utils.FragmentUtils;
+import com.yyxnb.yyxarch.nav.FragmentHelper;
 import com.yyxnb.yyxarch.utils.ScreenUtils;
 import com.yyxnb.yyxarch.utils.dialog.BaseSheetDialog;
 
@@ -22,13 +22,13 @@ public class TestDialog extends BaseSheetDialog {
 
         setDimAmount(0.5f).setHeight((int) (ScreenUtils.INSTANCE.getScreenHeight() * 0.7f));
 
-        FragmentUtils.INSTANCE.addFragment(getChildFragmentManager(), ViewPageFragment.newInstance(), R.id.mFrameLayout1);
-//        FragmentUtils.add(getChildFragmentManager(), ContentViewFragment.newInstance(), R.id.mFrameLayout1);
+//        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, OneFragment.newInstance());
+//        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, ContentViewFragment.newInstance());
+//        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, TwoFragment.newInstance());
+//        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, TestFragment.newInstance());
+        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, new ThreeFragment());
 
 //        mViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
-//
-//
-//        isFirst = false;
 //        mViewModel.reqTeam();
 //
 //        TextView tvShow = view.findViewById(R.id.tvShow);

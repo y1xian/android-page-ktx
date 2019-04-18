@@ -3,6 +3,7 @@ package com.yyxnb.yyxarch.base
 import android.app.Application
 import android.content.Context
 import android.support.multidex.MultiDex
+import com.github.anzewei.parallaxbacklayout.ParallaxHelper
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.http.config.OkHttpConfig
@@ -60,6 +61,8 @@ open class BaseApplication : Application() {
         LogUtils.init()
                 .setTag("Test")//设置全局tag
                 .setShowThreadInfo(true).setDebug(AppUtils.isDebug) //是否显示日志，默认true，发布时最好关闭
+
+        registerActivityLifecycleCallbacks(ParallaxHelper.getInstance());
 
         LiveEventBus.get()
                 .config()

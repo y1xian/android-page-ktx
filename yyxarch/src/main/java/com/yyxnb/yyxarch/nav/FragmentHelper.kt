@@ -6,9 +6,6 @@ import android.support.v4.app.FragmentTransaction
 import android.util.Log
 import com.yyxnb.yyxarch.base.BaseFragment
 
-/**
- * Created by Listen on 2018/1/11.
- */
 
 object FragmentHelper {
 

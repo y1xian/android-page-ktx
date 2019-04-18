@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
@@ -31,6 +30,7 @@ import com.yyxnb.yyxarch.nav.LifecycleDelegate
 import com.yyxnb.yyxarch.nav.NavigationFragment
 import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.BarStyle
+import com.yyxnb.yyxarch.utils.StatusBarUtils
 import java.util.*
 
 
@@ -40,7 +40,7 @@ import java.util.*
  * @author : yyx
  * @date ：2016/10
  */
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment()  {
 
     companion object {
 
@@ -98,7 +98,7 @@ abstract class BaseFragment : Fragment() {
         requireFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
     }
 
-    open fun initArguments(): Bundle {
+    fun initArguments(): Bundle {
         var args = arguments
         if (args == null) {
             args = Bundle()
@@ -305,15 +305,15 @@ abstract class BaseFragment : Fragment() {
         if (fragment == null) {
             return false
         }
-        if (fragment.parentFragment != null) {
-            return if (fragment.parentFragment is BaseFragment) {
-                isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
-            } else if (fragment.parentFragment is DialogFragment) {
-                true
-            } else {
-                if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
-            }
-        }
+//        if (fragment.parentFragment != null) {
+//            return if (fragment.parentFragment is BaseFragment) {
+//                isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+//            } else if (fragment.parentFragment is DialogFragment) {
+//                true
+//            } else {
+//                if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
+//            }
+//        }
         return if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
     }
 
@@ -328,17 +328,15 @@ abstract class BaseFragment : Fragment() {
      * 返回.
      */
     fun finish() {
-//        (mActivity as? BaseActivity)?.onBackPressed()
         mActivity.onBackPressed()
     }
-
 
     fun getIsVisible(): Boolean = mIsVisible
 
     /**
      * 检查Fragment或FragmentActivity承载的Fragment是否只有一个
      */
-    protected fun isSingleFragment(): Boolean {
+    fun isSingleFragment(): Boolean {
         var size = 0
         val manager = fragmentManager
         if (manager != null && manager.fragments.isNotEmpty()) {
@@ -429,19 +427,20 @@ abstract class BaseFragment : Fragment() {
         return false
     }
 
-    fun presentFragment(fragment: BaseFragment) {
+    fun presentFragment(targetFragment: BaseFragment) {
+
         scheduleTaskAtStarted(Runnable {
             val parent = getParentBaseFragment()
             if (parent != null) {
                 if (definesPresentationContext()) {
-                    presentFragmentInternal(this, fragment)
+                    presentFragmentInternal(this, targetFragment)
                 } else {
-                    parent.presentFragment(fragment)
+                    parent.presentFragment(targetFragment)
                 }
                 return@Runnable
             }
 
-            (mActivity as? BaseActivity)?.presentFragment(fragment)
+            (mActivity as? BaseActivity)?.presentFragment(targetFragment)
         }, true)
     }
 
@@ -558,15 +557,13 @@ abstract class BaseFragment : Fragment() {
     fun startActivityRootFragment(rootFragment: BaseFragment, newActivity: Boolean = false) {
         scheduleTaskAtStarted(Runnable {
             if (mActivity is BaseActivity && getNavigationFragment() != null && !mIsInViewPager && !newActivity) {
-                val navigationFragment = NavigationFragment()
-                navigationFragment.setRootFragment(rootFragment)
-                (mActivity as BaseActivity).startActivityRootFragment(navigationFragment)
+                (mActivity as BaseActivity).startActivityRootFragment(rootFragment(rootFragment))
             } else {
                 val intent = Intent(mActivity, ContainerActivity::class.java)
                 intent.putExtra(AppConfig.FRAGMENT, rootFragment.javaClass.canonicalName)
                 mActivity.startActivity(intent)
             }
-        })
+        }, true)
     }
 
     fun getDebugTag(): String? {
@@ -666,7 +663,7 @@ abstract class BaseFragment : Fragment() {
         return false
     }
 
-    fun isBackInteractive(): Boolean {
+    open fun isBackInteractive(): Boolean {
         return true
     }
 
@@ -685,6 +682,12 @@ abstract class BaseFragment : Fragment() {
     @JvmOverloads
     fun <T : BaseFragment> fragment(targetFragment: T, bundle: Bundle? = null): T {
         return Fragment.instantiate(context, targetFragment.javaClass.canonicalName, bundle) as T
+    }
+
+    fun rootFragment(targetFragment: BaseFragment): BaseFragment {
+        val navigationFragment = NavigationFragment()
+        navigationFragment.setRootFragment(targetFragment)
+        return navigationFragment
     }
 
     /**
@@ -709,12 +712,22 @@ abstract class BaseFragment : Fragment() {
      */
     @JvmOverloads
     fun setResult(resultCode: Int, result: Bundle? = null) {
-        this.result = result
         this.resultCode = resultCode
+        this.result = result
         val parent = getParentBaseFragment()
         if (parent != null && !definesPresentationContext() /*&& !showsDialog*/) {
             parent.setResult(resultCode, result)
         }
+    }
+
+    /**
+     * 设置请求码.
+     *
+     * @param requestCode 请求码.
+     */
+    fun setRequest(requestCode: Int) {
+        this.requestCode = requestCode
+        kv.encode(ARGS_REQUEST_CODE, requestCode)
     }
 
     fun getRequestCode(): Int {
@@ -757,7 +770,6 @@ abstract class BaseFragment : Fragment() {
      * 跳转 fragment.
      *
      * @param targetFragment 目标fragment.
-     * @param stickyStack    是否加入堆栈.
      * @param requestCode    请求码.
      * @param T          [BaseFragment].
      */
@@ -766,15 +778,16 @@ abstract class BaseFragment : Fragment() {
 
         kv.encode(ARGS_REQUEST_CODE, requestCode)
 
-        if (mActivity is BaseActivity && !mIsInViewPager) {
-            if (getNavigationFragment() == null) {
-                val navigationFragment = NavigationFragment()
-                navigationFragment.setRootFragment(targetFragment)
-                presentFragment(navigationFragment)
-            } else {
-                val navigationFragment = getNavigationFragment()
-                navigationFragment?.pushFragment(targetFragment)
-            }
+        this.onHiddenChanged(true)
+
+        if (mActivity is BaseActivity && !mIsInViewPager && getNavigationFragment() != null) {
+//            if (getNavigationFragment() == null) {
+//                val navigationFragment = NavigationFragment()
+//                navigationFragment.setRootFragment(targetFragment)
+//                startPresentFragment(navigationFragment)
+//            } else {
+            getNavigationFragment()?.pushFragment(targetFragment)
+//            }
         } else {
             startActivityRootFragment(targetFragment)
         }
@@ -783,12 +796,6 @@ abstract class BaseFragment : Fragment() {
 
 
     // ------- statusBar --------
-
-    fun preferredToolbarAlpha(): Int {
-        val childFragmentForToolbarColor = childFragmentForAppearance()
-        return childFragmentForToolbarColor?.preferredToolbarAlpha()
-                ?: ((1.0f * 255 + 0.5).toInt())
-    }
 
     fun setNeedsNavigationBarAppearanceUpdate() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -817,19 +824,19 @@ abstract class BaseFragment : Fragment() {
     //不推荐直接调用
     @JvmOverloads
     fun setStatusBarColor(color: Int, animated: Boolean = true) {
-        AppUtils.setStatusBarColor(getWindow()!!, color, animated)
+        StatusBarUtils.setStatusBarColor(getWindow()!!, color, animated)
     }
 
     fun setNavigationBarColor(color: Int) {
-        AppUtils.setNavigationBarColor(getWindow()!!, color)
+        StatusBarUtils.setNavigationBarColor(getWindow()!!, color)
     }
 
     fun setStatusBarStyle(barStyle: BarStyle) {
-        AppUtils.setStatusBarStyle(getWindow()!!, barStyle === BarStyle.DarkContent)
+        StatusBarUtils.setStatusBarStyle(getWindow()!!, barStyle === BarStyle.DarkContent)
     }
 
     fun setStatusBarHidden(hidden: Boolean) {
-        AppUtils.setStatusBarHidden(getWindow()!!, hidden)
+        StatusBarUtils.setStatusBarHidden(getWindow()!!, hidden)
     }
 
     fun setStatusBarTranslucent(translucent: Boolean) {
@@ -837,11 +844,11 @@ abstract class BaseFragment : Fragment() {
     }
 
     fun appendStatusBarPadding(view: View, viewHeight: Int) {
-        AppUtils.appendStatusBarPadding(view, viewHeight)
+        StatusBarUtils.appendStatusBarPadding(view, viewHeight)
     }
 
     fun removeStatusBarPadding(view: View, viewHeight: Int) {
-        AppUtils.removeStatusBarPadding(view, viewHeight)
+        StatusBarUtils.removeStatusBarPadding(view, viewHeight)
     }
 
     fun isStatusBarTranslucent(): Boolean {
@@ -881,7 +888,7 @@ abstract class BaseFragment : Fragment() {
             setStatusBarColor(Color.TRANSPARENT, animated)
         } else {
             var statusBarColor = preferredStatusBarColor()
-            var shouldAdjustForWhiteStatusBar = !AppUtils.isBlackColor(statusBarColor, 176)
+            var shouldAdjustForWhiteStatusBar = !StatusBarUtils.isBlackColor(statusBarColor, 176)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 shouldAdjustForWhiteStatusBar = shouldAdjustForWhiteStatusBar && statusBarStyle === BarStyle.LightContent
@@ -905,7 +912,7 @@ abstract class BaseFragment : Fragment() {
         if (childFragmentForStatusBarColor != null) {
             return childFragmentForStatusBarColor.preferredStatusBarColor()
         }
-        return AppUtils.fetchContextColor(mActivity, R.attr.colorPrimaryDark)
+        return StatusBarUtils.fetchContextColor(mActivity, R.attr.colorPrimaryDark)
     }
 
     //虚拟键颜色

@@ -1,11 +1,13 @@
 package com.yyxnb.arch.frag;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.yyxnb.arch.R;
+import com.yyxnb.arch.TestDialog;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
@@ -14,8 +16,6 @@ import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -56,12 +56,10 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
             bundle.putString("hehe", "呵呵哒");
 //            startFragment(fragment(new TwoFragment(), bundle), 0x666);
 
-            startFragment(new TwoFragment(), 0x666);
+            startFragment(new TwoFragment(),0x666);
 
 //            startFragment(fragment(new TwoFragment(), bundle));
 
-//            startFragment(new TwoFragment());
-//            ToastUtils.INSTANCE.normal( ""+ ActivityStack.INSTANCE.topActivity());
         });
 
 
@@ -73,14 +71,6 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
         tvShow.setText("666666  " + msg);
 
         tvShow2.setOnClickListener(v -> {
-//            startFragment(ViewPageFragment.class);
-
-//            startFragmentForResult(new ContentViewFragment(), 0x22);
-//            startFragmentForResult(new ViewPageFragment(), 0x22);
-
-//            NavigationFragment navigationFragment = new NavigationFragment();
-//            navigationFragment.setRootFragment(new ViewPageFragment());
-//            presentFragment(navigationFragment,1);
 
             startFragment(new ViewPageFragment());
 
@@ -88,13 +78,23 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
 
         textView.setOnClickListener(v -> {
 
-//            FragmentHelper.getLatterFragment(getChildFragmentManager(),this);
+            TestDialog dialog = new TestDialog();
+            dialog.show(getChildFragmentManager());
+            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    LogUtils.INSTANCE.w("onCancel   " + dialog.toString());
+                }
+            });
 
-//            LogUtils.INSTANCE.w(" " + FragmentUtils.INSTANCE.getFragments(mActivity.getSupportFragmentManager()).size());
-//            LogUtils.INSTANCE.w(" " + ((BaseActivity) getMActivity()).getMFragmentStack().size());
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    LogUtils.INSTANCE.w("onDismiss  " + dialog.toString());
+                }
+            });
         });
 
-//        LogUtils.INSTANCE.w("initViewData  msg " + msg);
     }
 
 
@@ -124,12 +124,8 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
     @Override
     public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
         super.onFragmentResult(requestCode, resultCode, result);
-        if (requestCode == 0x666 && resultCode == RESULT_OK) {
+        if (requestCode == 0x666 && resultCode == 0x110) {
             ToastUtils.INSTANCE.normal(result.getString("msg", "?"));
-        }
-
-        if (requestCode == 0x22 && resultCode == RESULT_OK) {
-            ToastUtils.INSTANCE.normal("0x22");
         }
 
         LogUtils.INSTANCE.w("requestCode " + requestCode + " ,resultCode  " + resultCode);

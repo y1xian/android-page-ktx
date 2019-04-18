@@ -1,6 +1,7 @@
 package com.yyxnb.arch.frag;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -96,9 +97,7 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_one:
-//                changeView(0);
-//                setResult(RESULT_OK);
-                finish();
+                changeView(0);
                 break;
             case R.id.btn_two:
                 changeView(1);
@@ -114,5 +113,10 @@ public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements
     //手动设置ViewPager要显示的视图
     private void changeView(int desTab) {
         mViewPager.setCurrentItem(desTab, true);
+    }
+
+    @Override
+    public int preferredStatusBarColor() {
+        return Color.TRANSPARENT;
     }
 }
