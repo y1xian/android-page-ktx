@@ -305,15 +305,6 @@ abstract class BaseFragment : Fragment()  {
         if (fragment == null) {
             return false
         }
-//        if (fragment.parentFragment != null) {
-//            return if (fragment.parentFragment is BaseFragment) {
-//                isVisibleToUser(fragment.parentFragment as BaseFragment) && if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
-//            } else if (fragment.parentFragment is DialogFragment) {
-//                true
-//            } else {
-//                if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
-//            }
-//        }
         return if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
     }
 
@@ -397,33 +388,33 @@ abstract class BaseFragment : Fragment()  {
         val count = fragmentManager.backStackEntryCount
         val fragment = fragmentManager.primaryNavigationFragment
 
-        if (fragment is BaseFragment && fragment.definesPresentationContext() && count > 0) {
+        if (fragment is BaseFragment && (fragment as BaseFragment).definesPresentationContext() && count > 0) {
             val backStackEntry = fragmentManager.getBackStackEntryAt(count - 1)
             val child = fragmentManager.findFragmentByTag(backStackEntry.name) as BaseFragment?
-            return child != null && child.dispatchBackPressed() || onBackPressed()
-        } else if (fragment is BaseFragment) {
-            val child = fragment as BaseFragment?
-            return child!!.dispatchBackPressed() || onBackPressed()
-        } else if (count > 0) {
-            val backStackEntry = fragmentManager.getBackStackEntryAt(count - 1)
-            val child = fragmentManager.findFragmentByTag(backStackEntry.name) as BaseFragment?
-            return child != null && child.dispatchBackPressed() || onBackPressed()
-        } else {
-            return onBackPressed()
+            if (child != null) {
+                val processed = child.dispatchBackPressed() || onBackPressed()
+                if (!processed) {
+                    child.dismissFragment()
+                }
+                return true
+            }
+        }
+
+        return when {
+            fragment is BaseFragment -> {
+                val child = fragment as BaseFragment?
+                child!!.dispatchBackPressed() || onBackPressed()
+            }
+            count > 0 -> {
+                val backStackEntry = fragmentManager.getBackStackEntryAt(count - 1)
+                val child = fragmentManager.findFragmentByTag(backStackEntry.name) as BaseFragment?
+                child != null && child.dispatchBackPressed() || onBackPressed()
+            }
+            else -> onBackPressed()
         }
     }
 
     open fun onBackPressed(): Boolean {
-        if (definesPresentationContext) {
-            val parent = getParentBaseFragment()
-            if (parent != null) {
-                val count = parent.getChildFragmentCountAtBackStack()
-                if (count > 0) {
-                    dismissFragment()
-                    return true
-                }
-            }
-        }
         return false
     }
 
@@ -470,9 +461,7 @@ abstract class BaseFragment : Fragment()  {
                 return@Runnable
             }
 
-            if (mActivity != null) {
-                (mActivity as? BaseActivity)?.dismissFragment(this)
-            }
+            (mActivity as? BaseActivity)?.dismissFragment(this)
         }, true)
 
     }
@@ -528,9 +517,7 @@ abstract class BaseFragment : Fragment()  {
             }
         }
 
-        return if (mActivity != null) {
-            (mActivity as? BaseActivity)?.getPresentedFragment(this)
-        } else null
+        return (mActivity as? BaseActivity)?.getPresentedFragment(this)
 
     }
 
@@ -547,9 +534,7 @@ abstract class BaseFragment : Fragment()  {
             }
         }
 
-        return if (mActivity != null) {
-            (mActivity as? BaseActivity)?.getPresentingFragment(this)
-        } else null
+        return (mActivity as? BaseActivity)?.getPresentingFragment(this)
 
     }
 

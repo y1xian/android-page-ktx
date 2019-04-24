@@ -6,6 +6,7 @@ import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseRepository
+import com.yyxnb.yyxarch.http.RetrofitManager
 
 
 /**
@@ -32,5 +33,10 @@ abstract class BaseViewModel<T : BaseRepository<*>>(application: Application) : 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         owner.lifecycle.removeObserver(mRepository)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        RetrofitManager.cancelAllRequest()
     }
 }

@@ -51,7 +51,7 @@ public class TestFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
 
-                startActivityRootFragment(new TestFragment());
+                startActivityRootFragment(new TestFragment(),true);
             }
         });
 
