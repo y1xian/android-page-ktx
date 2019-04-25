@@ -1,4 +1,4 @@
-package com.yyx.yyxbase.livedata
+package com.yyxnb.yyxarch.livedata
 
 import android.arch.lifecycle.LiveData
 import com.yyxnb.yyxarch.bean.Lcee

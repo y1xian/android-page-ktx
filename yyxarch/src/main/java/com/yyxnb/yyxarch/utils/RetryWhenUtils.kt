@@ -1,7 +1,6 @@
 package com.yyxnb.yyxarch.utils
 
 
-import android.content.Context
 import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
@@ -16,15 +15,15 @@ import java.util.concurrent.TimeoutException
 /**
  *  RxJava 重试机制--retryWhen操作符[Observable.retryWhen]
  */
-class RetryWhenUtils @JvmOverloads constructor(private val mContext: Context? = null,
-                                               /**
-                                                * 最大尝试次数--不包含原始请求次数
-                                                */
-                                               private var mRetryMaxTime: Int = 3,
-                                               /**
-                                                * 尝试时间间隔ms
-                                                */
-                                               private var mRetryDelay: Long = 500) : Function<Observable<out Throwable>, ObservableSource<*>> {
+class RetryWhenUtils @JvmOverloads constructor(
+        /**
+         * 最大尝试次数--不包含原始请求次数
+         */
+        private var mRetryMaxTime: Int = 3,
+        /**
+         * 尝试时间间隔ms
+         */
+        private var mRetryDelay: Long = 1000) : Function<Observable<out Throwable>, ObservableSource<*>> {
     /**
      * 记录已尝试次数
      */

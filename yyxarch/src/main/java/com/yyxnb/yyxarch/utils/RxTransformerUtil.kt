@@ -1,7 +1,6 @@
 package com.yyxnb.yyxarch.utils
 
 
-import android.app.Dialog
 import io.reactivex.ObservableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -20,31 +19,29 @@ object RxTransformerUtil {
      * @return 返回Observable
     </T> */
     fun <T> switchSchedulers(): ObservableTransformer<T, T> {
-        return ObservableTransformer{ upstream ->
+        return ObservableTransformer { upstream ->
             upstream
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
-                    .doOnSubscribe({ disposable ->
-
-                    })
+                    .doOnSubscribe { disposable ->
+                    }
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .observeOn(AndroidSchedulers.mainThread())
         }
     }
 
+
     /**
-     * 带参数  显示loading对话框
-     *
-     * @param dialog loading
-     * @param <T>    泛型
-     * @return 返回Observable
-    </T> */
-    fun <T> switchSchedulers(dialog: Dialog?): ObservableTransformer<T, T> {
-        return ObservableTransformer{ upstream ->
+     * 错误重试机制
+     */
+    fun <T> switchSchedulers(mRetryMaxTime: Int = 3, mRetryDelay: Long = 3000): ObservableTransformer<T, T> {
+        return ObservableTransformer { upstream ->
             upstream
+                    .retryWhen(RetryWhenUtils(mRetryMaxTime, mRetryDelay))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
-                    .doOnSubscribe({ disposable -> dialog?.show() })
+                    .doOnSubscribe { disposable ->
+                    }
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .observeOn(AndroidSchedulers.mainThread())
         }
@@ -54,13 +51,13 @@ object RxTransformerUtil {
      * 线程调度器
      */
     fun <T> schedulersTransformer(): ObservableTransformer<T, T> {
-        return ObservableTransformer{ upstream ->
+        return ObservableTransformer { upstream ->
             upstream
                     //一般我们在视图消亡后，无需RxJava再执行，可以直接取消订阅
                     .unsubscribeOn(Schedulers.io())
-                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-//                    .retryWhen(RetryWhenUtils().setRetryDelay(3).setRetryMaxTime(1000))
+                    .subscribeOn(Schedulers.io())
+
         }
     }
 
@@ -71,7 +68,7 @@ object RxTransformerUtil {
      * @return
     </T> */
     fun <T> allIo(): ObservableTransformer<T, T> {
-        return ObservableTransformer{ upstream ->
+        return ObservableTransformer { upstream ->
             upstream
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())

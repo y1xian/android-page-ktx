@@ -176,7 +176,7 @@ object OkHttpConfig {
             addInterceptors()
             setTimeout()
             setDebugConfig()
-            setRetryConfig()
+//            setRetryConfig()
             RetrofitMultiUrl.with(okHttpClientBuilder)
 
             okHttpClient = okHttpClientBuilder.build()

@@ -32,7 +32,7 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
     public void initView(@Nullable Bundle savedInstanceState) {
         tvShow = fv(R.id.tvShow);
 
-//        mViewModel.reqTeam();
+        mViewModel.reqTeam();
 //        mViewModel.reqTeam2();
     }
 

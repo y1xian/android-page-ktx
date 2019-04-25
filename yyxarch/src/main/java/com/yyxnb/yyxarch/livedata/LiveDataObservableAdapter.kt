@@ -1,9 +1,8 @@
 package com.yyxnb.yyxarch.livedata
 
 import android.arch.lifecycle.LiveData
-import com.yyx.yyxbase.livedata.DeferredLceeLiveData
-import com.yyx.yyxbase.livedata.DeferredLiveData
 import com.yyxnb.yyxarch.bean.Lcee
+import com.yyxnb.yyxarch.utils.RxTransformerUtil
 import io.reactivex.Observable
 import kotlinx.coroutines.Deferred
 
@@ -15,12 +14,14 @@ import kotlinx.coroutines.Deferred
  */
 object LiveDataObservableAdapter {
 
-    fun <T> fromObservable(observable: Observable<T>): LiveData<T> {
-        return ObservableLiveData(observable)
+    @JvmOverloads
+    fun <T> fromObservable(observable: Observable<T>, mRetryMaxTime: Int = 3, mRetryDelay: Long = 3000): LiveData<T> {
+        return ObservableLiveData(observable.compose(RxTransformerUtil.switchSchedulers(mRetryMaxTime, mRetryDelay)))
     }
 
-    fun <T> fromObservableLcee(observable: Observable<T>): LiveData<Lcee<T>> {
-        return ObservableLceeLiveData(observable)
+    @JvmOverloads
+    fun <T> fromObservableLcee(observable: Observable<T>, mRetryMaxTime: Int = 3, mRetryDelay: Long = 3000): LiveData<Lcee<T>> {
+        return ObservableLceeLiveData(observable.compose(RxTransformerUtil.switchSchedulers(mRetryMaxTime, mRetryDelay)))
     }
 
     fun <T> fromDeferredLcee(deferred: Deferred<T>): LiveData<Lcee<T>> {

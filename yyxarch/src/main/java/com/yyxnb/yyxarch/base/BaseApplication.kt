@@ -35,7 +35,7 @@ open class BaseApplication : Application() {
 //            .setAddInterceptor(RetryInterceptor.Builder()
 //                    .executionCount(retry).retryInterval(1000)
 //                    .build())
-            .setRetry(true, 1, 1000)
+//            .setRetry(true, 1, 1000)
             //全局ssl证书认证
             //1、信任所有证书,不安全有风险（默认信任所有证书）
             .setSslSocketFactory()

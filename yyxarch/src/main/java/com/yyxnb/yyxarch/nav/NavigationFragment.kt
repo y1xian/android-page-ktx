@@ -310,7 +310,7 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
 
     override fun shouldSwipeBack(): Boolean {
         val top = getTopFragment() ?: return false
-        val isSwipeBack = (getChildFragmentCountAtBackStack() > 1
+        val isSwipeBack = ( getChildFragmentCountAtBackStack() > 1
                 && top.isBackInteractive()
                 && top.isSwipeBackEnabled())
         if (isSwipeBack) ParallaxHelper.disableParallaxBack(mActivity) else ParallaxHelper.enableParallaxBack(mActivity)

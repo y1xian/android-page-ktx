@@ -15,9 +15,6 @@ import android.widget.FrameLayout
 import com.yyxnb.yyxarch.R
 
 /**
- * Created by Listen on 2018/7/1.
- *
- *
  * modified from https://github.com/ikew0ng/SwipeBackLayout
  */
 class SwipeBackLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : FrameLayout(context, attrs) {
