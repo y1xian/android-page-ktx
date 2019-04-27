@@ -11,6 +11,7 @@ import io.reactivex.Observable;
 import kotlinx.coroutines.Deferred;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface api {
@@ -27,4 +28,7 @@ public interface api {
     @FormUrlEncoded
     @POST("searchPoetry")
     Deferred<BaseDatas<List<TestData>>> getTeam2(@FieldMap Map<String, String> map);
+
+    @GET(ApiConstant.API_TEST_KEY)
+    Deferred<BaseDatas<List<TestData>>> getTest();
 }

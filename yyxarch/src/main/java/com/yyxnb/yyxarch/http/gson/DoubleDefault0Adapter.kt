@@ -1,6 +1,8 @@
 package com.yyxnb.yyxarch.http.gson
 
 import com.google.gson.*
+import com.yyxnb.yyxarch.ext.isDouble
+import com.yyxnb.yyxarch.ext.toDoubleRegex
 import java.lang.reflect.Type
 
 /**
@@ -11,8 +13,10 @@ class DoubleDefault0Adapter : JsonSerializer<Double>, JsonDeserializer<Double> {
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Double? {
         try {
-            if (json.asString == "" || json.asString == "null") {
+            if ("" == json.asString || "null" == json.asString) {
                 return 0.00
+            }else if (!json.asString.isDouble()){
+                return json.asString.toDoubleRegex()
             }
         } catch (ignore: Exception) {
         }
@@ -28,4 +32,5 @@ class DoubleDefault0Adapter : JsonSerializer<Double>, JsonDeserializer<Double> {
     override fun serialize(src: Double?, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         return JsonPrimitive(src!!)
     }
+
 }

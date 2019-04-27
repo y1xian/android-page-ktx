@@ -10,8 +10,12 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.MotionEvent
+import android.view.View
+import android.widget.EditText
 import android.widget.FrameLayout
 import com.github.anzewei.parallaxbacklayout.ParallaxBack
+import com.yyxnb.yyxarch.ext.closeSoftKeyboard
 import com.yyxnb.yyxarch.nav.FragmentHelper
 import com.yyxnb.yyxarch.nav.LifecycleDelegate
 import com.yyxnb.yyxarch.nav.PresentAnimation
@@ -275,6 +279,43 @@ abstract class BaseActivity : AppCompatActivity() {
     @JvmOverloads
     protected fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false) {
         lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred)
+    }
+
+
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DEPRECATED_IDENTITY_EQUALS")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        //把操作放在用户点击的时候
+        if (event.action === MotionEvent.ACTION_DOWN) {
+            val v = currentFocus      //得到当前页面的焦点,ps:有输入框的页面焦点一般会被输入框占据
+            if (isShouldHideKeyboard(v, event)) { //判断用户点击的是否是输入框以外的区域
+                //收起键盘
+                v.closeSoftKeyboard()
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
+    /**
+     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
+     *
+     * @param v
+     * @param event
+     * @return
+     */
+    private fun isShouldHideKeyboard(v: View?, event: MotionEvent): Boolean {
+        if (v != null && v is EditText) {  //判断得到的焦点控件是否包含EditText
+            val l = intArrayOf(0, 0)
+            v.getLocationInWindow(l)
+            val left = l[0]
+            //得到输入框在屏幕中上下左右的位置
+            val top = l[1]
+            val bottom = top + v.getHeight()
+            val right = left + v.getWidth()
+            return !(event.x > left && event.x < right
+                    && event.y > top && event.y < bottom)
+        }
+        // 如果焦点不是EditText则忽略
+        return false
     }
 
 }

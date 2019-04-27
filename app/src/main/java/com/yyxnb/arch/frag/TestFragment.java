@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.yyxnb.arch.R;
 import com.yyxnb.yyxarch.base.BaseFragment;
 import com.yyxnb.yyxarch.nav.NavigationFragment;
+import com.yyxnb.yyxarch.utils.BarStyle;
 import com.yyxnb.yyxarch.utils.ToastUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -83,7 +85,12 @@ public class TestFragment extends BaseFragment {
             finish();
         });
 
+    }
 
+    @NotNull
+    @Override
+    public BarStyle preferredStatusBarStyle() {
+        return BarStyle.DarkContent;
     }
 
     @Override

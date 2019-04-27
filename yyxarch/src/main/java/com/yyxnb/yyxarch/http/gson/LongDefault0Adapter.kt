@@ -11,7 +11,7 @@ class LongDefault0Adapter : JsonSerializer<Long>, JsonDeserializer<Long> {
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Long? {
         try {
-            if (json.asString == "" || json.asString == "null") {
+            if ("" == json.asString || "null" == json.asString) {
                 return 0L
             }
         } catch (ignore: Exception) {

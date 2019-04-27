@@ -1,32 +1,19 @@
 package com.yyxnb.yyxarch
 
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.provider.Settings
 import android.support.annotation.StringRes
-import android.support.v4.view.ViewCompat
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
-import android.util.TypedValue
-import android.view.*
-import android.widget.FrameLayout
 import com.tencent.mmkv.MMKV
-import com.yyxnb.yyxarch.base.BaseFragment
-import com.yyxnb.yyxarch.utils.BarStyle
 import com.yyxnb.yyxarch.utils.ToastUtils
 import java.io.Serializable
 import java.lang.ref.WeakReference
@@ -61,7 +48,7 @@ object AppUtils :Serializable{
     val context: Context
         get() {
             if (null != mWeakReferenceContext) {
-                return mWeakReferenceContext.get()!!.getApplicationContext()
+                return mWeakReferenceContext.get()!!.applicationContext
             }
             throw NullPointerException("u should init first")
         }
@@ -94,12 +81,12 @@ object AppUtils :Serializable{
      */
     val isDebug: Boolean
         get() {
-            if (TextUtils.isEmpty(mWeakReferenceContext.get()!!.getPackageName())) {
+            if (TextUtils.isEmpty(mWeakReferenceContext.get()!!.packageName)) {
                 return false
             }
             try {
-                val pm = mWeakReferenceContext.get()!!.getPackageManager()
-                val ai = pm.getApplicationInfo(mWeakReferenceContext.get()!!.getPackageName(), 0)
+                val pm = mWeakReferenceContext.get()!!.packageManager
+                val ai = pm.getApplicationInfo(mWeakReferenceContext.get()!!.packageName, 0)
                 return ai != null && ai.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
@@ -118,8 +105,8 @@ object AppUtils :Serializable{
             val pi: PackageInfo
             var versionNum: String
             try {
-                val pm = mWeakReferenceContext!!.get()!!.getPackageManager()
-                pi = pm.getPackageInfo(mWeakReferenceContext!!.get()!!.getPackageName(), PackageManager.GET_CONFIGURATIONS)
+                val pm = mWeakReferenceContext.get()!!.packageManager
+                pi = pm.getPackageInfo(mWeakReferenceContext.get()!!.packageName, PackageManager.GET_CONFIGURATIONS)
                 versionNum = pi.versionName
             } catch (e: Exception) {
                 versionNum = "0"
@@ -180,26 +167,6 @@ object AppUtils :Serializable{
             Log.d("详细序列号", "$manuFacturer-$phoneName-$serialNumber")
             return "$manuFacturer-$phoneName-$serialNumber"
         }
-
-    /**
-     * IMEI （唯一标识序列号）
-     *
-     * 需与[.isPhone]一起使用
-     *
-     * 需添加权限 `<uses-permission android:name="android.permission.READ_PHONE_STATE"/>`
-     *
-     * @param context 上下文
-     * @return IMEI
-     */
-    fun getIMEI(context: Context): String {
-        val deviceId: String
-        if (isPhone(context)) {
-            deviceId = getDeviceIdIMEI(context)
-        } else {
-            deviceId = getAndroidId(context)
-        }
-        return deviceId
-    }
 
     /**
      * 获取设备的IMSI

@@ -13,6 +13,7 @@ public class App extends BaseApplication {
 
     private final String BASE_URL = "https://api.apiopen.top/";
     private final String BASE_URL2 = "https://api.github.com/";
+    private final String BASE_URL3 = "http://www.mocky.io/";
 
     @Override
     public void onCreate() {
@@ -38,8 +39,8 @@ public class App extends BaseApplication {
 //        RetrofitManager.INSTANCE.setBaseUrl(BASE_URL);
 
         RetrofitManager.INSTANCE
-                .setBaseUrl(BASE_URL).setOkClient(mClient);
-//                .putBaseUrl(ApiConstant.API_UPDATE_APP, BASE_URL2);
+                .setBaseUrl(BASE_URL).setOkClient(mClient)
+                .putBaseUrl(ApiConstant.API_TEST_KEY, BASE_URL3);
 
 
     }
@@ -57,7 +58,6 @@ public class App extends BaseApplication {
 //            .setAddInterceptor(new RetryInterceptor.Builder()
 //                    .executionCount(1).retryInterval(888)
 //                    .build())
-            .setRetry(true)
             //全局ssl证书认证
             //1、信任所有证书,不安全有风险（默认信任所有证书）
             .setSslSocketFactory()

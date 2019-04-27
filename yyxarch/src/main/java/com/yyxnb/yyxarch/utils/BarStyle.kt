@@ -1,6 +1,6 @@
-package com.yyxnb.yyxarch.utils;
+package com.yyxnb.yyxarch.utils
 
-public enum BarStyle {
+enum class BarStyle {
 
     /**
      * 深色状态栏 6.0 以上生效

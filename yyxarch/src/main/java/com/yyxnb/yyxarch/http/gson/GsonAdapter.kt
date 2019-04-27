@@ -6,6 +6,9 @@ import com.google.gson.GsonBuilder
 
 object GsonAdapter {
 
+    /**
+     * 后台返回""和"null"的处理
+     */
     fun buildGson(): Gson {
         var gson: Gson? = null
         if (gson == null) {
@@ -16,8 +19,10 @@ object GsonAdapter {
                     .registerTypeAdapter(Double::class.javaPrimitiveType, DoubleDefault0Adapter())
                     .registerTypeAdapter(Long::class.java, LongDefault0Adapter())
                     .registerTypeAdapter(Long::class.javaPrimitiveType, LongDefault0Adapter())
+                    .registerTypeAdapter(String::class.java,StringNullAdapter())
                     .create()
         }
         return gson!!
     }
+
 }

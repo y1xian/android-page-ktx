@@ -39,9 +39,6 @@ object OkHttpConfig {
         private var readTimeout: Long = mDelayTime
         private var writeTimeout: Long = mDelayTime
         private var connectTimeout: Long = mDelayTime
-        private var retryEnable: Boolean = false
-        private var retryCount: Int = 1
-        private var retryDelay: Long = 1000
         private var bksFile: InputStream? = null
         private var password: String? = null
         private var certificates: Array<out InputStream>? = null
@@ -130,17 +127,6 @@ object OkHttpConfig {
         }
 
         /**
-         * 设置重连
-         */
-        @JvmOverloads
-        fun setRetry(retryEnable: Boolean = true, retryCount: Int = 1, retryDelay: Long = 1000): Builder {
-            this.retryEnable = retryEnable
-            this.retryCount = retryCount
-            this.retryDelay = retryDelay
-            return this
-        }
-
-        /**
          * 添加自定义拦截器
          */
         fun setAddInterceptor(vararg interceptors: Interceptor): Builder {
@@ -176,7 +162,6 @@ object OkHttpConfig {
             addInterceptors()
             setTimeout()
             setDebugConfig()
-//            setRetryConfig()
             RetrofitMultiUrl.with(okHttpClientBuilder)
 
             okHttpClient = okHttpClientBuilder.build()
@@ -202,17 +187,6 @@ object OkHttpConfig {
                 val logInterceptor = HttpLoggingInterceptor(RxHttpLogger())
                 logInterceptor.level = HttpLoggingInterceptor.Level.BODY
                 okHttpClientBuilder.addInterceptor(logInterceptor)
-            }
-        }
-
-        /**
-         * Retry
-         */
-        private fun setRetryConfig() {
-            if (retryEnable) {
-                okHttpClientBuilder.addInterceptor(RetryInterceptor.Builder()
-                        .executionCount(retryCount).retryInterval(retryDelay)
-                        .build())
             }
         }
 

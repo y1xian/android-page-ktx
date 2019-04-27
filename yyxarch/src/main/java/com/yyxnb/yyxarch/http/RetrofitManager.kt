@@ -49,7 +49,7 @@ object RetrofitManager {
      * 创建Service
      */
     fun <T> createApi(apiService: Class<T>): T {
-        if (mCacheEnable && apiService != null) {
+        if (mCacheEnable) {
             if (mServiceMap.containsKey(apiService.name)) {
                 Log.v("RetrofitManager", "className:" + apiService.name + ";service取自缓存")
                 return mServiceMap[apiService.name] as T
@@ -73,6 +73,7 @@ object RetrofitManager {
      * 上传单张图片
      * @param uploadUrl 地址
      * @param filePath  文件路径
+     * @param fileName  后台协定的接受图片的name（没特殊要求就可以随便写）
      */
     fun uploadImg(uploadUrl: String, filePath: String, fileName: String): Observable<ResponseBody> {
         return UploadRetrofit.uploadImg(uploadUrl, filePath, fileName)

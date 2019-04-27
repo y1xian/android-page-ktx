@@ -22,23 +22,18 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
-import android.widget.Toast
 import com.yyxnb.yyxarch.AppUtils
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 /**
  * 应用程序全局的通用工具类，功能比较单一，经常被复用的功能，应该封装到此工具类当中，从而给全局代码提供方面的操作。
- *
- * @author guolin
- * @since 17/2/18
  */
-object GlobalUtils {
+object GlobalUtils : Serializable {
 
     private var TAG = "GlobalUtils"
-
-    private var toast: Toast? = null
 
     /**
      * 获取当前应用程序的包名。

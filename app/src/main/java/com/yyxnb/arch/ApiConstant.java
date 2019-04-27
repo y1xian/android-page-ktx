@@ -11,4 +11,5 @@ public class ApiConstant {
 
     public static final String API_UPDATE_APP = "searchPoetry";
     public static final String API_UPDATE_APP_KEY = "update";
+    public static final String API_TEST_KEY = "v2/5cc2a63e3300000d007e5330";
 }

@@ -337,7 +337,7 @@ public class CacheUtils {
      *            保存的bitmap数据
      */
     public void put(String key, Bitmap value) {
-        put(key, BitmapUtils.getBytesFromBitmap(value));
+        put(key, BitmapUtils.Companion.getBytesFromBitmap(value));
     }
 
     /**
@@ -351,7 +351,7 @@ public class CacheUtils {
      *            保存的时间，单位：秒
      */
     public void put(String key, Bitmap value, int saveTime) {
-        put(key, BitmapUtils.getBytesFromBitmap(value), saveTime);
+        put(key, BitmapUtils.Companion.getBytesFromBitmap(value), saveTime);
     }
 
     /**
@@ -364,7 +364,7 @@ public class CacheUtils {
         if (getAsBinary(key) == null) {
             return null;
         }
-        return BitmapUtils.getBitmapFromBytes(getAsBinary(key));
+        return BitmapUtils.Companion.getBitmapFromBytes(getAsBinary(key));
     }
 
     /**
@@ -376,7 +376,7 @@ public class CacheUtils {
      *            保存的drawable数据
      */
     public void put(String key, Drawable value) {
-        put(key, BitmapUtils.getBitmapFromDrawable(value));
+        put(key, BitmapUtils.Companion.getBitmapFromDrawable(value));
     }
 
     /**
@@ -390,7 +390,7 @@ public class CacheUtils {
      *            保存的时间，单位：秒
      */
     public void put(String key, Drawable value, int saveTime) {
-        put(key, BitmapUtils.getBitmapFromDrawable(value), saveTime);
+        put(key, BitmapUtils.Companion.getBitmapFromDrawable(value), saveTime);
     }
 
     /**
@@ -403,7 +403,7 @@ public class CacheUtils {
         if (getAsBinary(key) == null) {
             return null;
         }
-        return BitmapUtils.getDrawableFromBitmap(BitmapUtils.getBitmapFromBytes(getAsBinary(key)));
+        return BitmapUtils.Companion.getDrawableFromBitmap(BitmapUtils.Companion.getBitmapFromBytes(getAsBinary(key)));
     }
 
     /**

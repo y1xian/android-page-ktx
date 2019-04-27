@@ -1,6 +1,7 @@
 package com.yyxnb.yyxarch.utils
 
 import android.app.Activity
+import java.io.Serializable
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -9,7 +10,7 @@ import java.util.*
  * 应用程序Activity管理类：用于Activity管理和应用程序退出
  * @author yyx
  */
-object ActivityStack {
+object ActivityStack : Serializable {
 
     private var mActivityStack: Stack<WeakReference<Activity>>? = null
 

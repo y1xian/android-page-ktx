@@ -56,14 +56,16 @@ object RetrofitMultiUrl {
 
     init {
         //初始化解析器
-        setUrlParser(IUrlParser { domainUrl, url ->
-            // 只支持 http 和 https
-            if (null == domainUrl) {
-                return@IUrlParser url
+        setUrlParser(object : IUrlParser {
+            override fun parseUrl(domainUrl: HttpUrl, url: HttpUrl): HttpUrl {
+                // 只支持 http 和 https
+                if (null == domainUrl) {
+                    return url
+                }
+                //解析得到service里的方法名(即@POST或@GET里的内容)--如果@GET 并添加参数 则为方法名+参数拼接
+                val method = if (!TextUtils.isEmpty(mBaseUrl)) url.toString().replace(mBaseUrl!!.toString(), "") else ""
+                return checkUrl(domainUrl.toString() + method)
             }
-            //解析得到service里的方法名(即@POST或@GET里的内容)--如果@GET 并添加参数 则为方法名+参数拼接
-            val method = if (!TextUtils.isEmpty(mBaseUrl)) url.toString().replace(mBaseUrl!!.toString(), "") else ""
-            checkUrl(domainUrl.toString() + method)
         })
         this.mInterceptor = Interceptor { chain ->
             val request = chain.request()

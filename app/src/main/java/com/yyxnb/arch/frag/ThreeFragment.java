@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.yyxnb.arch.R;
+import com.yyxnb.arch.TestData;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
@@ -32,8 +33,10 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
     public void initView(@Nullable Bundle savedInstanceState) {
         tvShow = fv(R.id.tvShow);
 
-        mViewModel.reqTeam();
-//        mViewModel.reqTeam2();
+
+//        mViewModel.reqTeam();
+        mViewModel.reqTeam2();
+//        mViewModel.reqTest();
     }
 
     @Override
@@ -87,6 +90,36 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
             switch (baseDataLcee.getStatus()) {
                 case LceeStatus.Content:
                     tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
+                    LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
+                    break;
+                case LceeStatus.Empty:
+                    LogUtils.INSTANCE.i("2 Empty");
+                    break;
+                case LceeStatus.Error:
+                    LogUtils.INSTANCE.i("2 Error");
+                    break;
+                case LceeStatus.Loading:
+                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
+                    break;
+            }
+        });
+
+        mViewModel.getTest().observe(this, baseDataLcee -> {
+            switch (baseDataLcee.getStatus()) {
+                case LceeStatus.Content:
+                    TestData data = baseDataLcee.getData().getResult().get(0);
+                    if (data != null) {
+
+                        tvShow.setText(data.getTestInt() + " \n"
+                                + data.getTestInt2() + " \n"
+                                + data.getTestInt3() + " \n"
+                                + data.getTestDouble() + " \n"
+                                + data.getTestDouble2() + " \n"
+                                + data.getTestDouble3() + " \n"
+                                + data.getTestString() + " \n"
+                                + data.getTestString2() + " \n"
+                                + data.getTestString3() + " \n");
+                    }
                     LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
                     break;
                 case LceeStatus.Empty:

@@ -45,7 +45,7 @@ class DownloadManager {
             val file = File(dir, destFileName)
             fos = FileOutputStream(file)
 //            while ((len = input!!.read(buf)) != -1) {
-            while (input!!.read(buf).apply { len = this } > 0) {
+            while ((input!!.read(buf).apply { len = this }) != -1) {
                 sum += len.toLong()
                 fos.write(buf, 0, len)
 

@@ -1,6 +1,7 @@
 package com.yyxnb.yyxarch.utils
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -8,6 +9,7 @@ import android.net.NetworkInfo
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
 import com.yyxnb.yyxarch.AppUtils
+import java.io.Serializable
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.net.SocketException
@@ -20,7 +22,8 @@ import java.util.concurrent.Executors
  * 网络相关工具类
  */
 
-object NetworkUtils {
+@SuppressLint("StaticFieldLeak")
+object NetworkUtils : Serializable {
 
     enum class NetworkType {
         NETWORK_WIFI,

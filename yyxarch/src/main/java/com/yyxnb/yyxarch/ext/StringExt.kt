@@ -1,5 +1,7 @@
 package com.yyxnb.yyxarch.ext
 
+import java.util.regex.Pattern
+
 /**
  * Description: 字符串处理相关
  */
@@ -32,7 +34,7 @@ fun Boolean.equalsIgnoreCase(a: String, b: String) = a === b || b != null && a.l
 /**
  * 判断字符串是否为null或全为空格
  */
-fun Boolean.isSpace(s: String) = s == null || s.trim { it <= ' ' }.length == 0;
+fun Boolean.isSpace(s: String) = s == null || s.trim { it <= ' ' }.isEmpty()
 
 /**
  * 首字母大写
@@ -72,5 +74,48 @@ fun String.reverse(): String {
         return String(chars)
     }
 
+}
+
+//判断整数（int）
+fun String.isInteger(): Boolean {
+    let {
+        if (null == it || "" == it) {
+            return false
+        }
+        val pattern = Pattern.compile("^[-\\+]?[\\d]*$")
+        return pattern.matcher(it).matches()
+    }
+}
+
+//判断浮点数（double和float）
+fun String.isDouble(): Boolean {
+    let {
+        if (null == it || "" == it) {
+            return false
+        }
+        val pattern = Pattern.compile("^[-\\+]?[.\\d]*$")
+        return pattern.matcher(it).matches()
+    }
+}
+
+//转换整数（int）
+fun String.toIntegerRegex(): Int {
+    let {
+        if (null == it || "" == it) {
+            return 0
+        }
+        return Integer.valueOf(it.replace("[a-zA-Z\u4e00-\u9fa5`~!@#$%^&*()+=|{}':;',\\\\[\\\\]<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：\\\"_”“’。，、？-]".toRegex(), ""))
+    }
+
+}
+
+//转换浮点数（double和float）
+fun String.toDoubleRegex(): Double {
+    let {
+        if (null == it || "" == it) {
+            return 0.00
+        }
+        return java.lang.Double.valueOf(it.replace("[a-zA-Z\u4e00-\u9fa5`~!@#$%^&*()+=|{}':;',\\\\[\\\\]<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：\\\"_”“’。，、？-]".toRegex(), ""))
+    }
 }
 

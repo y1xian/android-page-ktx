@@ -23,6 +23,7 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
 
     private MutableLiveData<Map<String,String>> reqTeam = new MutableLiveData<>();
     private MutableLiveData<Map<String,String>> reqTeam2 = new MutableLiveData<>();
+    private MutableLiveData<Map<String,String>> reqTest = new MutableLiveData<>();
 
     public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam(){
         return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
@@ -30,6 +31,10 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
 
     public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam2(){
         return Transformations.switchMap(reqTeam2, input -> mRepository.getTeam2(input));
+    }
+
+    public LiveData<Lcee<BaseDatas<List<TestData>>>> getTest(){
+        return Transformations.switchMap(reqTest, input -> mRepository.getTest(input));
     }
 
 
@@ -42,6 +47,11 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "杜甫");
         reqTeam2.postValue(map);
+    }
+   public void reqTest(){
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("name", "杜甫");
+       reqTest.postValue(map);
     }
 
 }

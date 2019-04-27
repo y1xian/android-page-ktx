@@ -59,10 +59,10 @@ android {
 }
 
 dependencies {
-//    api fileTree(dir: 'libs', include: ['*.jar'])
-//    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     testImplementation 'junit:junit:4.12'
     // 约束
     api libs.constraint

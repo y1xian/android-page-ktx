@@ -1,9 +1,12 @@
 package com.yyxnb.yyxarch.utils
 
+import android.annotation.SuppressLint
 import com.yyxnb.yyxarch.AppUtils
+import java.io.Serializable
 import java.lang.reflect.Field
 
-object ScreenUtils {
+@SuppressLint("StaticFieldLeak")
+object ScreenUtils : Serializable {
 
     private val mContext = AppUtils.context
 

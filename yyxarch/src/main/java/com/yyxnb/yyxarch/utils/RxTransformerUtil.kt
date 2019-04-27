@@ -1,6 +1,7 @@
 package com.yyxnb.yyxarch.utils
 
 
+import com.yyxnb.yyxarch.common.AppConfig
 import io.reactivex.ObservableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -34,7 +35,7 @@ object RxTransformerUtil {
     /**
      * 错误重试机制
      */
-    fun <T> switchSchedulers(mRetryMaxTime: Int = 3, mRetryDelay: Long = 3000): ObservableTransformer<T, T> {
+    fun <T> switchSchedulers(mRetryMaxTime: Int = AppConfig.retryMaxTime, mRetryDelay: Long = AppConfig.retryDelay): ObservableTransformer<T, T> {
         return ObservableTransformer { upstream ->
             upstream
                     .retryWhen(RetryWhenUtils(mRetryMaxTime, mRetryDelay))

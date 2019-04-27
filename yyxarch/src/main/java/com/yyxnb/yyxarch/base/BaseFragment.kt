@@ -35,7 +35,7 @@ import java.util.*
 
 
 /**
- * Description:
+ * Description: BaseFragment
  *
  * @author : yyx
  * @date ：2016/10
@@ -93,7 +93,6 @@ abstract class BaseFragment : Fragment()  {
         if (bundle.size() > 0) {
             initVariables(bundle)
         }
-
         setResult(0, null)
         requireFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
     }
@@ -110,6 +109,10 @@ abstract class BaseFragment : Fragment()  {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null == rootView) {
             rootView = inflater.inflate(initLayoutResID(), container, false)
+        }
+        rootView!!.setOnTouchListener { _, event ->
+            mActivity.onTouchEvent(event)
+           return@setOnTouchListener false
         }
         return rootView
     }
@@ -131,7 +134,7 @@ abstract class BaseFragment : Fragment()  {
         requireFragmentManager().unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
     }
 
-    internal var fragmentLifecycleCallbacks: FragmentManager.FragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+    private var fragmentLifecycleCallbacks: FragmentManager.FragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
             if (fm === f.fragmentManager && targetFragment === f) {
                 setTargetFragment(f.targetFragment, f.targetRequestCode)
@@ -653,7 +656,7 @@ abstract class BaseFragment : Fragment()  {
     }
 
     open fun isSwipeBackEnabled(): Boolean {
-        return true
+        return AppConfig.swipeBackEnabled
     }
 
     /**
@@ -795,12 +798,6 @@ abstract class BaseFragment : Fragment()  {
             if (color != null) {
                 setNavigationBarColor(color)
             } else {
-                var fragmentForColor = this
-                var child = fragmentForColor.childFragmentForAppearance()
-                while (child != null) {
-                    fragmentForColor = child
-                    child = child.childFragmentForAppearance()
-                }
                 setNavigationBarColor(Color.WHITE)
             }
         }
@@ -880,7 +877,7 @@ abstract class BaseFragment : Fragment()  {
             }
 
             if (shouldAdjustForWhiteStatusBar) {
-                statusBarColor = Color.WHITE
+                statusBarColor = AppConfig.shouldAdjustForWhiteStatusBar
             }
 
             if (isStatusBarTranslucent() && statusBarColor == Color.TRANSPARENT) {
@@ -897,7 +894,7 @@ abstract class BaseFragment : Fragment()  {
         if (childFragmentForStatusBarColor != null) {
             return childFragmentForStatusBarColor.preferredStatusBarColor()
         }
-        return StatusBarUtils.fetchContextColor(mActivity, R.attr.colorPrimaryDark)
+        return AppConfig.statusBarColor
     }
 
     //虚拟键颜色
@@ -906,7 +903,7 @@ abstract class BaseFragment : Fragment()  {
         val childFragmentForAppearance = childFragmentForAppearance()
         return if (childFragmentForAppearance != null) {
             childFragmentForAppearance.preferredNavigationBarColor()
-        } else Color.TRANSPARENT
+        } else AppConfig.navigationBarColor
     }
 
     //是否需要对颜色做过渡动画
@@ -923,7 +920,7 @@ abstract class BaseFragment : Fragment()  {
             return childFragmentForStatusBarStyle.preferredStatusBarStyle()
         }
 
-        return BarStyle.DarkContent
+        return AppConfig.statusBarStyle
     }
 
     //状态栏是否隐藏
@@ -932,7 +929,7 @@ abstract class BaseFragment : Fragment()  {
         if (childFragmentForStatusBarHidden != null) {
             return childFragmentForStatusBarHidden.preferredStatusBarHidden()
         }
-        return false
+        return AppConfig.statusBarHidden
     }
 
 }

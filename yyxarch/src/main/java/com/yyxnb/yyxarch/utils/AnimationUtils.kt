@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import java.io.Serializable
 
 /**
  * Description: 动画工具
@@ -12,7 +13,7 @@ import android.view.animation.TranslateAnimation
  * @author : yyx
  * @date : 2018/7/16
  */
-object AnimationUtils {
+object AnimationUtils : Serializable {
 
     //从下面显示隐藏view动画
     val hiddenBottomAction: TranslateAnimation
