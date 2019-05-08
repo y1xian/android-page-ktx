@@ -16,12 +16,14 @@ class DeferredLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : Li
 
     private var executing: Boolean = false
 
+    private var interval: Long = 100L
+
     private val executeTask = Runnable {
         executing = false
         considerExecute()
     }
 
-    internal val isAtLeastStarted: Boolean
+    private val isAtLeastStarted: Boolean
         get() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
     private val lifecycle: Lifecycle
@@ -31,10 +33,11 @@ class DeferredLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : Li
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    fun scheduleTaskAtStarted(runnable: Runnable) {
+    fun scheduleTaskAtStarted(runnable: Runnable, _interval: Long) {
         if (lifecycle.currentState != Lifecycle.State.DESTROYED) {
             assertMainThread()
             tasks.add(runnable)
+            interval = _interval
             considerExecute()
         }
     }
@@ -50,13 +53,13 @@ class DeferredLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : Li
         }
     }
 
-    internal fun considerExecute() {
+    private fun considerExecute() {
         if (isAtLeastStarted && !executing) {
             executing = true
             val runnable = tasks.poll()
             if (runnable != null) {
                 runnable.run()
-                handler.postDelayed(executeTask, INTERVAL)
+                handler.postDelayed(executeTask, interval)
             } else {
                 executing = false
             }
@@ -70,8 +73,6 @@ class DeferredLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : Li
     }
 
     companion object {
-
-        private val INTERVAL: Long = 100
 
         internal val isMainThread: Boolean
             get() = Looper.getMainLooper().thread === Thread.currentThread()

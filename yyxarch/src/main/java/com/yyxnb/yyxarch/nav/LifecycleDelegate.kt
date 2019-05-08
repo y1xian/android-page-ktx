@@ -8,18 +8,13 @@ import android.arch.lifecycle.LifecycleOwner
  */
 class LifecycleDelegate(lifecycleOwner: LifecycleOwner) : LifecycleObserver {
 
-    private val immediateLifecycleDelegate: ImmediateLifecycleDelegate
-    private val deferredLifecycleDelegate: DeferredLifecycleDelegate
-
-    init {
-        immediateLifecycleDelegate = ImmediateLifecycleDelegate(lifecycleOwner)
-        deferredLifecycleDelegate = DeferredLifecycleDelegate(lifecycleOwner)
-    }
+    private val immediateLifecycleDelegate: ImmediateLifecycleDelegate = ImmediateLifecycleDelegate(lifecycleOwner)
+    private val deferredLifecycleDelegate: DeferredLifecycleDelegate = DeferredLifecycleDelegate(lifecycleOwner)
 
     @JvmOverloads
-    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false) {
+    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false, interval: Long) {
         if (deferred) {
-            deferredLifecycleDelegate.scheduleTaskAtStarted(runnable)
+            deferredLifecycleDelegate.scheduleTaskAtStarted(runnable, interval)
         } else {
             immediateLifecycleDelegate.scheduleTaskAtStarted(runnable)
         }

@@ -13,7 +13,7 @@ class ImmediateLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : L
 
     private var executing: Boolean = false
 
-    internal val isAtLeastStarted: Boolean
+    private val isAtLeastStarted: Boolean
         get() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
     private val lifecycle: Lifecycle
@@ -41,7 +41,7 @@ class ImmediateLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : L
         }
     }
 
-    internal fun considerExecute() {
+    private fun considerExecute() {
         if (isAtLeastStarted && !executing) {
             executing = true
             var runnable: Runnable? = tasks.poll()

@@ -40,7 +40,7 @@ import java.util.*
  * @author : yyx
  * @date ：2016/10
  */
-abstract class BaseFragment : Fragment()  {
+abstract class BaseFragment : Fragment() {
 
     companion object {
 
@@ -66,7 +66,7 @@ abstract class BaseFragment : Fragment()  {
 
     private val lifecycleDelegate = LifecycleDelegate(this)
 
-    val kv = MMKV.defaultMMKV()
+    private val kv = MMKV.defaultMMKV()!!
 
     private var sceneId: String? = null
 
@@ -112,7 +112,7 @@ abstract class BaseFragment : Fragment()  {
         }
         rootView!!.setOnTouchListener { _, event ->
             mActivity.onTouchEvent(event)
-           return@setOnTouchListener false
+            return@setOnTouchListener false
         }
         return rootView
     }
@@ -225,17 +225,19 @@ abstract class BaseFragment : Fragment()  {
      * 用户可见变化回调
      */
     private fun onVisibleChanged(isVisibleToUser: Boolean) {
-        mIsVisible = true
-        if (isVisibleToUser) {
-            //避免因视图未加载子类刷新UI抛出异常
-            if (!mIsPrepared) {
-                onVisibleChanged(isVisibleToUser)
+        scheduleTaskAtStarted(Runnable {
+            mIsVisible = true
+            if (isVisibleToUser) {
+                //避免因视图未加载子类刷新UI抛出异常
+                if (!mIsPrepared) {
+                    onVisibleChanged(isVisibleToUser)
+                } else {
+                    onVisible()
+                }
             } else {
-                onVisible()
+                onInVisible()
             }
-        } else {
-            onInVisible()
-        }
+        }, true)
     }
 
     /**
@@ -370,8 +372,8 @@ abstract class BaseFragment : Fragment()  {
     // ------ lifecycle arch -------
 
     @JvmOverloads
-    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = true) {
-        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred)
+    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = true, interval: Long = 100L) {
+        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred, interval)
     }
 
     // ------- navigation ------
@@ -391,7 +393,7 @@ abstract class BaseFragment : Fragment()  {
         val count = fragmentManager.backStackEntryCount
         val fragment = fragmentManager.primaryNavigationFragment
 
-        if (fragment is BaseFragment && (fragment as BaseFragment).definesPresentationContext() && count > 0) {
+        if (fragment is BaseFragment && definesPresentationContext() && count > 0) {
             val backStackEntry = fragmentManager.getBackStackEntryAt(count - 1)
             val child = fragmentManager.findFragmentByTag(backStackEntry.name) as BaseFragment?
             if (child != null) {
@@ -502,18 +504,18 @@ abstract class BaseFragment : Fragment()  {
         val parent = getParentBaseFragment()
         if (parent != null) {
             if (definesPresentationContext()) {
-                if (FragmentHelper.findIndexAtBackStack(requireFragmentManager(), this) == -1) {
+                return if (FragmentHelper.findIndexAtBackStack(requireFragmentManager(), this) == -1) {
                     if (parent.getChildFragmentCountAtBackStack() == 0) {
-                        return null
+                        null
                     } else {
                         val backStackEntry = requireFragmentManager().getBackStackEntryAt(0)
                         val presented = requireFragmentManager().findFragmentByTag(backStackEntry.name) as BaseFragment?
-                        return if (presented != null && presented.isAdded) {
+                        if (presented != null && presented.isAdded) {
                             presented
                         } else null
                     }
                 } else {
-                    return FragmentHelper.getLatterFragment(requireFragmentManager(), this)
+                    FragmentHelper.getLatterFragment(requireFragmentManager(), this)
                 }
             } else {
                 return parent.getPresentedFragment()
@@ -539,19 +541,6 @@ abstract class BaseFragment : Fragment()  {
 
         return (mActivity as? BaseActivity)?.getPresentingFragment(this)
 
-    }
-
-    @JvmOverloads
-    fun startActivityRootFragment(rootFragment: BaseFragment, newActivity: Boolean = false) {
-        scheduleTaskAtStarted(Runnable {
-            if (mActivity is BaseActivity && getNavigationFragment() != null && !mIsInViewPager && !newActivity) {
-                (mActivity as BaseActivity).startActivityRootFragment(rootFragment(rootFragment))
-            } else {
-                val intent = Intent(mActivity, ContainerActivity::class.java)
-                intent.putExtra(AppConfig.FRAGMENT, rootFragment.javaClass.canonicalName)
-                mActivity.startActivity(intent)
-            }
-        }, true)
     }
 
     fun getDebugTag(): String? {
@@ -669,7 +658,7 @@ abstract class BaseFragment : Fragment()  {
      */
     @JvmOverloads
     fun <T : BaseFragment> fragment(targetFragment: T, bundle: Bundle? = null): T {
-        return Fragment.instantiate(context, targetFragment.javaClass.canonicalName, bundle) as T
+        return instantiate(context, targetFragment.javaClass.canonicalName, bundle) as T
     }
 
     fun rootFragment(targetFragment: BaseFragment): BaseFragment {
@@ -769,17 +758,24 @@ abstract class BaseFragment : Fragment()  {
         this.onHiddenChanged(true)
 
         if (mActivity is BaseActivity && !mIsInViewPager && getNavigationFragment() != null) {
-//            if (getNavigationFragment() == null) {
-//                val navigationFragment = NavigationFragment()
-//                navigationFragment.setRootFragment(targetFragment)
-//                startPresentFragment(navigationFragment)
-//            } else {
             getNavigationFragment()?.pushFragment(targetFragment)
-//            }
         } else {
             startActivityRootFragment(targetFragment)
         }
 
+    }
+
+    @JvmOverloads
+    fun <T : BaseFragment> startActivityRootFragment(rootFragment: T, newActivity: Boolean = false) {
+        scheduleTaskAtStarted(Runnable {
+            if (mActivity is BaseActivity && getNavigationFragment() != null && !mIsInViewPager && !newActivity) {
+                (mActivity as BaseActivity).startActivityRootFragment(rootFragment(rootFragment))
+            } else {
+                val intent = Intent(mActivity, ContainerActivity::class.java)
+                intent.putExtra(AppConfig.FRAGMENT, rootFragment.javaClass.canonicalName)
+                mActivity.startActivity(intent)
+            }
+        }, true)
     }
 
 
@@ -841,11 +837,8 @@ abstract class BaseFragment : Fragment()  {
     }
 
     //更新状态栏样式
-    fun setNeedsStatusBarAppearanceUpdate() {
-        setNeedsStatusBarAppearanceUpdate(true)
-    }
-
-    fun setNeedsStatusBarAppearanceUpdate(colorAnimated: Boolean) {
+    @JvmOverloads
+    fun setNeedsStatusBarAppearanceUpdate(colorAnimated: Boolean = true) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return
         }
@@ -919,7 +912,6 @@ abstract class BaseFragment : Fragment()  {
         if (childFragmentForStatusBarStyle != null) {
             return childFragmentForStatusBarStyle.preferredStatusBarStyle()
         }
-
         return AppConfig.statusBarStyle
     }
 

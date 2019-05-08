@@ -34,7 +34,7 @@ internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : Live
                         postValue(Lcee.content(value))
                     }
                 } catch (t: Throwable) {
-                    postValue(Lcee.error(ApiException.handleException(t).message!!))
+                    postValue(Lcee.error(ApiException.handleException(t).message))
                 }
 
             }

@@ -277,8 +277,8 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     @JvmOverloads
-    protected fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false) {
-        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred)
+    protected fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false, interval: Long = 100L) {
+        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred, interval)
     }
 
 

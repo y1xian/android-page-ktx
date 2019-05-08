@@ -10,11 +10,11 @@ class Lcee<T>(@field:LceeStatus
             return Lcee(LceeStatus.Content, data, null)
         }
 
-        fun <T> error(data: T?, error: String): Lcee<T> {
+        fun <T> error(data: T?, error: String?): Lcee<T> {
             return Lcee<T>(LceeStatus.Error, data, error)
         }
 
-        fun <T> error(error: String): Lcee<T> {
+        fun <T> error(error: String?): Lcee<T> {
             return error(null, error)
         }
 
