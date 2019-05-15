@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -287,7 +286,6 @@ abstract class BaseFragment : Fragment() {
         if (isAdded && isVisibleToUser(this)) {
             onVisibleChanged(false)
         }
-        Log.e("----onPause" , " $isAdded  ${isVisibleToUser(this)}  ${javaClass.simpleName}")
     }
 
     @CallSuper
