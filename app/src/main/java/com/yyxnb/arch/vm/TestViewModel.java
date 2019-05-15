@@ -2,7 +2,6 @@ package com.yyxnb.arch.vm;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
@@ -10,6 +9,7 @@ import com.yyxnb.arch.BaseDatas;
 import com.yyxnb.arch.TestData;
 import com.yyxnb.yyxarch.base.mvvm.BaseViewModel;
 import com.yyxnb.yyxarch.bean.Lcee;
+import com.yyxnb.yyxarch.livedata.SingleLiveEvent;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,9 +21,9 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
         super(application);
     }
 
-    private MutableLiveData<Map<String,String>> reqTeam = new MutableLiveData<>();
-    private MutableLiveData<Map<String,String>> reqTeam2 = new MutableLiveData<>();
-    private MutableLiveData<Map<String,String>> reqTest = new MutableLiveData<>();
+    private SingleLiveEvent<Map<String,String>> reqTeam = new SingleLiveEvent();
+    private SingleLiveEvent<Map<String,String>> reqTeam2 = new SingleLiveEvent();
+    private SingleLiveEvent<Map<String,String>> reqTest = new SingleLiveEvent();
 
     public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam(){
         return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));

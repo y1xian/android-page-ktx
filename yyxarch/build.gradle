@@ -46,6 +46,8 @@ android {
 
     //防止编译的时候oom、GC
     dexOptions {
+        preDexLibraries true
+        maxProcessCount 8
         //分配给gradle的内存
         javaMaxHeapSize "4g"
     }

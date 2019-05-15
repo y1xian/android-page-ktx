@@ -3,9 +3,7 @@ package com.yyxnb.yyxarch.base
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.support.transition.TransitionListenerAdapter
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
@@ -39,8 +37,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected var fragmentContainer: FrameLayout? = null
 
-    protected var delayToTransition = true
-
     private val lifecycleDelegate = LifecycleDelegate(this)
 
     private var hasFormerRoot: Boolean = false
@@ -66,41 +62,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
         initView(savedInstanceState)
 
-        if (delayToTransition) {
-            afterEnterTransition()
-        }
-
-        initViewObservable()
-
         ActivityStack.addActivity(this)
-    }
-
-    private var enterTransitionListener =
-            object : TransitionListenerAdapter(), android.transition.Transition.TransitionListener {
-                override fun onTransitionResume(transition: android.transition.Transition?) {}
-
-                override fun onTransitionPause(transition: android.transition.Transition?) {}
-
-                override fun onTransitionCancel(transition: android.transition.Transition?) {}
-
-                override fun onTransitionStart(transition: android.transition.Transition?) {}
-
-                override fun onTransitionEnd(transition: android.transition.Transition?) {
-                    initViewData()
-                }
-            }
-
-    private fun afterEnterTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.enterTransition.addListener(enterTransitionListener)
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.enterTransition.removeListener(enterTransitionListener)
-        }
         ActivityStack.finishActivity(this)
     }
 
@@ -120,12 +86,6 @@ abstract class BaseActivity : AppCompatActivity() {
      * 初始化复杂数据 懒加载
      */
     open fun initViewData() {}
-
-    /**
-     * 初始化界面观察者的监听
-     * 接收数据结果
-     */
-    open fun initViewObservable() {}
 
     fun isStatusBarTranslucent(): Boolean {
         return statusBarTranslucent

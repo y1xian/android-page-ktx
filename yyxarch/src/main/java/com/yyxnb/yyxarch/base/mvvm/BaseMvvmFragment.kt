@@ -25,6 +25,16 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
         lifecycle.addObserver(mViewModel)
     }
 
+    override fun initViewData() {
+        super.initViewData()
+        initViewObservable()
+    }
+
+    /**
+     * 回调网络数据
+     */
+    open fun initViewObservable() {}
+
     /**
      * 初始化ViewModel
      * create ViewModelProviders

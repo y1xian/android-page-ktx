@@ -195,7 +195,7 @@ object GlobalUtils : Serializable {
     }
 
     /**
-     * 获取转换之后的数字显示，如123456会被转换成12.3万。
+     * 获取转换之后的数字显示，如123456会被转换成12.3w。
      * @param number
      * 原始数字
      * @return 转换之后的数字。

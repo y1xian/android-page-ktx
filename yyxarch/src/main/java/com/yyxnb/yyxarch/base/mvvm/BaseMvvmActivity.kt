@@ -20,6 +20,12 @@ abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
     }
 
     /**
+     * 初始化界面观察者的监听
+     * 接收数据结果
+     */
+    open fun initViewObservable() {}
+
+    /**
      * 初始化ViewModel
      * create ViewModelProviders
      *

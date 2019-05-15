@@ -33,16 +33,15 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
     public void initView(@Nullable Bundle savedInstanceState) {
         tvShow = fv(R.id.tvShow);
 
-
-//        mViewModel.reqTeam();
-        mViewModel.reqTeam2();
-//        mViewModel.reqTest();
     }
 
     @Override
     public void initViewData() {
         super.initViewData();
 
+//        mViewModel.reqTeam();
+        mViewModel.reqTeam2();
+//        mViewModel.reqTest();
 
         tvShow.setOnClickListener(v -> {
 

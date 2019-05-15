@@ -12,20 +12,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 /**
  * 协程相关
  */
-
-fun main() = runBlocking<Unit> {
-
-    //    CoroutineScope{
-//
-//    }
-//    val time = measureTimeMillis {
-//        val one = async { doSomethingUsefulOne() }
-//        val two = async { doSomethingUsefulTwo() }
-//        println("The answer is ${one.await() + two.await()}")
-//    }
-//    println("Completed in $time ms")
-}
-
 open class LifecycleCoroutineListener(private val job: Job,
                                       private val cancelEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) : LifecycleObserver {
 

@@ -70,7 +70,7 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         val count = fragmentManager.backStackEntryCount
         if (count > 1) {
             val topFragment = getTopFragment()
-            if (topFragment != null && topFragment.isBackInteractive()) {
+            if (topFragment != null) {
                 popFragment()
             }
             return true
@@ -127,9 +127,6 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         }
         topFragment.setAnimation(if (animated) PresentAnimation.Push else PresentAnimation.None)
         fragment!!.setAnimation(if (animated) PresentAnimation.Push else PresentAnimation.None)
-        topFragment.onPause()
-        topFragment.onStop()
-        topFragment.userVisibleHint = false
         topFragment.onHiddenChanged(true)
         fragmentManager.popBackStack(fragment.getSceneId(), 0)
         FragmentHelper.executePendingTransactionsSafe(fragmentManager)
@@ -191,9 +188,6 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         val aheadFragment = FragmentHelper.getAheadFragment(fragmentManager, target)
 
         topFragment.setAnimation(PresentAnimation.Fade)
-        topFragment.onPause()
-        topFragment.onStop()
-        topFragment.userVisibleHint = false
         topFragment.onHiddenChanged(true)
         aheadFragment?.setAnimation(PresentAnimation.Fade)
         fragmentManager.popBackStack(target.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -226,9 +220,6 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
 
         topFragment.setAnimation(PresentAnimation.Fade)
         rootFragment.setAnimation(PresentAnimation.Fade)
-        topFragment.onPause()
-        topFragment.onStop()
-        topFragment.userVisibleHint = false
         topFragment.onHiddenChanged(true)
         fragmentManager.popBackStack(rootFragment.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
@@ -290,9 +281,6 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
                 FragmentHelper.executePendingTransactionsSafe(fragmentManager)
                 topFragment.setAnimation(PresentAnimation.None)
                 aheadFragment.setAnimation(PresentAnimation.None)
-                topFragment.onPause()
-                topFragment.onStop()
-                topFragment.userVisibleHint = false
                 topFragment.onHiddenChanged(true)
                 fragmentManager.popBackStack(aheadFragment.getSceneId(), 0)
                 FragmentHelper.executePendingTransactionsSafe(fragmentManager)
@@ -311,7 +299,6 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
     override fun shouldSwipeBack(): Boolean {
         val top = getTopFragment() ?: return false
         val isSwipeBack = ( getChildFragmentCountAtBackStack() > 1
-                && top.isBackInteractive()
                 && top.isSwipeBackEnabled())
         if (isSwipeBack) ParallaxHelper.disableParallaxBack(mActivity) else ParallaxHelper.enableParallaxBack(mActivity)
         return isSwipeBack

@@ -74,13 +74,13 @@ abstract class BaseSheetDialog : BaseDialog() {
             behavior = ViewPagerBottomSheetBehavior.from(bottomSheet)
             if (mHeight <= 0) {
                 //高度 = 屏幕高度 - 顶部向下偏移量
-                layoutParams.height = ScreenUtils.screenHeight - mTopOffset
+                layoutParams.height = ScreenUtils.getScreenHeight() - mTopOffset
                 //如果顶部向下偏移量为0
                 if (mTopOffset == 0) {
                     //如果默认高度为0
                     if (mPeekHeight == 0) {
                         //则 默认高度60% 且为折叠状态
-                        mPeekHeight = (ScreenUtils.screenHeight * mDefaultHeight).toInt()
+                        mPeekHeight = (ScreenUtils.getScreenHeight() * mDefaultHeight).toInt()
                         //折叠
                         mState = BottomSheetBehavior.STATE_COLLAPSED
                     }

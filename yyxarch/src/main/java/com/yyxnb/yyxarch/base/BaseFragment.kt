@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ import com.yyxnb.yyxarch.nav.LifecycleDelegate
 import com.yyxnb.yyxarch.nav.NavigationFragment
 import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.BarStyle
+import com.yyxnb.yyxarch.utils.MainThread
 import com.yyxnb.yyxarch.utils.StatusBarUtils
 import java.util.*
 
@@ -120,7 +122,7 @@ abstract class BaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mIsPrepared = true
-        retainInstance = true
+        retainInstance = true //当设备旋转时，fragment会随托管activity一起销毁并重建。
         initView(savedInstanceState)
         if (isSingleFragment() && !mIsVisible) {
             if (userVisibleHint || isVisible || !isHidden) {
@@ -191,10 +193,6 @@ abstract class BaseFragment : Fragment() {
     /**
      * 被ViewPager移出的Fragment 下次显示时会从getArguments()中重新获取数据
      * 所以若需要刷新被移除Fragment内的数据需要重新put数据 eg:
-     * Bundle args = getArguments();
-     * if (args != null) {
-     * args.putParcelable(KEY, info);
-     * }
      */
     @CallSuper
     open fun initVariables(bundle: Bundle) {
@@ -225,7 +223,7 @@ abstract class BaseFragment : Fragment() {
      * 用户可见变化回调
      */
     private fun onVisibleChanged(isVisibleToUser: Boolean) {
-        scheduleTaskAtStarted(Runnable {
+        MainThread.post(Runnable {
             mIsVisible = true
             if (isVisibleToUser) {
                 //避免因视图未加载子类刷新UI抛出异常
@@ -237,7 +235,7 @@ abstract class BaseFragment : Fragment() {
             } else {
                 onInVisible()
             }
-        }, true)
+        })
     }
 
     /**
@@ -247,7 +245,6 @@ abstract class BaseFragment : Fragment() {
         if (mIsFirstVisible && mIsPrepared && mIsVisible) {
             mIsFirstVisible = false
             initViewData()
-            initViewObservable()
             AppUtils.debugLog("initLazyLoadView ${getDebugTag()}")
         }
     }
@@ -268,12 +265,9 @@ abstract class BaseFragment : Fragment() {
     /**
      * 初始化复杂数据 懒加载
      */
-    open fun initViewData() {}
-
-    /**
-     * 回调网络数据
-     */
-    open fun initViewObservable() {}
+    @CallSuper
+    open fun initViewData() {
+    }
 
     fun <T> fv(@IdRes resId: Int): T {
         return rootView!!.findViewById<View>(resId) as T
@@ -290,9 +284,10 @@ abstract class BaseFragment : Fragment() {
     @CallSuper
     override fun onPause() {
         super.onPause()
-        if (isAdded && !isVisibleToUser(this)) {
+        if (isAdded && isVisibleToUser(this)) {
             onVisibleChanged(false)
         }
+        Log.e("----onPause" , " $isAdded  ${isVisibleToUser(this)}  ${javaClass.simpleName}")
     }
 
     @CallSuper
@@ -310,14 +305,7 @@ abstract class BaseFragment : Fragment() {
         if (fragment == null) {
             return false
         }
-        return if (fragment.isInViewPager()) fragment.userVisibleHint else fragment.isVisible
-    }
-
-    /**
-     * 是否在ViewPager
-     */
-    private fun isInViewPager(): Boolean {
-        return mIsInViewPager
+        return if (mIsInViewPager) fragment.userVisibleHint else fragment.isVisible
     }
 
     /**
@@ -424,7 +412,6 @@ abstract class BaseFragment : Fragment() {
     }
 
     fun presentFragment(targetFragment: BaseFragment) {
-
         scheduleTaskAtStarted(Runnable {
             val parent = getParentBaseFragment()
             if (parent != null) {
@@ -482,18 +469,14 @@ abstract class BaseFragment : Fragment() {
             }
             setAnimation(PresentAnimation.Push)
             top.setAnimation(PresentAnimation.Push)
-            top.onPause()
-            top.onStop()
-            top.userVisibleHint = false
+            top.onHiddenChanged(true)
             requireFragmentManager().popBackStack(presented.sceneId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             FragmentHelper.executePendingTransactionsSafe(requireFragmentManager())
             onFragmentResult(top.getRequestCode(), top.getResultCode(), top.getResultData())
         } else {
             setAnimation(PresentAnimation.Push)
             target.setAnimation(PresentAnimation.Push)
-            target.onPause()
-            target.onStop()
-            userVisibleHint = false
+            target.onHiddenChanged(true)
             requireFragmentManager().popBackStack(getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE)
             FragmentHelper.executePendingTransactionsSafe(requireFragmentManager())
             target.onFragmentResult(getRequestCode(), getResultCode(), getResultData())
@@ -638,10 +621,6 @@ abstract class BaseFragment : Fragment() {
             return awesomeFragment === this
         }
         return false
-    }
-
-    open fun isBackInteractive(): Boolean {
-        return true
     }
 
     open fun isSwipeBackEnabled(): Boolean {

@@ -33,9 +33,6 @@ object FragmentHelper {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         val topFragment = fragmentManager.findFragmentById(containerId) as BaseFragment?
         if (topFragment != null && topFragment.isAdded) {
-            topFragment.onPause()
-            topFragment.onStop()
-            topFragment.userVisibleHint = false
             topFragment.onHiddenChanged(true)
             topFragment.setAnimation(animation)
             transaction.hide(topFragment)
@@ -58,9 +55,6 @@ object FragmentHelper {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         val topFragment = fragmentManager.findFragmentById(containerId) as BaseFragment?
         if (topFragment != null && topFragment.isAdded) {
-            topFragment.onPause()
-            topFragment.onStop()
-            topFragment.userVisibleHint = false
             topFragment.onHiddenChanged(true)
             topFragment.setAnimation(animation)
             transaction.hide(topFragment)
