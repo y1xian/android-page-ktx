@@ -1,9 +1,9 @@
 package com.yyxnb.arch.vm;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
-import android.support.annotation.NonNull;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import com.yyxnb.arch.BaseDatas;
 import com.yyxnb.arch.TestData;
@@ -14,6 +14,8 @@ import com.yyxnb.yyxarch.livedata.SingleLiveEvent;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.annotations.NonNull;
 
 public class TestViewModel extends BaseViewModel<TestRepository> {
 

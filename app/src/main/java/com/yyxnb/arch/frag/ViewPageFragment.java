@@ -3,10 +3,11 @@ package com.yyxnb.arch.frag;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;

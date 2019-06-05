@@ -1,7 +1,7 @@
 package com.yyxnb.yyxarch.nav
 
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 /**
  * Lifecycle

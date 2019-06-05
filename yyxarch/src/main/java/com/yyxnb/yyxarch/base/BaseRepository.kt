@@ -1,6 +1,6 @@
 package com.yyxnb.yyxarch.base
 
-import android.arch.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.DefaultLifecycleObserver
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.http.RetrofitManager
 

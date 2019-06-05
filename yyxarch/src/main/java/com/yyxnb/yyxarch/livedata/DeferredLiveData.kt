@@ -1,6 +1,6 @@
 package com.yyxnb.yyxarch.livedata
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 

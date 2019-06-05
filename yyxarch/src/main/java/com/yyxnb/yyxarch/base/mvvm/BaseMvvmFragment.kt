@@ -1,7 +1,7 @@
 package com.yyxnb.yyxarch.base.mvvm
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProviders
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseFragment
 

@@ -9,10 +9,10 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
-import android.support.annotation.StringRes
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
+import androidx.annotation.StringRes
 import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.utils.ToastUtils
 import java.io.Serializable

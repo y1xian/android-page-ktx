@@ -67,9 +67,9 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
     // 约束
-    api libs.constraint
+    api libs_x.constraint
     //  v7 v4
-    api([libs.support_v7, libs.support_v4, libs.recyclerview, libs.design, libs.annotations])
+    api([libs_x.support_v4, libs_x.support_v7, libs_x.design, libs_x.annotations])
     // rx全家桶
     api([libs.rxjava2, libs.rxandroid2, libs.rxbinding2])
     // retrofit2    https://github.com/square/retrofit
@@ -78,7 +78,7 @@ dependencies {
     // okhttp3     https://github.com/square/okhttp
     api([libs.okhttp3, libs.okhttp3_logging])
     // jetpack
-    api([libs.arch_comp_java8, libs.arch_comp_runtime, libs.arch_comp_extensions, libs.arch_comp_livedata_rx])
+    api([libs_x.arch_comp_java8, libs_x.arch_comp_runtime, libs_x.arch_comp_extensions, libs_x.arch_comp_livedata_rx])
 //    kapt libs.arch_comp_compiler
     //gson  https://github.com/google/gson
     api libs.gson
@@ -93,7 +93,7 @@ dependencies {
     //mmkv
     api libs.mmkv
     //消息总线
-    api libs.live_event_bus
+    api libs_x.live_event_bus
     //ac 侧滑
     api libs.parallaxbacklayout
 }

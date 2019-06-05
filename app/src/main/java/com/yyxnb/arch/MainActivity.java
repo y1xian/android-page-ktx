@@ -2,8 +2,9 @@ package com.yyxnb.arch;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.yanzhenjie.permission.AndPermission;
 import com.yyxnb.arch.frag.ContentViewFragment;

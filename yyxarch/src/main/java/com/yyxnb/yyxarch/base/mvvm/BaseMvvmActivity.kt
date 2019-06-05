@@ -1,8 +1,8 @@
 package com.yyxnb.yyxarch.base.mvvm
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseActivity
 

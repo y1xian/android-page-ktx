@@ -1,6 +1,6 @@
 package com.yyxnb.yyxarch.nav
 
-import android.support.annotation.AnimRes
+import androidx.annotation.AnimRes
 
 import com.yyxnb.yyxarch.R
 

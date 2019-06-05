@@ -9,10 +9,10 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.support.v4.view.ViewCompat
 import android.util.TypedValue
 import android.view.*
 import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
 import com.yyxnb.yyxarch.base.BaseFragment
 import java.io.Serializable
 

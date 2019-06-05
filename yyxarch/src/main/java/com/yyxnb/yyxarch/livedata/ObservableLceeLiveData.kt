@@ -1,12 +1,12 @@
 package com.yyxnb.yyxarch.livedata
 
-import android.arch.lifecycle.LiveData
-import android.support.annotation.NonNull
+import androidx.lifecycle.LiveData
 import com.yyxnb.yyxarch.bean.Lcee
 import com.yyxnb.yyxarch.http.RetrofitManager
 import com.yyxnb.yyxarch.http.exception.ApiException
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import java.lang.ref.WeakReference
 

@@ -5,10 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.support.annotation.NonNull
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
+import androidx.annotation.NonNull
 import com.yyxnb.yyxarch.AppUtils
 import java.io.Serializable
 

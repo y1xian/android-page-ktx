@@ -2,8 +2,10 @@ package com.yyxnb.arch.frag;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.widget.TextView;
+
+
+import androidx.fragment.app.Fragment;
 
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;

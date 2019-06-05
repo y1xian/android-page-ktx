@@ -2,9 +2,9 @@ package com.yyxnb.yyxarch.nav
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import android.view.View
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.github.anzewei.parallaxbacklayout.ParallaxHelper
 import com.yyxnb.yyxarch.R
 import com.yyxnb.yyxarch.base.BaseFragment

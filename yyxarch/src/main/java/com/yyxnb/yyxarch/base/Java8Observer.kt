@@ -1,8 +1,8 @@
 package com.yyxnb.yyxarch.base
 
-import android.arch.lifecycle.DefaultLifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
 import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 object Java8Observer : DefaultLifecycleObserver {
 

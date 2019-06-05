@@ -3,11 +3,11 @@ package com.yyxnb.yyxarch.utils
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.ColorInt
-import android.support.annotation.DrawableRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.view.View
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.yyxnb.yyxarch.base.BaseFragment
 import com.yyxnb.yyxarch.utils.FragmentUtils.addFragment
 import com.yyxnb.yyxarch.utils.FragmentUtils.dispatchBackPress

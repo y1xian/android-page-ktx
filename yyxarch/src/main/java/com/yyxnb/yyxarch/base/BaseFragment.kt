@@ -7,19 +7,19 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.CallSuper
-import android.support.annotation.IdRes
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.annotation.CallSuper
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.ContainerActivity
@@ -635,7 +635,7 @@ abstract class BaseFragment : Fragment() {
      */
     @JvmOverloads
     fun <T : BaseFragment> fragment(targetFragment: T, bundle: Bundle? = null): T {
-        return instantiate(context, targetFragment.javaClass.canonicalName, bundle) as T
+        return context?.let { instantiate(it, targetFragment.javaClass.canonicalName, bundle) } as T
     }
 
     fun rootFragment(targetFragment: BaseFragment): BaseFragment {
