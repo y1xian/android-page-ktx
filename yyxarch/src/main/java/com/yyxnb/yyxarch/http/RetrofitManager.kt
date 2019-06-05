@@ -38,7 +38,7 @@ object RetrofitManager {
 
     private val mRetrofitBuilder = Retrofit.Builder().apply {
         addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        addCallAdapterFactory(CoroutineCallAdapterFactory())
+        addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
         addConverterFactory(GsonConverterFactory.create(GsonAdapter.buildGson()))
     }
 

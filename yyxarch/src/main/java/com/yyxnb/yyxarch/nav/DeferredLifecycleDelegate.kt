@@ -4,15 +4,15 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.OnLifecycleEvent
-import android.os.Handler
 import android.os.Looper
+import com.yyxnb.yyxarch.utils.HandlerLifecycle
 import java.util.*
 
 class DeferredLifecycleDelegate(private val lifecycleOwner: LifecycleOwner) : LifecycleObserver {
 
     private val tasks = LinkedList<Runnable>()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val handler = HandlerLifecycle(Looper.getMainLooper(), lifecycleOwner)
 
     private var executing: Boolean = false
 
