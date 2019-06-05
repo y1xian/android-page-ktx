@@ -69,7 +69,7 @@ dependencies {
     // 约束
     api libs_x.constraint
     //  v7 v4
-    api([libs_x.support_v4, libs_x.support_v7, libs_x.design, libs_x.annotations])
+    api([libs_x.support_v7, libs_x.design, libs_x.annotations])
     // rx全家桶
     api([libs.rxjava2, libs.rxandroid2, libs.rxbinding2])
     // retrofit2    https://github.com/square/retrofit
@@ -88,8 +88,6 @@ dependencies {
     api libs.kotlin_stdlib
     api libs.kotlin_coroutines
     api libs.kotlin_coroutines_core
-    // autodispose  https://github.com/uber/AutoDispose
-//    api(libs.autodispose, libs.autodispose_ktx, libs.autodispose_android_ktx, libs.autodispose_archs_ktx)
     //mmkv
     api libs.mmkv
     //消息总线
