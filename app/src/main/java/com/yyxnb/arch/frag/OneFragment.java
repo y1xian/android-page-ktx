@@ -1,13 +1,11 @@
 package com.yyxnb.arch.frag;
 
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.yyxnb.arch.R;
-import com.yyxnb.arch.TestDialog;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
@@ -78,21 +76,7 @@ public class OneFragment extends BaseMvvmFragment<TestViewModel> {
 
         textView.setOnClickListener(v -> {
 
-            TestDialog dialog = new TestDialog();
-            dialog.show(getChildFragmentManager());
-            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    LogUtils.INSTANCE.w("onCancel   " + dialog.toString());
-                }
-            });
 
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    LogUtils.INSTANCE.w("onDismiss  " + dialog.toString());
-                }
-            });
         });
 
     }
