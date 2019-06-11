@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
-import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
+import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
 import com.yyxnb.yyxarch.utils.BarStyle;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
+public class TwoFragment extends BaseFragmentVM<TestViewModel> {
 
     private TextView tvShow;
     private String hehe = "222";

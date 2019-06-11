@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.base.BaseRepository
 import com.yyxnb.yyxarch.http.RetrofitManager
 
 

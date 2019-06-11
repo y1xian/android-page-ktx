@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseActivity
 
-abstract class BaseMvvmActivity<VM : BaseViewModel<*>> : BaseActivity() {
+abstract class BaseActivityVM<VM : BaseViewModel<*>> : BaseActivity() {
 
     /**
      * ViewModel

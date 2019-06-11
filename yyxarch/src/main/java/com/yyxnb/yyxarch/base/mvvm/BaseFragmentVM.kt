@@ -12,7 +12,7 @@ import com.yyxnb.yyxarch.base.BaseFragment
  * @author : yyx
  * @date ：2018/6/10
  */
-abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
+abstract class BaseFragmentVM<VM : BaseViewModel<*>> : BaseFragment() {
 
     /**
      * ViewModel
