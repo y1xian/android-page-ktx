@@ -32,7 +32,11 @@ import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.BarStyle
 import com.yyxnb.yyxarch.utils.MainThread
 import com.yyxnb.yyxarch.utils.StatusBarUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -41,7 +45,7 @@ import java.util.*
  * @author : yyx
  * @date ：2016/10
  */
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), CoroutineScope {
 
     companion object {
 
@@ -49,6 +53,12 @@ abstract class BaseFragment : Fragment() {
 
         const val REQUEST_CODE_INVALID = -1
     }
+
+    private lateinit var job: Job // 定义job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job // Fragment的协程
+
 
     protected lateinit var mActivity: AppCompatActivity
 
@@ -90,6 +100,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        job = Job()
         val bundle = initArguments()
         if (bundle.size() > 0) {
             initVariables(bundle)
@@ -133,6 +144,7 @@ abstract class BaseFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         requireFragmentManager().unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
+        job.cancel() // 关闭页面后，结束所有协程任务
     }
 
     private var fragmentLifecycleCallbacks: FragmentManager.FragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {

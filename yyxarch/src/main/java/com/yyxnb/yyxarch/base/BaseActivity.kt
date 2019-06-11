@@ -19,7 +19,11 @@ import com.yyxnb.yyxarch.nav.LifecycleDelegate
 import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.ActivityStack
 import com.yyxnb.yyxarch.utils.StatusBarUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -29,7 +33,12 @@ import java.util.*
  * @date : 2018/6/10
  */
 @ParallaxBack
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
+
+    private lateinit var job: Job // 定义job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job // Activity的协程
 
     protected val TAG = javaClass.canonicalName
 
@@ -45,6 +54,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        job = Job()
 
         setStatusBarTranslucent(true)
 
@@ -68,6 +79,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ActivityStack.finishActivity(this)
+        job.cancel() // 关闭页面后，结束所有协程任务
     }
 
     /**

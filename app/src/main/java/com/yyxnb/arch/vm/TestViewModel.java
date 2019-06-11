@@ -3,6 +3,7 @@ package com.yyxnb.arch.vm;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.yyxnb.arch.BaseDatas;
@@ -25,7 +26,7 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
 
     private SingleLiveEvent<Map<String,String>> reqTeam = new SingleLiveEvent();
     private SingleLiveEvent<Map<String,String>> reqTeam2 = new SingleLiveEvent();
-    private SingleLiveEvent<Map<String,String>> reqTest = new SingleLiveEvent();
+    private MutableLiveData<Map<String,String>> reqTest = new MutableLiveData();
 
     public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam(){
         return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
@@ -35,25 +36,30 @@ public class TestViewModel extends BaseViewModel<TestRepository> {
         return Transformations.switchMap(reqTeam2, input -> mRepository.getTeam2(input));
     }
 
-    public LiveData<Lcee<BaseDatas<List<TestData>>>> getTest(){
-        return Transformations.switchMap(reqTest, input -> mRepository.getTest(input));
+    public LiveData<BaseDatas<List<TestData>>> getTest(){
+        return Transformations.switchMap(reqTest, input -> mRepository.getTest());
+//        return mRepository.getTest();
     }
 
 
     public void reqTeam(){
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "李白");
-        reqTeam.postValue(map);
+        reqTeam.setValue(map);
     }
+
     public void reqTeam2(){
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "杜甫");
-        reqTeam2.postValue(map);
+        reqTeam2.setValue(map);
     }
+
    public void reqTest(){
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "杜甫");
-       reqTest.postValue(map);
+       reqTest.setValue(map);
+
+
     }
 
 }

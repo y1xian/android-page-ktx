@@ -78,7 +78,7 @@ dependencies {
     // okhttp3     https://github.com/square/okhttp
     api([libs.okhttp3, libs.okhttp3_logging])
     // jetpack
-    api([libs_x.arch_comp_java8, libs_x.arch_comp_runtime, libs_x.arch_comp_extensions, libs_x.arch_comp_livedata_rx])
+    api([libs_x.arch_comp_java8, libs_x.arch_comp_runtime, libs_x.arch_comp_extensions, libs_x.arch_comp_ktx, libs_x.arch_comp_livedata_rx])
 //    kapt libs.arch_comp_compiler
     //gson  https://github.com/google/gson
     api libs.gson

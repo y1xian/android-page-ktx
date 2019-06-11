@@ -76,7 +76,7 @@ class ApiException(throwable: Throwable, var code: Int?) : Exception(throwable) 
             if (e is HttpException) {
                 ex = ApiException(e, e.code())
                 try {
-                    ex.message = "httpException " + e.response().errorBody()!!.string()
+                    ex.message = "httpException " + e.response()?.errorBody()!!.string()
                 } catch (e1: IOException) {
                     e1.printStackTrace()
                     ex.message = "IOException " + e1.message

@@ -8,6 +8,7 @@ import com.yyxnb.yyxarch.http.download.DownloadRetrofit
 import com.yyxnb.yyxarch.http.gson.GsonAdapter
 import com.yyxnb.yyxarch.http.upload.UploadRetrofit
 import com.yyxnb.yyxarch.interfaces.ISPKeys
+import com.yyxnb.yyxarch.livedata.LiveDataCallAdapterFactory
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -39,6 +40,7 @@ object RetrofitManager {
     private val mRetrofitBuilder = Retrofit.Builder().apply {
         addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
+        addCallAdapterFactory(LiveDataCallAdapterFactory())
         addConverterFactory(GsonConverterFactory.create(GsonAdapter.buildGson()))
     }
 

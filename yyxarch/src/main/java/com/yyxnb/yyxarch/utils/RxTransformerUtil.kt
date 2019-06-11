@@ -24,7 +24,7 @@ object RxTransformerUtil {
             upstream
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
-                    .doOnSubscribe { _ ->
+                    .doOnSubscribe {
                     }
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -41,7 +41,7 @@ object RxTransformerUtil {
                     .retryWhen(RetryWhenUtils(mRetryMaxTime, mRetryDelay))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
-                    .doOnSubscribe { _ ->
+                    .doOnSubscribe {
                     }
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .observeOn(AndroidSchedulers.mainThread())

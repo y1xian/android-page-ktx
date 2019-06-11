@@ -3,6 +3,7 @@ package com.yyxnb.arch.frag;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
 
+    private ImageView ivHead;
     private TextView tvShow;
 
     @Override
@@ -32,6 +34,7 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
 
     @Override
     public void initView(@Nullable Bundle savedInstanceState) {
+        ivHead = fv(R.id.ivHead);
         tvShow = fv(R.id.tvShow);
 
     }
@@ -40,13 +43,17 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
     public void initViewData() {
         super.initViewData();
 
-//        mViewModel.reqTeam();
-        mViewModel.reqTeam2();
+
+        ivHead.setOnClickListener(v -> mViewModel.reqTest());
+
+        mViewModel.reqTeam();
+//        mViewModel.reqTeam2();
 //        mViewModel.reqTest();
 
         tvShow.setOnClickListener(v -> {
 
 //            startActivityRootFragment(new TestFragment(),true);
+            tvShow.setText("突突突突突突");
             startFragment(new TestFragment());
         });
 
@@ -104,34 +111,55 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
             }
         });
 
+//        mViewModel.getTest().observe(this, baseDataLcee -> {
+//            switch (baseDataLcee.getStatus()) {
+//                case LceeStatus.Content:
+//                    TestData data = baseDataLcee.getData().getResult().get(0);
+//                    if (data != null) {
+//
+//                        tvShow.setText(data.getTestInt() + " \n"
+//                                + data.getTestInt2() + " \n"
+//                                + data.getTestInt3() + " \n"
+//                                + data.getTestDouble() + " \n"
+//                                + data.getTestDouble2() + " \n"
+//                                + data.getTestDouble3() + " \n"
+//                                + data.getTestString() + " \n"
+//                                + data.getTestString2() + " \n"
+//                                + data.getTestString3() + " \n");
+//                    }
+//                    LogUtils.INSTANCE.i("Test Content " + LceeStatus.Content);
+//                    break;
+//                case LceeStatus.Empty:
+//                    LogUtils.INSTANCE.i("Test Empty");
+//                    break;
+//                case LceeStatus.Error:
+//                    LogUtils.INSTANCE.i("Test Error");
+//                    break;
+//                case LceeStatus.Loading:
+//                    LogUtils.INSTANCE.e("Test Loading " + LceeStatus.Loading);
+//                    break;
+//            }
+//        });
         mViewModel.getTest().observe(this, baseDataLcee -> {
-            switch (baseDataLcee.getStatus()) {
-                case LceeStatus.Content:
-                    TestData data = baseDataLcee.getData().getResult().get(0);
-                    if (data != null) {
 
-                        tvShow.setText(data.getTestInt() + " \n"
-                                + data.getTestInt2() + " \n"
-                                + data.getTestInt3() + " \n"
-                                + data.getTestDouble() + " \n"
-                                + data.getTestDouble2() + " \n"
-                                + data.getTestDouble3() + " \n"
-                                + data.getTestString() + " \n"
-                                + data.getTestString2() + " \n"
-                                + data.getTestString3() + " \n");
-                    }
-                    LogUtils.INSTANCE.i("2 Content " + LceeStatus.Content);
-                    break;
-                case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("2 Empty");
-                    break;
-                case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("2 Error");
-                    break;
-                case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("2 Loading " + LceeStatus.Loading);
-                    break;
+            if (200 == baseDataLcee.getCode()){
+
+                TestData data = baseDataLcee.getResult().get(0);
+                if (data != null) {
+
+                    tvShow.setText(data.getTestInt() + " \n"
+                            + data.getTestInt2() + " \n"
+                            + data.getTestInt3() + " \n"
+                            + data.getTestDouble() + " \n"
+                            + data.getTestDouble2() + " \n"
+                            + data.getTestDouble3() + " \n"
+                            + data.getTestString() + " \n"
+                            + data.getTestString2() + " \n"
+                            + data.getTestString3() + " \n");
+                }
+                LogUtils.INSTANCE.i("Test Content " + LceeStatus.Content);
             }
+
         });
     }
 
@@ -144,4 +172,5 @@ public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
 
         LogUtils.INSTANCE.w("requestCode " + requestCode + " ,resultCode  " + resultCode);
     }
+
 }

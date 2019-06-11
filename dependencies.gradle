@@ -19,7 +19,7 @@ ext {
             arch_comp_navigation  : '1.0.0-alpha09',
             arch_comp_paging      : '1.0.1',
 
-            retrofit              : '2.5.0',
+            retrofit              : '2.6.0',
             okhttp                : '3.14.1',
             kodein                : '6.1.0',
             glide                 : '3.7.0',
@@ -62,6 +62,7 @@ ext {
             constraint             : [group: 'androidx.constraintlayout', name: 'constraintlayout', version: '2.0.0-beta1'],
 
             arch_comp_extensions   : [group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: versions.arch_comp_lifecycle_x],
+            arch_comp_ktx          : [group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: versions.arch_comp_lifecycle_x],
             arch_comp_java8        : [group: 'androidx.lifecycle', name: 'lifecycle-common-java8', version: versions.arch_comp_lifecycle_x],
             arch_comp_compiler     : [group: 'androidx.lifecycle', name: 'lifecycle-compiler', version: versions.arch_comp_lifecycle_x],
             arch_comp_viewmodel    : [group: 'androidx.lifecycle', name: 'lifecycle-viewmodel', version: versions.arch_comp_lifecycle_x],

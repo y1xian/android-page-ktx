@@ -1,5 +1,7 @@
 package com.yyxnb.arch.vm;
 
+import androidx.lifecycle.LiveData;
+
 import com.yyxnb.arch.ApiConstant;
 import com.yyxnb.arch.BaseDatas;
 import com.yyxnb.arch.TestData;
@@ -30,5 +32,5 @@ public interface api {
     Deferred<BaseDatas<List<TestData>>> getTeam2(@FieldMap Map<String, String> map);
 
     @GET(ApiConstant.API_TEST_KEY)
-    Deferred<BaseDatas<List<TestData>>> getTest();
+    LiveData<BaseDatas<List<TestData>>> getTest();
 }

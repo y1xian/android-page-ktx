@@ -11,7 +11,6 @@ import java.util.Map;
 public class TestRepository extends BaseRepository<api> {
 
 
-
     public LiveData getTeam(Map map){
         return LiveDataObservableAdapter.INSTANCE.fromObservableLcee(mApi.getTeam(map));
     }
@@ -20,7 +19,7 @@ public class TestRepository extends BaseRepository<api> {
 
         return LiveDataObservableAdapter.INSTANCE.fromDeferredLcee(mApi.getTeam2(map));
     }
-    public LiveData getTest(Map map){
-        return LiveDataObservableAdapter.INSTANCE.fromDeferredLcee(mApi.getTest());
+    public LiveData getTest(){
+        return mApi.getTest();
     }
 }
