@@ -14,7 +14,7 @@ allprojects {
 }
 
 dependencies {
-    //选择最新版本
+    //选择最新版本 （AndroidX）
     implementation 'com.github.y1xian:arch-kt:+'
 }
 ```
