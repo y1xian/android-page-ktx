@@ -52,5 +52,9 @@ class ContainerActivity : BaseActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
 }
 

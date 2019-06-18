@@ -68,14 +68,14 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
     override fun onBackPressed(): Boolean {
         val fragmentManager = childFragmentManager
         val count = fragmentManager.backStackEntryCount
-        if (count > 1) {
+        return if (count > 1) {
             val topFragment = getTopFragment()
             if (topFragment != null) {
                 popFragment()
             }
-            return true
+            true
         } else {
-            return super.onBackPressed()
+            super.onBackPressed()
         }
     }
 
@@ -230,10 +230,6 @@ class NavigationFragment : BaseFragment(), SwipeBackLayout.SwipeListener {
         transaction.add(R.id.navigation_content, fragment, fragment.getSceneId())
         transaction.addToBackStack(fragment.getSceneId())
         transaction.commit()
-    }
-
-    // 替换所有旧的 fragment
-    fun setChildFragments(fragments: List<BaseFragment>) {
     }
 
     override fun getNavigationFragment(): NavigationFragment? {

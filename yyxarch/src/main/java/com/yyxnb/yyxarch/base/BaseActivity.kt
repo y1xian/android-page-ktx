@@ -229,7 +229,7 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
         transaction.commit()
     }
 
-    fun clearFragments() {
+    open fun clearFragments() {
         val fragmentManager = supportFragmentManager
         val count = fragmentManager.backStackEntryCount
         if (count > 0) {

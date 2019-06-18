@@ -14,6 +14,7 @@ import com.yyxnb.yyxarch.base.BaseFragment;
 import com.yyxnb.yyxarch.nav.NavigationFragment;
 import com.yyxnb.yyxarch.utils.BarStyle;
 import com.yyxnb.yyxarch.utils.ToastUtils;
+import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,8 @@ import org.jetbrains.annotations.Nullable;
 public class TestFragment extends BaseFragment {
 
     private TextView tvShow;
-    private Button button,button1,button2,button3,button4;
+    private Button button, button1, button2, button3, button4;
+    private String value;
 
     @Override
     public int initLayoutResID() {
@@ -42,19 +44,30 @@ public class TestFragment extends BaseFragment {
         button3 = fv(R.id.button3);
         button4 = fv(R.id.button4);
 
+        value = getArguments().getString("value");
+    }
+
+    @Override
+    public void initVariables(@NotNull Bundle bundle) {
+        super.initVariables(bundle);
+
+        value = bundle.getString("value");
     }
 
     @Override
     public void initViewData() {
         super.initViewData();
 
-        tvShow.setText(getDebugTag());
+//        tvShow.setText(getDebugTag());
+        tvShow.setText(value);
+
+        LogUtils.INSTANCE.w("--- " + value);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                startActivityRootFragment(new TestFragment(),true);
+                startActivityRootFragment(new TestFragment(), true);
             }
         });
 
@@ -70,7 +83,7 @@ public class TestFragment extends BaseFragment {
 
         button2.setOnClickListener(v -> {
 
-            startFragment(new TwoFragment(),0x111);
+            startFragment(new TwoFragment(), 0x111);
         });
 
         button3.setOnClickListener(v -> {
@@ -102,15 +115,15 @@ public class TestFragment extends BaseFragment {
     @Override
     public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
         super.onFragmentResult(requestCode, resultCode, result);
-        if (requestCode == 0x111 && resultCode == 0x110){
-            ToastUtils.INSTANCE.normal("0x111 " + result.getString("msg","null"));
+        if (requestCode == 0x111 && resultCode == 0x110) {
+            ToastUtils.INSTANCE.normal("0x111 " + result.getString("msg", "null"));
         }
     }
 
-    public static TestFragment newInstance() {
+    public static TestFragment newInstance(String value) {
 
         Bundle args = new Bundle();
-
+        args.putString("value", value);
         TestFragment fragment = new TestFragment();
         fragment.setArguments(args);
         return fragment;

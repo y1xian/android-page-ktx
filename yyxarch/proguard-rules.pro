@@ -244,7 +244,19 @@
 -keep class com.google.gson.examples.android.model.** { *; }
 
 #LiveEventBus
--dontwarn android.arch.lifecycle.LiveData
--keep class android.arch.lifecycle.LiveData { *; }
--keep class android.arch.lifecycle.LifecycleRegistry { *; }
--keep class android.arch.core.internal.SafeIterableMap { *; }
+-dontwarn com.jeremyliao.liveeventbus.**
+-keep class com.jeremyliao.liveeventbus.** { ; }
+-keep class android.arch.lifecycle.* { ; }
+-keep class android.arch.core.* { *; }
+
+#for androidx:
+-dontwarn com.jeremyliao.liveeventbus.**
+-keep class com.jeremyliao.liveeventbus.** { ; }
+-keep class androidx.lifecycle.* { ; }
+-keep class androidx.arch.core.* { *; }
+
+#ParallaxBackLayout
+-keep public enum com.github.anzewei.parallaxbacklayout.ParallaxBack$** {
+    **[] $VALUES;
+    public *;
+}

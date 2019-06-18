@@ -762,6 +762,7 @@ abstract class BaseFragment : Fragment(), CoroutineScope {
             } else {
                 val intent = Intent(mActivity, ContainerActivity::class.java)
                 intent.putExtra(AppConfig.FRAGMENT, rootFragment.javaClass.canonicalName)
+                intent.putExtra(AppConfig.BUNDLE, initArguments())
                 mActivity.startActivity(intent)
             }
         }, true)

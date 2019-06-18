@@ -46,15 +46,18 @@ public class ThreeFragment extends BaseFragmentVM<TestViewModel> {
 
         ivHead.setOnClickListener(v -> mViewModel.reqTest());
 
-        mViewModel.reqTeam();
+//        mViewModel.reqTeam();
 //        mViewModel.reqTeam2();
-//        mViewModel.reqTest();
+        mViewModel.reqTest();
 
         tvShow.setOnClickListener(v -> {
 
 //            startActivityRootFragment(new TestFragment(),true);
-            tvShow.setText("突突突突突突");
-            startFragment(new TestFragment());
+//            tvShow.setText("突突突突突突");
+            Bundle bundle = initArguments();
+            bundle.putString("value",tvShow.getText().toString());
+//            startFragment(TestFragment.newInstance(tvShow.getText().toString()));
+            startFragment(fragment(new TestFragment(),bundle));
         });
 
     }
