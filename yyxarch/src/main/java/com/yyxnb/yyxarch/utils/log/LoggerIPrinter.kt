@@ -182,7 +182,7 @@ import javax.xml.transform.stream.StreamSource
     }
 
     private fun logContent(priority: Int, chunk: String) {
-        val lines = chunk.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val lines = chunk.split(LINE_SEPARATOR!!.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         for (line in lines) {
             logChunk(priority, "$HORIZONTAL_DOUBLE_LINE $line")
         }

@@ -261,7 +261,7 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
             val v = currentFocus      //得到当前页面的焦点,ps:有输入框的页面焦点一般会被输入框占据
             if (isShouldHideKeyboard(v, event)) { //判断用户点击的是否是输入框以外的区域
                 //收起键盘
-                v.closeSoftKeyboard()
+                v!!.closeSoftKeyboard()
             }
         }
         return super.onTouchEvent(event)

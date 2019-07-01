@@ -1,16 +1,16 @@
 ext {
 
     build_version = [
-            compileSdkVersion: 28,
+            compileSdkVersion: 29,
             minSdkVersion    : 19,
-            targetSdkVersion : 28,
+            targetSdkVersion : 29,
             versionCode      : 1,
             versionName      : '1.0'
     ]
 
     versions = [
             android_plugin        : '3.4.1',
-            kotlin                : '1.3.31',
+            kotlin                : '1.3.40',
             kotlin_coroutines     : '1.2.1',
 
             support               : '28.0.0',

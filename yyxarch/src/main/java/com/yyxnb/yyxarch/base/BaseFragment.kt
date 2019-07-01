@@ -647,7 +647,7 @@ abstract class BaseFragment : Fragment(), CoroutineScope {
      */
     @JvmOverloads
     fun <T : BaseFragment> fragment(targetFragment: T, bundle: Bundle? = null): T {
-        return context?.let { instantiate(it, targetFragment.javaClass.canonicalName, bundle) } as T
+        return context?.let { instantiate(it, targetFragment.javaClass.canonicalName!!, bundle) } as T
     }
 
     fun rootFragment(targetFragment: BaseFragment): BaseFragment {

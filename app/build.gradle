@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 
 
 android {
-    compileSdkVersion build_version.compileSdkVersion
+    compileSdkVersion ProjectProperties.compileSdk
     defaultConfig {
         applicationId "com.yyxnb.arch.kt"
-        minSdkVersion build_version.minSdkVersion
-        targetSdkVersion build_version.targetSdkVersion
-        versionCode build_version.versionCode
-        versionName build_version.versionName
+        minSdkVersion ProjectProperties.minSdk
+        targetSdkVersion ProjectProperties.targetSdk
+        versionCode ProjectProperties.versionCode
+        versionName ProjectProperties.versionName
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -24,6 +24,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    android.applicationVariants.all { variant ->
+        // 更新至Android Studio 3.3 gradle 4.10.1
+        variant.outputs.all {
+            outputFileName = "app_${variant.versionCode}-${variant.versionName}}.apk"
+        }
+
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -62,8 +71,8 @@ dependencies {
 
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-7'
 
-    debugImplementation libs.leak_canary_debug
-    releaseImplementation libs.leak_canary_release
+    debugImplementation Libs.leak_canary_debug
+    releaseImplementation Libs.leak_canary_release
     // Optional, if you use support library fragments:
-    debugImplementation libs.leak_canary_debug_support
+    debugImplementation Libs.leak_canary_debug_support
 }
