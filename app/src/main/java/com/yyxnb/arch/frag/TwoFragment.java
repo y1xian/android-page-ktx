@@ -4,6 +4,7 @@ package com.yyxnb.arch.frag;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.yyxnb.arch.R;
@@ -39,6 +40,8 @@ public class TwoFragment extends BaseMvvmFragment<TestViewModel> {
 
     @Override
     public void initView(Bundle savedInstanceState) {
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 //        hehe = getArguments().getString("hehe","");
 

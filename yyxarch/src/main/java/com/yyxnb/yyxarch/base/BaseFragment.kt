@@ -22,6 +22,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.AppUtils
+import com.yyxnb.yyxarch.AppUtils.context
 import com.yyxnb.yyxarch.ContainerActivity
 import com.yyxnb.yyxarch.R
 import com.yyxnb.yyxarch.common.AppConfig
@@ -750,6 +751,7 @@ abstract class BaseFragment : Fragment() {
             } else {
                 val intent = Intent(mActivity, ContainerActivity::class.java)
                 intent.putExtra(AppConfig.FRAGMENT, rootFragment.javaClass.canonicalName)
+                intent.putExtra(AppConfig.BUNDLE, initArguments())
                 mActivity.startActivity(intent)
             }
         }, true)
