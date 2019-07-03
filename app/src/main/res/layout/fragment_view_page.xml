@@ -61,7 +61,7 @@
 
     <!-- VIewPager 主要是加载内容的 -->
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/mViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ll_tabs"

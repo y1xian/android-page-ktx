@@ -6,8 +6,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-
-import com.yyxnb.yyxarch.utils.Predictions.notNull
 import java.io.Serializable
 
 /**
@@ -38,7 +36,6 @@ class HandlerLifecycle : Handler, LifecycleObserver, Serializable {
     }
 
     private fun addObserver() {
-        notNull(lifecycleOwner)
         lifecycleOwner!!.lifecycle.addObserver(this)
     }
 

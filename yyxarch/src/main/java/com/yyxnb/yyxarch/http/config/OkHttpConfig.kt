@@ -26,7 +26,7 @@ object OkHttpConfig {
 
     lateinit var okHttpClient: OkHttpClient
 
-    private var mDelayTime: Long = 10
+    private var mDelayTime: Long = 10L
 
 
     class Builder {

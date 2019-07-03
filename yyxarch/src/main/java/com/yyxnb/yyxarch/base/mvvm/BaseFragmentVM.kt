@@ -1,6 +1,7 @@
 package com.yyxnb.yyxarch.base.mvvm
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseFragment
@@ -12,7 +13,7 @@ import com.yyxnb.yyxarch.base.BaseFragment
  * @author : yyx
  * @date ：2018/6/10
  */
-abstract class BaseFragmentVM<VM : BaseViewModel<*>> : BaseFragment() {
+abstract class BaseFragmentVM<VM : BaseViewModel<*, *>> : BaseFragment() {
 
     /**
      * ViewModel
@@ -27,7 +28,9 @@ abstract class BaseFragmentVM<VM : BaseViewModel<*>> : BaseFragment() {
 
     override fun initViewData() {
         super.initViewData()
-        initViewObservable()
+        mViewModel.state.observe(this, Observer {
+            initViewObservable()
+        })
     }
 
     /**

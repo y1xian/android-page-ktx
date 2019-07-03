@@ -20,14 +20,6 @@ object AppConfig : Serializable {
     const val REQUEST_CODE = "REQUEST_CODE"
 
     /**
-     * 重连次数
-     */
-    var retryMaxTime: Int = 3
-    /**
-     * 重连间隔时间 ms
-     */
-    var retryDelay: Long = 3000
-    /**
      * 是否侧滑 fragment
      */
     var swipeBackEnabled: Boolean = true

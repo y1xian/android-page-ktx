@@ -26,13 +26,6 @@ class ContentViewFragment : BaseFragment(), View.OnClickListener {
      */
     private var fragmentList: MutableList<Fragment>? = null
 
-    /**
-     * Fragment
-     */
-    private var oneFragment: OneFragment? = null
-    private var twoFragment: TwoFragment? = null
-    private var threeFragment: ThreeFragment? = null
-
     private var currentIndex: Int = 0
 
     override fun initLayoutResID(): Int {

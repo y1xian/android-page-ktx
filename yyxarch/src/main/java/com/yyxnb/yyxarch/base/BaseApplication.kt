@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.github.anzewei.parallaxbacklayout.ParallaxHelper
-import com.jeremyliao.liveeventbus.LiveEventBus
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.http.config.OkHttpConfig
 import com.yyxnb.yyxarch.utils.log.LogUtils
@@ -60,11 +59,6 @@ open class BaseApplication : Application() {
                 .setShowThreadInfo(true).setDebug(AppUtils.isDebug) //是否显示日志，默认true，发布时最好关闭
 
         registerActivityLifecycleCallbacks(ParallaxHelper.getInstance());
-
-        LiveEventBus.get()
-                .config()
-                .supportBroadcast(this)
-                .lifecycleObserverAlwaysActive(true) //配置支持跨进程、跨APP通信
 
     }
 

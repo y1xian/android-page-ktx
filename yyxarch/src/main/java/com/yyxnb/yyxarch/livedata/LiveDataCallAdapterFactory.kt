@@ -12,7 +12,7 @@ class LiveDataCallAdapterFactory : Factory() {
      * 如果你要返回
      * LiveData<?>
      */
-    override fun get(returnType: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): CallAdapter<*, *>? {
+    override fun get(returnType: Type, annotations: Array<out Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
         if (returnType !is ParameterizedType) {
             throw IllegalArgumentException("返回值需为参数化类型")
         }

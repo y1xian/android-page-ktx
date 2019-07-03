@@ -61,7 +61,7 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
 
         mContext = this
 
-        lifecycle.addObserver(Java8Observer)
+        lifecycle.addObserver(Java8Observer())
 
         if (initLayoutResID() == 0) {
             fragmentContainer = FrameLayout(this)

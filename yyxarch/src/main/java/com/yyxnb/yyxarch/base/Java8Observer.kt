@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
-object Java8Observer : DefaultLifecycleObserver {
+class Java8Observer : DefaultLifecycleObserver {
 
     override fun onCreate(owner: LifecycleOwner) {
         Log.i("---onCreate", owner.lifecycle.currentState.name)

@@ -1,6 +1,6 @@
 object Libs {
 
-    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${ProjectProperties.kotlinVersion}"
+    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${ProjectProperties.kotlinVersion}"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
@@ -19,6 +19,7 @@ object Libs {
     const val lifecycle = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
     const val lifecycleJava8 = "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycle}"
     const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:${Versions.lifecycle}"
+    const val lifecycleKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
 
     const val ktxCore = "androidx.core:core-ktx:${Versions.ktxCore}"
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
@@ -36,35 +37,28 @@ object Libs {
     const val epoxy = "com.airbnb.android:epoxy:${Versions.epoxy}"
     const val epoxyProcessor = "com.airbnb.android:epoxy-processor:${Versions.epoxy}"
     const val epoxyDatabinding = "com.airbnb.android:epoxy-databinding:${Versions.epoxy}"
-
+    //glide     https://github.com/bumptech/glide
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
     const val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
 
     const val lemniscate = "com.github.VladimirWrites:Lemniscate:${Versions.lemniscate}"
-
+    //rxjava2       https://github.com/ReactiveX/RxJava
     const val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rxJava}"
     const val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroid}"
     const val rxBinding = "com.jakewharton.rxbinding2:rxbinding:${Versions.rxBinding}"
+    const val rxKotlin = "io.reactivex.rxjava2:rxkotlin:${Versions.rxKotlin}"
 
     const val room = "androidx.room:room-runtime:${Versions.room}"
     const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
     const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
-
-    const val jodaTime = "joda-time:joda-time:${Versions.jodaTime}"
-
+    //retrofit      https://github.com/square/retrofit
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     const val retrofitGson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
     const val retrofitRxjava = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofit}"
     const val retrofitCoroutines = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
-
+    //https://github.com/square/okhttp
     const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okHttp}"
     const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.loggingInterceptor}"
-    const val networkResponseAdapter = "com.github.haroldadmin:CoroutinesNetworkResponseAdapter:${Versions.cnrAdapter}"
-    const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.moshi}"
-    const val moshiCodegen = "com.squareup.moshi:moshi-kotlin:${Versions.moshi}"
-    const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.moshiConverter}"
-    const val moshiAdapters = "com.squareup.moshi:moshi-adapters:${Versions.moshiAdapters}"
-    const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"
 
     const val junit4 = "junit:junit:${Versions.junit4}"
     const val androidxJunitExt = "androidx.test.ext:junit:${Versions.androidxJunitExt}"
@@ -73,15 +67,18 @@ object Libs {
     const val androidxTestCore = "androidx.arch.core:core-testing:${Versions.androidxTestCore}"
     const val mockk = "io.mockk:mockk:${Versions.mockk}"
     const val mockkAndroid = "io.mockk:mockk-android:${Versions.mockk}"
-
-    const val firebaseCore = "com.google.firebase:firebase-core:${Versions.firebaseCore}"
-    const val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
-
+    //https://github.com/google/gson
     const val gson = "com.google.code.gson:gson:${Versions.gson}"
-
+    //内存泄漏    https://github.com/square/leakcanary
     const val leak_canary_debug = "com.squareup.leakcanary:leakcanary-android:${Versions.leakcanary}"
     const val leak_canary_debug_support = "com.squareup.leakcanary:leakcanary-support-fragment:${Versions.leakcanary}"
     const val leak_canary_release = "com.squareup.leakcanary:leakcanary-android-no-op:${Versions.leakcanary}"
 
     const val multidex = "com.android.support:multidex:${Versions.multidex}"
+    //https://github.com/Tencent/MMKV
+    const val mmkv = "com.tencent:mmkv:1.0.19"
+    //https://github.com/JeremyLiao/LiveEventBus
+    const val live_event_bus = "com.jeremyliao:live-event-bus-x:1.4.4"
+    //https://github.com/anzewei/ParallaxBackLayout
+    const val parallaxbacklayout = "com.github.anzewei:parallaxbacklayout:1.1.9"
 }

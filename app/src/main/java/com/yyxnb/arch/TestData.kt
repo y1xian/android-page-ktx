@@ -30,4 +30,10 @@ class TestData : Serializable {
     var testString: String? = null
     var testString2: String? = null
     var testString3: String? = null
+
+    override fun toString(): String {
+        return "TestData(title=$title, content=$content, authors=$authors, testDouble=$testDouble, testDouble2=$testDouble2, testDouble3=$testDouble3, testInt=$testInt, testInt2=$testInt2, testInt3=$testInt3, testString=$testString, testString2=$testString2, testString3=$testString3)"
+    }
+
+
 }

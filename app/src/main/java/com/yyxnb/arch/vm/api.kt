@@ -6,7 +6,6 @@ import com.yyxnb.arch.ApiConstant
 import com.yyxnb.arch.BaseDatas
 import com.yyxnb.arch.TestData
 
-import io.reactivex.Observable
 import kotlinx.coroutines.Deferred
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
@@ -18,18 +17,10 @@ interface api {
     @get:GET(ApiConstant.API_TEST_KEY)
     val test: LiveData<BaseDatas<List<TestData>>>
 
-    /**
-     * @param map
-     * @return
-     */
-    @FormUrlEncoded
-    //    @POST("searchPoetry")
-    @POST(ApiConstant.API_UPDATE_APP)
-    fun getTeam(@FieldMap map: Map<String, String>):
-    //    @Headers({RetrofitMultiUrl.BASE_URL_NAME_HEADER + ApiConstant.API_UPDATE_APP_KEY})
-            Observable<BaseDatas<List<TestData>>>
+    @GET(ApiConstant.API_TEST_KEY)
+    suspend fun test2(): BaseDatas<List<TestData>>
 
     @FormUrlEncoded
     @POST("searchPoetry")
-    fun getTeam2(@FieldMap map: Map<String, String>): Deferred<BaseDatas<List<TestData>>>
+    fun getTeam(@FieldMap map: Map<String, String>): Deferred<BaseDatas<List<TestData>>>
 }

@@ -17,7 +17,7 @@ class HeaderInterceptor(private val headerMaps: HashMap<String, Any>?) : Interce
         headerMaps!!["User-Agent"] = "Mozilla/5.0 (Android)"
         if (headerMaps != null && headerMaps.size > 0) {
             for ((key, value) in headerMaps) {
-                request.addHeader(key, value as? String)
+                request.addHeader(key, value as String)
             }
         }
         return chain.proceed(request.build())

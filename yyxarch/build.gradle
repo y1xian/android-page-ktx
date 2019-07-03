@@ -13,7 +13,7 @@ android {
         versionName ProjectProperties.versionName
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         //Kotlin中使用Java8特性
         kotlinOptions {
@@ -61,22 +61,16 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-//    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
-    testImplementation Libs.junit4
+
+    testImplementation(Libs.junit4)
     //  v7 v4
     api([Libs.appCompat, Libs.constraintLayout, Libs.design, Libs.annotation])
-    // rx全家桶
-    api([Libs.rxJava, Libs.rxAndroid, Libs.rxBinding])
     // retrofit2    https://github.com/square/retrofit
-    api([Libs.retrofit, Libs.retrofitRxjava, Libs.retrofitGson])
-    api Libs.retrofitCoroutines
+    api([Libs.retrofit, Libs.retrofitGson])
     // okhttp3     https://github.com/square/okhttp
     api([Libs.okHttp, Libs.loggingInterceptor])
     // jetpack
-    api([Libs.lifecycle, Libs.lifecycleJava8])
-//    kapt libs.arch_comp_compiler
+    api([Libs.lifecycle, Libs.lifecycleJava8, Libs.ktxCore, Libs.lifecycleKtx])
     //gson  https://github.com/google/gson
     api Libs.gson
     //避免65K限制       https://developer.android.com/tools/building/multidex.html
@@ -86,9 +80,7 @@ dependencies {
     api Libs.coroutines
     api Libs.coroutinesAndroid
     //mmkv
-    api "com.tencent:mmkv:1.0.19"
-    //消息总线
-    api "com.jeremyliao:live-event-bus-x:1.4.4"
+    api Libs.mmkv
     //ac 侧滑
-    api "com.github.anzewei:parallaxbacklayout:1.1.9"
+    api Libs.parallaxbacklayout
 }

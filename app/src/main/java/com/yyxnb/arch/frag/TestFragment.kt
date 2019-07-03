@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_test.*
 class TestFragment : BaseFragment() {
 
 
-    private var value: String? = null
+    private var value: String? = ""
 
     override fun initLayoutResID(): Int {
         return R.layout.fragment_test
@@ -43,7 +43,7 @@ class TestFragment : BaseFragment() {
         //        tvShow.setText(getDebugTag());
         tvShow.text = value
 
-        LogUtils.w("--- " + value!!)
+        LogUtils.w("--- " + value)
 
         button.setOnClickListener { startActivityRootFragment(TestFragment(), true) }
 

@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_one.*
 class OneFragment : BaseFragmentVM<TestViewModel>() {
 
 
-    private var msg: String? = null
+    private var msg: String = ""
 
     override fun initLayoutResID(): Int {
         return R.layout.fragment_one
@@ -56,9 +56,9 @@ class OneFragment : BaseFragmentVM<TestViewModel>() {
         }
 
 
-        tvShow!!.text = "666666  " + msg!!
+        tvShow.text = "666666  " + msg
 
-        tvShow2!!.setOnClickListener { v ->
+        tvShow2.setOnClickListener { v ->
 
             startFragment(ViewPageFragment())
 
@@ -75,7 +75,7 @@ class OneFragment : BaseFragmentVM<TestViewModel>() {
     override fun initViewObservable() {
         super.initViewObservable()
 
-        mViewModel.team2.observe(this, Observer{ baseDataLcee ->
+        mViewModel.team.observe(this, Observer{ baseDataLcee ->
             when (baseDataLcee.status) {
                 LceeStatus.Content -> {
                     tvShow!!.text = baseDataLcee.data!!.result!![0].content

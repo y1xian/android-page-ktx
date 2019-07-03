@@ -14,7 +14,7 @@ import com.yyxnb.yyxarch.http.RetrofitManager
  * @author yyx
  * @date ：2018/6/13
  */
-abstract class BaseRepository<T : Any> : DefaultLifecycleObserver {
+open class BaseRepository<T : Any> : DefaultLifecycleObserver {
 
     protected lateinit var mApi: T
 
@@ -25,4 +25,5 @@ abstract class BaseRepository<T : Any> : DefaultLifecycleObserver {
     private fun initApiServer(modelClass: Class<T>): T {
         return RetrofitManager.createApi(modelClass)
     }
+
 }

@@ -2,11 +2,12 @@ package com.yyxnb.yyxarch.base.mvvm
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseActivity
 
-abstract class BaseActivityVM<VM : BaseViewModel<*>> : BaseActivity() {
+abstract class BaseActivityVM<VM : BaseViewModel<*, *>> : BaseActivity() {
 
     /**
      * ViewModel
@@ -16,7 +17,9 @@ abstract class BaseActivityVM<VM : BaseViewModel<*>> : BaseActivity() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
-        initViewObservable()
+        mViewModel.state.observe(this, Observer {
+            initViewObservable()
+        })
     }
 
     /**

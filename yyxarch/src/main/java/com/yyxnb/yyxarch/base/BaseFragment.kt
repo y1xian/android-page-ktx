@@ -89,7 +89,7 @@ abstract class BaseFragment : Fragment(), CoroutineScope {
     }
 
     init {
-        lifecycle.addObserver(Java8Observer)
+        lifecycle.addObserver(Java8Observer())
     }
 
     override fun onAttach(context: Context) {

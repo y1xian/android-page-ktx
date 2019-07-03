@@ -4,11 +4,10 @@ package com.yyxnb.arch.frag
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.yyxnb.arch.R
-import com.yyxnb.arch.vm.TestViewModel
-import com.yyxnb.yyxarch.annotation.LceeStatus
+import com.yyxnb.arch.vm.Test1ViewModel
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM
+import com.yyxnb.yyxarch.ext.withState
 import com.yyxnb.yyxarch.utils.BarStyle
 import com.yyxnb.yyxarch.utils.log.LogUtils
 import kotlinx.android.synthetic.main.fragment_two.*
@@ -18,8 +17,7 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class TwoFragment : BaseFragmentVM<TestViewModel>() {
-
+class TwoFragment : BaseFragmentVM<Test1ViewModel>() {
 
     private var hehe = "222"
 
@@ -57,6 +55,22 @@ class TwoFragment : BaseFragmentVM<TestViewModel>() {
 
         tvShow.text = getDebugTag()
 
+
+//        viewModel.reqTest()
+
+        mViewModel.getTest()
+
+//        mViewModel.state.observe(this, androidx.lifecycle.Observer {
+//        withState(mViewModel) { data ->
+//            LogUtils.e(" ${data.isLoading} , ${data.data.toString()}")
+//
+//            if (data.data != null) {
+//                val d = data.data.result?.get(0)
+//                tvShow.text = d!!.testInt.toString()
+//            }
+//        }
+//        })
+
     }
 
     override fun preferredStatusBarColor(): Int {
@@ -67,27 +81,37 @@ class TwoFragment : BaseFragmentVM<TestViewModel>() {
         return BarStyle.LightContent
     }
 
-
     override fun isSwipeBackEnabled(): Boolean {
         return true
     }
 
-    override fun initViewObservable() {
-        super.initViewObservable()
+    override fun initViewObservable() = withState(mViewModel) { data ->
+        LogUtils.e(" ${data.isLoading} , ${data.data.toString()}")
 
-        mViewModel.team2.observe(this, Observer { baseDataLcee ->
-            when (baseDataLcee.status) {
-                LceeStatus.Content -> {
-                    tvShow!!.text = baseDataLcee.data!!.result!![0].content
-                    LogUtils.i("two Content " + LceeStatus.Content)
-                }
-                LceeStatus.Empty -> LogUtils.i("two Empty")
-                LceeStatus.Error -> LogUtils.i("two Error")
-                LceeStatus.Loading -> LogUtils.e("two Loading " + LceeStatus.Loading)
-            }
-        })
-
+        if (data.data != null) {
+            val d = data.data.result?.get(0)
+            tvShow.text = d!!.testInt.toString()
+        }
     }
+
+//    override fun initViewObservable() {
+//        super.initViewObservable()
+//
+////        mViewModel.team2.observe(this, Observer { baseDataLcee ->
+////            when (baseDataLcee.status) {
+////                LceeStatus.Content -> {
+////                    tvShow!!.text = baseDataLcee.data!!.result!![0].content
+////                    LogUtils.i("two Content " + LceeStatus.Content)
+////                }
+////                LceeStatus.Empty -> LogUtils.i("two Empty")
+////                LceeStatus.Error -> LogUtils.i("two Error")
+////                LceeStatus.Loading -> LogUtils.e("two Loading " + LceeStatus.Loading)
+////            }
+////        })
+//
+//
+//
+//    }
 
     companion object {
 

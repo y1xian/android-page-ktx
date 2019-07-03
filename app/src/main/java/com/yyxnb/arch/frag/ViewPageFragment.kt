@@ -5,24 +5,17 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import com.yyxnb.arch.R
-import com.yyxnb.arch.vm.TestViewModel
+import com.yyxnb.yyxarch.base.BaseFragment
 import com.yyxnb.yyxarch.base.BaseFragmentStatePagerAdapter
-import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM
+import kotlinx.android.synthetic.main.fragment_view_page.*
 import java.util.*
 
 /**
  * ViewPager和Fragment的组合使用
  */
-class ViewPageFragment : BaseFragmentVM<TestViewModel>(), View.OnClickListener {
+class ViewPageFragment : BaseFragment(), View.OnClickListener {
 
-
-
-    /**
-     * 作为页面容器的ViewPager
-     */
-    private var mViewPager: ViewPager? = null
 
     /**
      * 页面集合
@@ -46,9 +39,8 @@ class ViewPageFragment : BaseFragmentVM<TestViewModel>(), View.OnClickListener {
         fragmentList!!.add(TwoFragment())
         fragmentList!!.add(ThreeFragment())
 
-        mViewPager!!.offscreenPageLimit = fragmentList!!.size - 1
-        mViewPager!!.adapter = BaseFragmentStatePagerAdapter(childFragmentManager, fragmentList!!)
-
+        mViewPager.offscreenPageLimit = fragmentList!!.size - 1
+        mViewPager.adapter = BaseFragmentStatePagerAdapter(childFragmentManager, fragmentList!!)
     }
 
     override fun onClick(v: View) {
