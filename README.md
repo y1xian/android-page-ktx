@@ -1,5 +1,5 @@
 # arch-kt [![](https://jitpack.io/v/y1xian/arch-kt.svg)](https://jitpack.io/#y1xian/arch-kt)
-###只适用于kotlin 且 1.3版本以上
+### 只适用于kotlin 且 1.3版本以上
 ## 使用方式
 #### 1. 作为module导入
 把arch-kt作为一个module导入你的工程。
