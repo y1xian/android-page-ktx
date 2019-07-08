@@ -1,39 +1,33 @@
 package com.yyxnb.arch.vm
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import com.yyxnb.arch.BaseDatas
-import com.yyxnb.arch.TestData
+import androidx.lifecycle.viewModelScope
 import com.yyxnb.arch.TestState
 import com.yyxnb.yyxarch.base.mvvm.BaseViewModel
-import com.yyxnb.yyxarch.bean.Lcee
-import com.yyxnb.yyxarch.livedata.SingleLiveEvent
-import java.util.*
+import com.yyxnb.yyxarch.http.exception.ApiException
+import com.yyxnb.yyxarch.utils.log.LogUtils
+import kotlinx.coroutines.launch
 
 class TestViewModel() : BaseViewModel<TestState,TestRepository>(TestState()) {
 
-    private val reqTeam = SingleLiveEvent<Map<String,String>>()
-    private val reqTest = MutableLiveData<Map<String,String>>()
+    fun getTest() = viewModelScope.launch {
 
-    val team: LiveData<Lcee<BaseDatas<List<TestData>>>>
-        get() = Transformations.switchMap(reqTeam) { input -> mRepository.getTeam(input) }
+        try {
 
-    //        return mRepository.getTest();
-    val test: LiveData<BaseDatas<List<TestData>>>
-        get() = Transformations.switchMap(reqTest) { _ -> mRepository.test }
+            setState {
+                copy(isLoading = true)
+            }
 
+            val data = mRepository.getTest2()
 
-    fun reqTeam() {
-        val map = LinkedHashMap<String, String>()
-        map["name"] = "李白"
-        reqTeam.value = map
-    }
-
-    fun reqTest() {
-        val map = LinkedHashMap<String, String>()
-        map["name"] = "杜甫"
-        reqTest.value = map
+            setState {
+                copy(data = data, isLoading = false)
+            }
+        } catch (e: Exception) {
+            LogUtils.w(ApiException.handleException(e).message)
+            setState {
+                copy(isLoading = false)
+            }
+        }
 
 
     }

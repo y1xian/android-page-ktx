@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.yyxnb.arch.R
-import com.yyxnb.arch.vm.Test1ViewModel
+import com.yyxnb.arch.vm.TestViewModel
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM
 import com.yyxnb.yyxarch.ext.withState
 import com.yyxnb.yyxarch.utils.BarStyle
@@ -17,7 +17,7 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class TwoFragment : BaseFragmentVM<Test1ViewModel>() {
+class TwoFragment : BaseFragmentVM<TestViewModel>() {
 
     private var hehe = "222"
 

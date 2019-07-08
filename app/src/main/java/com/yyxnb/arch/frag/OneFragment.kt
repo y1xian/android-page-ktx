@@ -3,10 +3,8 @@ package com.yyxnb.arch.frag
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.yyxnb.arch.R
 import com.yyxnb.arch.vm.TestViewModel
-import com.yyxnb.yyxarch.annotation.LceeStatus
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM
 import com.yyxnb.yyxarch.utils.ToastUtils
 import com.yyxnb.yyxarch.utils.log.LogUtils
@@ -75,17 +73,6 @@ class OneFragment : BaseFragmentVM<TestViewModel>() {
     override fun initViewObservable() {
         super.initViewObservable()
 
-        mViewModel.team.observe(this, Observer{ baseDataLcee ->
-            when (baseDataLcee.status) {
-                LceeStatus.Content -> {
-                    tvShow!!.text = baseDataLcee.data!!.result!![0].content
-                    LogUtils.i("one Content " + LceeStatus.Content)
-                }
-                LceeStatus.Empty -> LogUtils.i("one Empty")
-                LceeStatus.Error -> LogUtils.i("one Error")
-                LceeStatus.Loading -> LogUtils.e("one Loading " + LceeStatus.Loading)
-            }
-        })
     }
 
     override fun onFragmentResult(requestCode: Int, resultCode: Int, result: Bundle?) {

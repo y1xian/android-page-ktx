@@ -2,7 +2,6 @@ package com.yyxnb.yyxarch.http.interceptor
 
 import com.yyxnb.yyxarch.utils.JsonUtils
 import com.yyxnb.yyxarch.utils.log.LogUtils
-
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**
@@ -34,7 +33,7 @@ class RxHttpLogger : HttpLoggingInterceptor.Logger {
         mMessage.append(message + "\n")
         // 请求或者响应结束，打印整条日志
         if (message.startsWith("<-- END HTTP")) {
-            LogUtils.d(mMessage.toString())
+            LogUtils.w(mMessage.toString())
         }
     }
 }
