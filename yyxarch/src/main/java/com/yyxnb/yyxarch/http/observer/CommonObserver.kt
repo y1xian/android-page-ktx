@@ -1,8 +1,6 @@
 package com.yyxnb.yyxarch.http.observer
 
 
-import android.text.TextUtils
-import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.http.RetrofitManager
 import io.reactivex.disposables.Disposable
 
@@ -53,9 +51,6 @@ abstract class CommonObserver<T> : BaseObserver<T>() {
     }
 
     override fun doOnError(errorMsg: String) {
-        if (!isHideToast && !TextUtils.isEmpty(errorMsg)) {
-            AppUtils.debugToast(errorMsg)
-        }
         onError(errorMsg)
         RetrofitManager.cancelSingleRequest(disposable)
     }

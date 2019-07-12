@@ -7,11 +7,39 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import com.yyxnb.yyxarch.ext.ViewClickDelay.DELAY_TIME
+import com.yyxnb.yyxarch.ext.ViewClickDelay.hash
+import com.yyxnb.yyxarch.ext.ViewClickDelay.lastClickTime
 
 /**
  * @author TuFei
  * @date 18-10-10.
  */
+
+object ViewClickDelay {
+    var hash: Int = 0
+    var lastClickTime: Long = 0
+    var DELAY_TIME: Long = 500L
+}
+
+/**
+ * 防止多次点击
+ */
+fun View.clickDelay(delay: Long = DELAY_TIME, clickAction: () -> Unit) {
+    this.setOnClickListener {
+        if (this.hashCode() != hash) {
+            hash = this.hashCode()
+            lastClickTime = System.currentTimeMillis()
+            clickAction()
+        } else {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime > delay) {
+                lastClickTime = System.currentTimeMillis()
+                clickAction()
+            }
+        }
+    }
+}
 
 /**
  * 1.activity、fragment等要先实现View.OnClickListener

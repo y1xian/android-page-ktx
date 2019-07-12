@@ -31,8 +31,7 @@ abstract class BaseObserver<T> : Observer<T>, ISubscriber<T> {
     }
 
     override fun onError(@NonNull e: Throwable) {
-        val error = ApiException.handleException(e).message
-        setError(error!!)
+        setError(ApiException.handleException(e).message)
     }
 
 

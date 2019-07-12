@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.base.BaseFragmentStatePagerAdapter;
-import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
+import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * ViewPager和Fragment的组合使用
  */
-public class ViewPageFragment extends BaseMvvmFragment<TestViewModel> implements View.OnClickListener {
+public class ViewPageFragment extends BaseFragmentVM<TestViewModel> implements View.OnClickListener {
 
     /**
      * 四个导航按钮

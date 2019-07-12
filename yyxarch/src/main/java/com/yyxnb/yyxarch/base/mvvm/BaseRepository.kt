@@ -1,4 +1,4 @@
-package com.yyxnb.yyxarch.base
+package com.yyxnb.yyxarch.base.mvvm
 
 import android.arch.lifecycle.DefaultLifecycleObserver
 import com.yyxnb.yyxarch.AppUtils

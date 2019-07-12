@@ -2,36 +2,26 @@ package com.yyxnb.yyxarch.base.mvvm
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.base.BaseFragment
+import com.yyxnb.yyxarch.base.BaseActivity
 
-
-/**
- * Description: mvvm
- *
- * @author : yyx
- * @date ：2018/6/10
- */
-abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
+abstract class BaseActivityVM<VM : BaseViewModel<*>> : BaseActivity() {
 
     /**
      * ViewModel
      */
     protected lateinit var mViewModel: VM
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mViewModel = initViewModel(AppUtils.getInstance(this, 0)!!)
+    override fun initView(savedInstanceState: Bundle?) {
+        mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
-    }
-
-    override fun initViewData() {
-        super.initViewData()
         initViewObservable()
     }
 
     /**
-     * 回调网络数据
+     * 初始化界面观察者的监听
+     * 接收数据结果
      */
     open fun initViewObservable() {}
 
@@ -41,8 +31,8 @@ abstract class BaseMvvmFragment<VM : BaseViewModel<*>> : BaseFragment() {
      *
      * @return ViewModel
      */
-    private fun initViewModel(modelClass: Class<VM>): VM {
-        return ViewModelProviders.of(mActivity).get(modelClass)
+    private fun initViewModel(activity: AppCompatActivity, modelClass: Class<VM>): VM {
+        return ViewModelProviders.of(activity).get(modelClass)
     }
 
     override fun onDestroy() {

@@ -10,7 +10,7 @@ import com.yyxnb.arch.R;
 import com.yyxnb.arch.TestData;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.annotation.LceeStatus;
-import com.yyxnb.yyxarch.base.mvvm.BaseMvvmFragment;
+import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
 import com.yyxnb.yyxarch.utils.BarStyle;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ThreeFragment extends BaseMvvmFragment<TestViewModel> {
+public class ThreeFragment extends BaseFragmentVM<TestViewModel> {
 
     private TextView tvShow;
 

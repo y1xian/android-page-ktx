@@ -88,12 +88,8 @@ dependencies {
     api libs.kotlin_stdlib
     api libs.kotlin_coroutines
     api libs.kotlin_coroutines_core
-    // autodispose  https://github.com/uber/AutoDispose
-//    api(libs.autodispose, libs.autodispose_ktx, libs.autodispose_android_ktx, libs.autodispose_archs_ktx)
     //mmkv
     api libs.mmkv
-    //消息总线
-    api libs.live_event_bus
     //ac 侧滑
     api libs.parallaxbacklayout
 }

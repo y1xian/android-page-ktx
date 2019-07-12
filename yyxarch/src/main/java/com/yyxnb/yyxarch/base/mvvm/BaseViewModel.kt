@@ -1,11 +1,10 @@
 package com.yyxnb.yyxarch.base.mvvm
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.ViewModel
+import android.support.annotation.CallSuper
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.base.BaseRepository
 import com.yyxnb.yyxarch.http.RetrofitManager
 
 
@@ -17,7 +16,7 @@ import com.yyxnb.yyxarch.http.RetrofitManager
  * @author : yyx
  * @date ：2018/6/13
  */
-abstract class BaseViewModel<T : BaseRepository<*>>(application: Application) : AndroidViewModel(application), DefaultLifecycleObserver {
+abstract class BaseViewModel<T : BaseRepository<*>>() : ViewModel(), DefaultLifecycleObserver {
 
     protected lateinit var mRepository: T
 
@@ -35,6 +34,7 @@ abstract class BaseViewModel<T : BaseRepository<*>>(application: Application) : 
         owner.lifecycle.removeObserver(mRepository)
     }
 
+    @CallSuper
     override fun onCleared() {
         super.onCleared()
         RetrofitManager.cancelAllRequest()

@@ -22,7 +22,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.AppUtils.context
 import com.yyxnb.yyxarch.ContainerActivity
 import com.yyxnb.yyxarch.R
 import com.yyxnb.yyxarch.common.AppConfig
@@ -33,7 +32,11 @@ import com.yyxnb.yyxarch.nav.PresentAnimation
 import com.yyxnb.yyxarch.utils.BarStyle
 import com.yyxnb.yyxarch.utils.MainThread
 import com.yyxnb.yyxarch.utils.StatusBarUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -42,7 +45,7 @@ import java.util.*
  * @author : yyx
  * @date ：2016/10
  */
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), CoroutineScope {
 
     companion object {
 
@@ -54,6 +57,11 @@ abstract class BaseFragment : Fragment() {
     protected lateinit var mActivity: AppCompatActivity
 
     protected val TAG = javaClass.canonicalName
+
+    private lateinit var job: Job // 定义job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job // Fragment的协程
 
     protected var rootView: View? = null
 
@@ -91,6 +99,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        job = Job()
         val bundle = initArguments()
         if (bundle.size() > 0) {
             initVariables(bundle)
@@ -295,6 +304,7 @@ abstract class BaseFragment : Fragment() {
         mIsVisible = false
         mIsPrepared = false
         rootView = null
+        job.cancel() // 关闭页面后，结束所有协程任务
     }
 
     /**

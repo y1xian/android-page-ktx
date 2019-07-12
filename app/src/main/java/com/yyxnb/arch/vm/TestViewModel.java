@@ -1,9 +1,7 @@
 package com.yyxnb.arch.vm;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
-import android.support.annotation.NonNull;
 
 import com.yyxnb.arch.BaseDatas;
 import com.yyxnb.arch.TestData;
@@ -16,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class TestViewModel extends BaseViewModel<TestRepository> {
-
-    public TestViewModel(@NonNull Application application) {
-        super(application);
-    }
 
     private SingleLiveEvent<Map<String,String>> reqTeam = new SingleLiveEvent();
     private SingleLiveEvent<Map<String,String>> reqTeam2 = new SingleLiveEvent();

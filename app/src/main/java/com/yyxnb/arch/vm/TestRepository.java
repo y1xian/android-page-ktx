@@ -2,7 +2,7 @@ package com.yyxnb.arch.vm;
 
 import android.arch.lifecycle.LiveData;
 
-import com.yyxnb.yyxarch.base.BaseRepository;
+import com.yyxnb.yyxarch.base.mvvm.BaseRepository;
 import com.yyxnb.yyxarch.livedata.LiveDataObservableAdapter;
 
 import java.util.Map;
