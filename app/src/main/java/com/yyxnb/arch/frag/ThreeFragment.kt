@@ -63,8 +63,8 @@ class ThreeFragment : BaseFragmentVM<TestViewModel>() {
         return BarStyle.DarkContent
     }
 
-    override fun initViewObservable() {
-        super.initViewObservable()
+    override fun renderState() {
+        super.renderState()
 
 //        mViewModel.state.observe(this, androidx.lifecycle.Observer {
         withState(mViewModel) { data ->
@@ -73,6 +73,8 @@ class ThreeFragment : BaseFragmentVM<TestViewModel>() {
             if (data.data != null) {
                 val d = data.data.result?.get(0)
                 tvShow.text = d!!.testInt.toString()
+            }else{
+                tvShow.text = "错误"
             }
         }
 //        })

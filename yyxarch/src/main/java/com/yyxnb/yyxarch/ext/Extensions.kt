@@ -16,9 +16,7 @@ import com.yyxnb.yyxarch.base.mvvm.BaseViewModel
  * class MyFragment(): VectorFragment {
  *      onViewCreated(...) {
  *         withState(viewModel) { state ->
- *              if (state.isPremiumUser) {
- *                  premiumFeature.enable()
- *              }
+ *
  *         }
  *      }
  * }

@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
  */
 object OkHttpConfig {
 
-    private val defaultCachePath = Environment.getExternalStorageDirectory().path + "/httpCacheData"
+    private val defaultCachePath = Environment.getExternalStorageDirectory().absolutePath + "/httpCacheData"
     private const val defaultCacheSize = (1024 * 1024 * 50).toLong()
 
     private var okHttpClientBuilder = OkHttpClient.Builder()

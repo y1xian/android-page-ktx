@@ -22,21 +22,21 @@ abstract class BaseFragmentVM<VM : BaseViewModel<*, *>> : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel = initViewModel(AppUtils.getInstance(this, 0)!!)
+        mViewModel = initViewModel(AppUtils.getInstance(this)!!)
         lifecycle.addObserver(mViewModel)
     }
 
     override fun initViewData() {
         super.initViewData()
         mViewModel.state.observe(this, Observer {
-            initViewObservable()
+            renderState()
         })
     }
 
     /**
      * 回调网络数据
      */
-    open fun initViewObservable() {}
+    open fun renderState() {}
 
     /**
      * 初始化ViewModel

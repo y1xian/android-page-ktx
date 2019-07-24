@@ -85,7 +85,7 @@ class TwoFragment : BaseFragmentVM<TestViewModel>() {
         return true
     }
 
-    override fun initViewObservable() = withState(mViewModel) { data ->
+    override fun renderState() = withState(mViewModel) { data ->
         LogUtils.e(" ${data.isLoading} , ${data.data.toString()}")
 
         if (data.data != null) {

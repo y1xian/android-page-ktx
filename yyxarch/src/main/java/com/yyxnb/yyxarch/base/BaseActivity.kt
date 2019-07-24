@@ -94,11 +94,6 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
      */
     abstract fun initView(savedInstanceState: Bundle?)
 
-    /**
-     * 初始化复杂数据 懒加载
-     */
-    open fun initViewData() {}
-
     fun isStatusBarTranslucent(): Boolean {
         return statusBarTranslucent
     }

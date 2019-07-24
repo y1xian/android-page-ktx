@@ -69,12 +69,6 @@ class OneFragment : BaseFragmentVM<TestViewModel>() {
 
     }
 
-
-    override fun initViewObservable() {
-        super.initViewObservable()
-
-    }
-
     override fun onFragmentResult(requestCode: Int, resultCode: Int, result: Bundle?) {
         super.onFragmentResult(requestCode, resultCode, result)
         if (requestCode == 0x666 && resultCode == 0x110) {

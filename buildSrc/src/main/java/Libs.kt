@@ -76,7 +76,7 @@ object Libs {
 
     const val multidex = "com.android.support:multidex:${Versions.multidex}"
     //https://github.com/Tencent/MMKV
-    const val mmkv = "com.tencent:mmkv:1.0.19"
+    const val mmkv = "com.tencent:mmkv:1.0.22"
     //https://github.com/JeremyLiao/LiveEventBus
     const val live_event_bus = "com.jeremyliao:live-event-bus-x:1.4.4"
     //https://github.com/anzewei/ParallaxBackLayout
