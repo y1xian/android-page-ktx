@@ -3,6 +3,7 @@ package com.yyxnb.yyxarch.ext
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
@@ -86,7 +87,7 @@ fun CompoundButton.OnCheckedChangeListener.setOnCheckedChangeListener(ids: List<
 /**
  * 手动显示软键盘
  */
-fun View.showSoftKeyboard() {
+fun View.showKeyboard() {
     if (requestFocus()) {
         val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
@@ -96,23 +97,40 @@ fun View.showSoftKeyboard() {
 /**
  * 手动隐藏软键盘
  */
-fun View.closeSoftKeyboard() {
+fun View.hideKeyBoard() {
     val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
+}
 
-    /**
-     * inflate view
-     *
-     * @param[layoutRes]    layout resource to inflate
-     * @param[parent]       Optional view to be the parent of the generated hierarchy (if attachToRoot is true),
-     *                      or else simply an object that provides a set of LayoutParams values for root of the returned hierarchy
-     *                      (if attachToRoot is false.)
-     *                      This value may be null.
-     * @param[attachToRoot] Whether the inflated hierarchy should be attached to the root parameter?
-     *                      If false, root is only used to create the correct subclass of LayoutParams for
-     *                      the root view in the XML.
-     * @return The root View of the inflated hierarchy.
-     */
-    fun Context.inflate(layoutRes: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View =
-            LayoutInflater.from(this).inflate(layoutRes, parent, attachToRoot)
+fun Context.inflate(layoutRes: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View =
+        LayoutInflater.from(this).inflate(layoutRes, parent, attachToRoot)
+
+inline var View.isVisible: Boolean
+    get() = visibility == VISIBLE
+    set(value) {
+        visibility = if (value) VISIBLE else GONE
+    }
+
+inline var View.isHidden: Boolean
+    get() = visibility == GONE
+    set(value) {
+        visibility = if (value) GONE else VISIBLE
+    }
+
+inline var View.isInvisible: Boolean
+    get() = visibility == INVISIBLE
+    set(value) {
+        visibility = if (value) INVISIBLE else VISIBLE
+    }
+
+fun View.show() {
+    visibility = VISIBLE
+}
+
+fun View.hide() {
+    visibility = GONE
+}
+
+fun View.invisible() {
+    visibility = INVISIBLE
 }

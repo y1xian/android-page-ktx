@@ -1,10 +1,33 @@
 package com.yyxnb.yyxarch.ext
 
+import android.os.Build
+import android.text.Html.*
+import android.text.Spanned
 import java.util.regex.Pattern
 
 /**
  * Description: 字符串处理相关
  */
+
+private const val HTTPS_PREFIX = "https://"
+private const val HTTP_REGEX = "^http?://"
+
+@Suppress("DEPRECATION")
+fun String.fromHtml(): Spanned {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        fromHtml(this, FROM_HTML_MODE_LEGACY)
+    } else {
+        fromHtml(this)
+    }
+}
+
+fun String.addHttpsPrefix(): String {
+    return if (startsWith(HTTPS_PREFIX)) {
+        this
+    } else {
+        replace(HTTP_REGEX.toRegex(), HTTPS_PREFIX)
+    }
+}
 
 /**
  * 是否是手机号
