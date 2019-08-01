@@ -19,23 +19,23 @@ import java.util.concurrent.TimeUnit
  */
 object OkHttpConfig {
 
-    private val defaultCachePath = Environment.getExternalStorageDirectory().path + "/httpCacheData"
-    private const val defaultCacheSize = (1024 * 1024 * 100).toLong()
+    private val defaultCachePath = Environment.getExternalStorageDirectory().absolutePath + "/httpCacheData"
+    private const val defaultCacheSize = (1024 * 1024 * 50).toLong()
 
     private var okHttpClientBuilder = OkHttpClient.Builder()
 
     lateinit var okHttpClient: OkHttpClient
 
-    private var mDelayTime: Long = 10
+    private var mDelayTime: Long = 10L
 
 
     class Builder {
         private var headerMaps = HashMap<String, Any>()
         private var logEnable: Boolean = true
-        private var isCache: Boolean = true
+        private var isCache: Boolean = false
         private var cachePath: String = defaultCachePath
         private var cacheMaxSize: Long = defaultCacheSize
-        private var isSaveCookie: Boolean = true
+        private var isSaveCookie: Boolean = false
         private var readTimeout: Long = mDelayTime
         private var writeTimeout: Long = mDelayTime
         private var connectTimeout: Long = mDelayTime

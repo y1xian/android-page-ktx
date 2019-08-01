@@ -260,10 +260,10 @@ object AppUtils :Serializable{
         return tm.phoneType != TelephonyManager.PHONE_TYPE_NONE
     }
 
-    fun <T> getNewInstance(`object`: Any?, i: Int): T? {
-        if (`object` != null) {
+    fun <T> getNewInstance(t: Any?, i: Int = 0): T? {
+        if (t != null) {
             try {
-                return ((`object`.javaClass
+                return ((t.javaClass
                         .genericSuperclass as ParameterizedType).actualTypeArguments[i] as Class<T>)
                         .newInstance()
             } catch (e: InstantiationException) {
@@ -279,10 +279,10 @@ object AppUtils :Serializable{
 
     }
 
-    fun <T> getInstance(`object`: Any?, i: Int): T? {
-        if (`object` != null) {
+    fun <T> getInstance(t: Any?, i: Int = 0): T? {
+        if (t != null) {
             try {
-                return (`object`.javaClass
+                return (t.javaClass
                         .genericSuperclass as ParameterizedType)
                         .actualTypeArguments[i] as T
             } catch (e: ClassCastException) {

@@ -46,7 +46,7 @@ abstract class BaseSheetDialog : BaseDialog() {
     /**
      * 初始为展开状态
      */
-    private var mState = ViewPagerBottomSheetBehavior.STATE_EXPANDED
+    private var mState = BottomSheetBehavior.STATE_EXPANDED
 
     private var behavior: ViewPagerBottomSheetBehavior<FrameLayout>? = null
 

@@ -16,7 +16,6 @@ import java.text.ParseException
 /**
  * 统一处理了API异常错误
  */
-
 class ApiException(throwable: Throwable) : Exception(throwable) {
 
     override var message: String = throwable.message.toString()
@@ -28,7 +27,7 @@ class ApiException(throwable: Throwable) : Exception(throwable) {
             when (e) {
                 is HttpException -> {
                     try {
-                        ex.message = "httpException " + e.response()?.errorBody()!!.string()
+                        ex.message = "网络异常 ${e.message}"
                     } catch (e1: IOException) {
                         e1.printStackTrace()
                         ex.message = "IOException ${e1.message}"
