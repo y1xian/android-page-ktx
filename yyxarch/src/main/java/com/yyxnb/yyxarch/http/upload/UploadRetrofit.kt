@@ -3,6 +3,7 @@ package com.yyxnb.yyxarch.http.upload
 
 import io.reactivex.Observable
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -77,12 +78,12 @@ object UploadRetrofit {
 
         for (i in filePaths.indices) {
             val file = File(filePaths[i])
-            val imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+            val imageBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
             //"medias"+i 后台接收图片流的参数名
             builder.addFormDataPart(fileName, file.name, imageBody)
         }
 
-        val parts = builder.build().parts()
+        val parts = builder.build().parts
 
         return UploadRetrofit
                 .retrofit

@@ -26,7 +26,7 @@ class RetryInterceptor internal constructor(builder: Builder) : Interceptor {
 
 
     @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response? {
+    override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         var response = doRequest(chain, request)
         var retryNum = 0
@@ -44,7 +44,7 @@ class RetryInterceptor internal constructor(builder: Builder) : Interceptor {
             // retry the request
             response = doRequest(chain, request)
         }
-        return response
+        return response!!
     }
 
     private fun doRequest(chain: Interceptor.Chain, request: Request): Response? {
