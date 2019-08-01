@@ -5,10 +5,12 @@ import androidx.annotation.CallSuper
 import androidx.lifecycle.*
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.ext.tryCatch
+import com.yyxnb.yyxarch.http.exception.ApiException
 import com.yyxnb.yyxarch.utils.log.LogUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
-import java.lang.Exception
+import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
 
 
@@ -36,15 +38,10 @@ abstract class BaseViewModel<S : BaseState, T : BaseRepository<*>>(private val i
 
     fun launchUI(block: suspend CoroutineScope.() -> Unit) = viewModelScope.launch(Dispatchers.Main) {
         val time = measureTimeMillis {
-//                        try {
-//                block()
-//            } catch (e: Exception) {
-//                LogUtils.e(ApiException.handleException(e).message)
-//            }
             tryCatch({
                 block()
             }, {
-
+                LogUtils.e(ApiException.handleException(it).message)
             })
         }
         println("Completed in $time ms")

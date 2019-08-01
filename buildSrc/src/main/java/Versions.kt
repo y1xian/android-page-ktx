@@ -4,8 +4,8 @@ object Versions {
 
     const val koin = "2.0.1"
 
-    const val appCompat = "1.1.0-alpha05"
-    const val lifecycle = "2.2.0-alpha01"
+    const val appCompat = "1.1.0-rc01"
+    const val lifecycle = "2.2.0-alpha02"
     const val ktxCore = "1.0.2"
     const val constraintLayout = "2.0.0-beta2"
     const val materialComponents = "1.1.0-alpha07"

@@ -6,11 +6,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:editTextColor">@color/text_color</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:screenOrientation">portrait</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
 
@@ -29,32 +32,32 @@
 
     <style name="Animation" parent="@android:style/Animation" />
 
-    <!--上进上出-->
+    <!--滑动 上进上出-->
     <style name="Animation.TopToTop">
         <item name="android:windowEnterAnimation">@anim/slide_in_top</item>
         <item name="android:windowExitAnimation">@anim/slide_out_top</item>
     </style>
-    <!--下进下出-->
+    <!--滑动 下进下出-->
     <style name="Animation.BottomToBottom">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
-    <!--左进左出-->
+    <!--滑动 左进左出-->
     <style name="Animation.LeftToLeft">
         <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
-    <!--左进右出-->
+    <!--滑动 左进右出-->
     <style name="Animation.LeftToRight">
         <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/slide_out_right</item>
     </style>
-    <!--右进右出-->
+    <!--滑动 右进右出-->
     <style name="Animation.RightToRight">
         <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
         <item name="android:windowExitAnimation">@anim/slide_out_right</item>
     </style>
-    <!--右进左出-->
+    <!--滑动 右进左出-->
     <style name="Animation.RightToLeft">
         <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
         <item name="android:windowExitAnimation">@anim/slide_out_left</item>
