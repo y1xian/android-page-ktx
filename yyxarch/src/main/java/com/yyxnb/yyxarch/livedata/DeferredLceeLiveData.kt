@@ -2,7 +2,9 @@ package com.yyxnb.yyxarch.livedata
 
 import android.arch.lifecycle.LiveData
 import com.yyxnb.yyxarch.bean.Lcee
+import com.yyxnb.yyxarch.ext.tryCatch
 import com.yyxnb.yyxarch.http.exception.ApiException
+import com.yyxnb.yyxarch.utils.log.LogUtils
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
@@ -14,16 +16,17 @@ import kotlin.system.measureTimeMillis
 
 internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : LiveData<Lcee<T>>() {
 
-    lateinit var job: Job
+    private val presenterScope: CoroutineScope by lazy {
+        CoroutineScope(Dispatchers.Main + Job())
+    }
 
     override fun onActive() {
         super.onActive()
 
-        job = GlobalScope.launch(Dispatchers.Main) {
+        presenterScope.launch {
             val time = measureTimeMillis {
 
-                try {
-
+                tryCatch({
                     postValue(Lcee.loading())
 
                     val value = deferred.await()
@@ -33,18 +36,20 @@ internal class DeferredLceeLiveData<T>(private val deferred: Deferred<T>) : Live
                     } else {
                         postValue(Lcee.content(value))
                     }
-                } catch (t: Throwable) {
-                    postValue(Lcee.error(ApiException.handleException(t).message))
-                }
+                }, {
+                    LogUtils.e(ApiException.handleException(it).message)
+                    postValue(Lcee.error(ApiException.handleException(it).message))
+                })
 
             }
             println("Completed in $time ms")
+
         }
 
     }
 
     override fun onInactive() {
         super.onInactive()
-        job.cancel()
+        presenterScope.cancel()
     }
 }

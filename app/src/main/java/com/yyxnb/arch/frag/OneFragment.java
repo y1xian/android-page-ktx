@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.TestDialog;
 import com.yyxnb.arch.vm.TestViewModel;
-import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
 import com.yyxnb.yyxarch.utils.ToastUtils;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
@@ -97,29 +96,6 @@ public class OneFragment extends BaseFragmentVM<TestViewModel> {
 
     }
 
-
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-
-        mViewModel.getTeam2().observe(this, baseDataLcee -> {
-            switch (baseDataLcee.getStatus()) {
-                case LceeStatus.Content:
-                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
-                    LogUtils.INSTANCE.i("one Content " + LceeStatus.Content);
-                    break;
-                case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("one Empty");
-                    break;
-                case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("one Error");
-                    break;
-                case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("one Loading " + LceeStatus.Loading);
-                    break;
-            }
-        });
-    }
 
     @Override
     public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {

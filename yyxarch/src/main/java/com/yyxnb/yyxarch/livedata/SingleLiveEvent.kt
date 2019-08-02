@@ -61,6 +61,12 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
         super.setValue(t)
     }
 
+    @MainThread
+    override fun postValue(t: T?) {
+        mPending.set(true)
+        super.postValue(t)
+    }
+
     /**
      * Used for cases where T is Void, to make calls cleaner.
      */

@@ -4,17 +4,10 @@ import android.util.Log
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.http.config.OkHttpConfig
-import com.yyxnb.yyxarch.http.download.DownloadRetrofit
 import com.yyxnb.yyxarch.http.gson.GsonAdapter
-import com.yyxnb.yyxarch.http.upload.UploadRetrofit
 import com.yyxnb.yyxarch.interfaces.ISPKeys
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
@@ -34,10 +27,7 @@ object RetrofitManager {
 
     private var mCacheEnable: Boolean = true
 
-    private val mCompositeDisposable = CompositeDisposable()
-
     private val mRetrofitBuilder = Retrofit.Builder().apply {
-        addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
         addConverterFactory(GsonConverterFactory.create(GsonAdapter.buildGson()))
     }
@@ -59,33 +49,6 @@ object RetrofitManager {
             return tClass
         }
         return mRetrofit.create(apiService)
-    }
-
-    /**
-     * 下载文件
-     * @param fileUrl
-     */
-    fun downloadFile(fileUrl: String): Observable<ResponseBody> {
-        return DownloadRetrofit.downloadFile(fileUrl)
-    }
-
-    /**
-     * 上传单张图片
-     * @param uploadUrl 地址
-     * @param filePath  文件路径
-     * @param fileName  后台协定的接受图片的name（没特殊要求就可以随便写）
-     */
-    fun uploadImg(uploadUrl: String, filePath: String, fileName: String): Observable<ResponseBody> {
-        return UploadRetrofit.uploadImg(uploadUrl, filePath, fileName)
-    }
-
-    /**
-     * 上传多张图片
-     * @param uploadUrl 地址
-     * @param filePaths 文件路径
-     */
-    fun uploadImgs(uploadUrl: String, filePaths: List<String>, fileName: String): Observable<ResponseBody> {
-        return UploadRetrofit.uploadImgs(uploadUrl, filePaths, fileName)
     }
 
     /**
@@ -167,26 +130,4 @@ object RetrofitManager {
         return this
     }
 
-    /**
-     * 获取disposable 在onDestroy方法中取消订阅disposable.dispose()
-     */
-    fun addDisposable(disposable: Disposable?) {
-        mCompositeDisposable.add(disposable!!)
-    }
-
-    /**
-     * 取消所有请求 订阅
-     */
-    fun cancelAllRequest() {
-        mCompositeDisposable.clear()
-    }
-
-    /**
-     * 取消单个请求 订阅
-     */
-    fun cancelSingleRequest(disposable: Disposable?) {
-        if (disposable != null && !disposable.isDisposed) {
-            disposable.dispose()
-        }
-    }
 }

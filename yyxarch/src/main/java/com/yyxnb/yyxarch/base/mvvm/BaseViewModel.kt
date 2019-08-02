@@ -5,7 +5,13 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.CallSuper
 import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.http.RetrofitManager
+import com.yyxnb.yyxarch.bean.SharedData
+import com.yyxnb.yyxarch.ext.tryCatch
+import com.yyxnb.yyxarch.livedata.SingleLiveEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 
 /**
@@ -20,9 +26,26 @@ abstract class BaseViewModel<T : BaseRepository<*>>() : ViewModel(), DefaultLife
 
     protected lateinit var mRepository: T
 
+    val sharedData by lazy { SingleLiveEvent<SharedData>() }
+
     init {
         mRepository = AppUtils.getNewInstance<T>(this, 0)!!
     }
+
+    val presenterScope: CoroutineScope by lazy {
+        CoroutineScope(Dispatchers.Main + Job())
+    }
+
+    fun launchUI(block: suspend CoroutineScope.() -> Unit) {
+        presenterScope.launch {
+            tryCatch({
+                block()
+            }, {
+//                error?.invoke(it) ?: view?.showError(it.toString())
+            })
+        }
+    }
+
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
@@ -37,6 +60,5 @@ abstract class BaseViewModel<T : BaseRepository<*>>() : ViewModel(), DefaultLife
     @CallSuper
     override fun onCleared() {
         super.onCleared()
-        RetrofitManager.cancelAllRequest()
     }
 }

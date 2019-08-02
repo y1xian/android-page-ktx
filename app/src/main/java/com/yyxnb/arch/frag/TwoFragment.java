@@ -9,10 +9,8 @@ import android.widget.TextView;
 
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;
-import com.yyxnb.yyxarch.annotation.LceeStatus;
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
 import com.yyxnb.yyxarch.utils.BarStyle;
-import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -85,29 +83,6 @@ public class TwoFragment extends BaseFragmentVM<TestViewModel> {
     @Override
     public boolean isSwipeBackEnabled() {
         return true;
-    }
-
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-
-        mViewModel.getTeam2().observe(this, baseDataLcee -> {
-            switch (baseDataLcee.getStatus()) {
-                case LceeStatus.Content:
-                    tvShow.setText(baseDataLcee.getData().getResult().get(0).getContent());
-                    LogUtils.INSTANCE.i("two Content " + LceeStatus.Content);
-                    break;
-                case LceeStatus.Empty:
-                    LogUtils.INSTANCE.i("two Empty");
-                    break;
-                case LceeStatus.Error:
-                    LogUtils.INSTANCE.i("two Error");
-                    break;
-                case LceeStatus.Loading:
-                    LogUtils.INSTANCE.e("two Loading " + LceeStatus.Loading);
-                    break;
-            }
-        });
     }
 
     public static TwoFragment newInstance() {

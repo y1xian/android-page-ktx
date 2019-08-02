@@ -16,14 +16,14 @@ abstract class BaseActivityVM<VM : BaseViewModel<*>> : BaseActivity() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel = initViewModel(this, AppUtils.getInstance(this, 0)!!)
         lifecycle.addObserver(mViewModel)
-        initViewObservable()
+        initObservable()
     }
 
     /**
      * 初始化界面观察者的监听
      * 接收数据结果
      */
-    open fun initViewObservable() {}
+    open fun initObservable() {}
 
     /**
      * 初始化ViewModel
