@@ -1,6 +1,6 @@
 object Versions {
 
-    const val coroutines = "1.2.1"
+    const val coroutines = "1.3.0-RC"
 
     const val koin = "2.0.1"
 
@@ -30,8 +30,8 @@ object Versions {
     const val room = "2.1.0"
 
     const val retrofit = "2.6.0"
-    const val okHttp = "3.14.2"
-    const val loggingInterceptor = "3.14.1"
+    const val okHttp = "4.0.1"
+    const val loggingInterceptor = "4.0.1"
 
     const val junit4 = "4.12"
     const val androidxJunitExt = "1.1.0"

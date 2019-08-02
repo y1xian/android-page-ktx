@@ -4,6 +4,7 @@ package com.yyxnb.yyxarch.http
 import android.text.TextUtils
 import android.util.Log
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -74,8 +75,8 @@ object RetrofitMultiUrl {
                 return@Interceptor chain.proceed(request)
             }
             //如果请求url不包含默认的BaseUrl也不进行拦截
-            if (request != null && request.url() != null && !request.url().toString().contains(mBaseUrl!!)) {
-                Log.i(TAG, "无统一BaseUrl不拦截:" + request.url() + ";BaseUrl:" + mBaseUrl)
+            if (request != null && request.url != null && !request.url.toString().contains(mBaseUrl!!)) {
+                Log.i(TAG, "无统一BaseUrl不拦截:" + request.url + ";BaseUrl:" + mBaseUrl)
                 return@Interceptor chain.proceed(request)
             }
             chain.proceed(processRequest(request))
@@ -97,15 +98,15 @@ object RetrofitMultiUrl {
         val newBuilder = request.newBuilder()
         var httpUrl = getHeaderHttpUrl(request, newBuilder)
         if (null != httpUrl) {
-            val newUrl = mUrlParser!!.parseUrl(httpUrl, request.url())
-            Log.i(TAG, "Header 模式重定向Url:Base Url is { " + mBaseUrl + " }" + ";New Url is { " + newUrl + " }" + ";Old Url is { " + request.url() + " }")
+            val newUrl = mUrlParser!!.parseUrl(httpUrl, request.url)
+            Log.i(TAG, "Header 模式重定向Url:Base Url is { " + mBaseUrl + " }" + ";New Url is { " + newUrl + " }" + ";Old Url is { " + request.url + " }")
             return newBuilder
                     .url(newUrl)
                     .build()
         }
         httpUrl = getMethodHttpUrl(request)
         if (null != httpUrl) {
-            Log.i(TAG, "Method 模式重定向Url:Base Url is { " + mBaseUrl + " }" + ";New Url is { " + httpUrl + " }" + ";Old Url is { " + request.url() + " }")
+            Log.i(TAG, "Method 模式重定向Url:Base Url is { " + mBaseUrl + " }" + ";New Url is { " + httpUrl + " }" + ";Old Url is { " + request.url + " }")
             return newBuilder
                     .url(httpUrl)
                     .build()
@@ -113,8 +114,8 @@ object RetrofitMultiUrl {
         //重定向BaseUrl mBaseUrl是okhttp里设置的base url--程序运行过程中只有一个值--用于拆分method
         val httpUrlBase = globalBaseUrl
         if (httpUrlBase != null && httpUrlBase.toString() != mBaseUrl) {
-            val httpNew = checkUrl(request.url().toString().replace(mBaseUrl!!, httpUrlBase.toString()))
-            Log.i(TAG, "重定向Url:Base Url is { " + httpUrlBase.toString() + " }" + ";New Url is { " + httpNew + " }" + ";Old Url is { " + request.url() + " }")
+            val httpNew = checkUrl(request.url.toString().replace(mBaseUrl!!, httpUrlBase.toString()))
+            Log.i(TAG, "重定向Url:Base Url is { " + httpUrlBase.toString() + " }" + ";New Url is { " + httpNew + " }" + ";Old Url is { " + request.url + " }")
             return newBuilder
                     .url(httpNew)
                     .build()
@@ -152,7 +153,7 @@ object RetrofitMultiUrl {
             return null
         }
         val httpUrl: HttpUrl? = null
-        val url = request.url()
+        val url = request.url
         //解析得到service里的方法名(即@POST或@GET里的内容)
         val method = if (!TextUtils.isEmpty(mBaseUrl)) url.toString().replace(mBaseUrl!!.toString(), "") else ""
 
@@ -314,7 +315,7 @@ object RetrofitMultiUrl {
      * 从 [Request.header] 中取出BASE_URL_NAME
      */
     private fun getHeaderBaseUrlKey(request: Request): String? {
-        val heads = request.headers()
+        val heads = request.headers
         if (heads != null) {
             Log.i(TAG, "header:$heads")
         }
@@ -332,7 +333,7 @@ object RetrofitMultiUrl {
      * 校验url合法性
      */
     private fun checkUrl(url: String): HttpUrl {
-        val parseUrl = HttpUrl.parse(url)
+        val parseUrl = url.toHttpUrlOrNull()
         return parseUrl ?: throw NullPointerException("You've configured an invalid url")
     }
 
