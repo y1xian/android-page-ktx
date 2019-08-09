@@ -17,7 +17,7 @@ import com.yyxnb.yyxarch.ext.hideKeyBoard
 import com.yyxnb.yyxarch.nav.FragmentHelper
 import com.yyxnb.yyxarch.nav.LifecycleDelegate
 import com.yyxnb.yyxarch.nav.PresentAnimation
-import com.yyxnb.yyxarch.utils.ActivityStack
+import com.yyxnb.yyxarch.utils.ActivityManager
 import com.yyxnb.yyxarch.utils.StatusBarUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,12 +73,12 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
 
         initView(savedInstanceState)
 
-        ActivityStack.addActivity(this)
+        ActivityManager.pushActivity(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        ActivityStack.finishActivity(this)
+        ActivityManager.deleteActivity(this)
         job.cancel() // 关闭页面后，结束所有协程任务
     }
 
