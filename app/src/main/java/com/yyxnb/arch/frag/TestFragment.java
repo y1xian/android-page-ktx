@@ -1,6 +1,6 @@
 package com.yyxnb.arch.frag;
 
-
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,37 +9,51 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.yyxnb.arch.R;
+import com.yyxnb.arch.TestActivity;
 import com.yyxnb.yyxarch.base.BaseFragment;
-import com.yyxnb.yyxarch.nav.NavigationFragment;
-import com.yyxnb.yyxarch.utils.BarStyle;
+import com.yyxnb.yyxarch.interfaces.LayoutResId;
+import com.yyxnb.yyxarch.interfaces.StatusBarColor;
+import com.yyxnb.yyxarch.interfaces.StatusBarDarkTheme;
+import com.yyxnb.yyxarch.interfaces.BarStyle;
 import com.yyxnb.yyxarch.utils.ToastUtils;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
+@LayoutResId(value = R.layout.fragment_test)
+@StatusBarColor(color = R.color.orange)
+@StatusBarDarkTheme(value = BarStyle.LightContent)
 public class TestFragment extends BaseFragment {
 
-    private TextView tvShow;
-    private Button button,button1,button2,button3,button4;
 
-    @Override
-    public int initLayoutResID() {
-        return R.layout.fragment_test;
-    }
+    @BindView(R.id.tvShow)
+    TextView tvShow;
+    @BindView(R.id.button)
+    Button button;
+    @BindView(R.id.button1)
+    Button button1;
+    @BindView(R.id.button2)
+    Button button2;
+    @BindView(R.id.button3)
+    Button button3;
+    @BindView(R.id.button4)
+    Button button4;
+
+
 
     @Override
     public void initView(Bundle savedInstanceState) {
 
-        tvShow = fv(R.id.tvShow);
-        button = fv(R.id.button);
-        button1 = fv(R.id.button1);
-        button2 = fv(R.id.button2);
-        button3 = fv(R.id.button3);
-        button4 = fv(R.id.button4);
+//        tvShow = findViewById(R.id.tvShow);
+//        button = findViewById(R.id.button);
+//        button1 = findViewById(R.id.button1);
+//        button2 = findViewById(R.id.button2);
+//        button3 = findViewById(R.id.button3);
+//        button4 = findViewById(R.id.button4);
 
     }
 
@@ -52,8 +66,7 @@ public class TestFragment extends BaseFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                startActivityRootFragment(new TestFragment(),true);
+                startActivity(TestActivity.class);
             }
         });
 
@@ -69,15 +82,11 @@ public class TestFragment extends BaseFragment {
 
         button2.setOnClickListener(v -> {
 
-            startFragment(new TwoFragment(),0x111);
+            startFragment(new TwoFragment());
         });
 
         button3.setOnClickListener(v -> {
-
-            NavigationFragment navigationFragment = getNavigationFragment();
-            if (navigationFragment != null) {
-                navigationFragment.popToRootFragment();
-            }
+            startFragment(new ContentViewFragment());
         });
 
         button4.setOnClickListener(v -> {
@@ -87,22 +96,11 @@ public class TestFragment extends BaseFragment {
 
     }
 
-    @NotNull
     @Override
-    public BarStyle preferredStatusBarStyle() {
-        return BarStyle.DarkContent;
-    }
-
-    @Override
-    public int preferredStatusBarColor() {
-        return Color.TRANSPARENT;
-    }
-
-    @Override
-    public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
-        super.onFragmentResult(requestCode, resultCode, result);
-        if (requestCode == 0x111 && resultCode == 0x110){
-            ToastUtils.INSTANCE.normal("0x111 " + result.getString("msg","null"));
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0x111 && resultCode == 0x110) {
+            ToastUtils.INSTANCE.normal("onActivityResult  " + data.getExtras().getString("msg", "null"));
         }
     }
 
@@ -115,3 +113,4 @@ public class TestFragment extends BaseFragment {
         return fragment;
     }
 }
+

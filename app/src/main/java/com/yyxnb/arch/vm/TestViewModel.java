@@ -1,6 +1,7 @@
 package com.yyxnb.arch.vm;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 
 import com.yyxnb.arch.BaseDatas;
@@ -13,60 +14,31 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestViewModel extends BaseViewModel<TestRepository> {
+public class TestViewModel extends BaseViewModel {
+
+    private TestRepository mRepository = new TestRepository();
 
     private SingleLiveEvent<Map<String, String>> reqTeam = new SingleLiveEvent();
-//    private SingleLiveEvent<Map<String, String>> reqTeam2 = new SingleLiveEvent();
-//    private SingleLiveEvent<Map<String, String>> reqTest = new SingleLiveEvent();
 
-    public SingleLiveEvent<Lcee<BaseDatas<List<TestData>>>> reqTeam2 = new SingleLiveEvent();
+    public MutableLiveData<BaseDatas<List<TestData>>> reqTest = new MutableLiveData();
 //
-//    public SingleLiveEvent<Lcee<BaseDatas<List<TestData>>>> reqTest1 = new SingleLiveEvent();
 
-    public void getTeam() {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("name", "李白");
+    public void getTest2() {
 //        return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
-        ;
 
-        reqTeam2.postValue(mRepository.getTeam(map).getValue());
-
-//        reqTeam.postValue(mRepository.getTeam(map).getValue());
+        reqTest.postValue(mRepository.getTest2().getValue());
     }
 //
-    public LiveData<Lcee<BaseDatas<List<TestData>>>> getTeam2(){
-        return Transformations.switchMap(reqTeam, input -> mRepository.getTeam(input));
-    }
-
-//    public LiveData<Lcee<BaseDatas<List<TestData>>>> getTest(){
-//        launchUI((coroutineScope, continuation) -> {
-//            return continuation;
-//        });
-//        return Transformations.switchMap(reqTest, input -> mRepository.getTest(input));
-//    }
-
-    public void getTest() {
-
-        mRepository.getTest();
+    public LiveData<Lcee<BaseDatas<List<TestData>>>> getTest(){
+        return Transformations.switchMap(reqTeam, input -> mRepository.getTest());
     }
 
 
 //
-    public void reqTeam(){
+    public void reqTest(){
         Map<String, String> map = new LinkedHashMap<>();
         map.put("name", "李白");
         reqTeam.postValue(map);
     }
-
-//    public void reqTeam2(){
-//        Map<String, String> map = new LinkedHashMap<>();
-//        map.put("name", "杜甫");
-//        reqTeam2.postValue(map);
-//    }
-//   public void reqTest(){
-//        Map<String, String> map = new LinkedHashMap<>();
-//        map.put("name", "杜甫");
-//       reqTest.postValue(map);
-//    }
 
 }

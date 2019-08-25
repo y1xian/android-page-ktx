@@ -127,4 +127,22 @@ public class TestData implements Serializable {
     public void setAuthors(String authors) {
         this.authors = authors;
     }
+
+    @Override
+    public String toString() {
+        return "TestData{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", authors='" + authors + '\'' +
+                ", testDouble=" + testDouble +
+                ", testDouble2=" + testDouble2 +
+                ", testDouble3=" + testDouble3 +
+                ", testInt=" + testInt +
+                ", testInt2=" + testInt2 +
+                ", testInt3=" + testInt3 +
+                ", testString='" + testString + '\'' +
+                ", testString2='" + testString2 + '\'' +
+                ", testString3='" + testString3 + '\'' +
+                '}';
+    }
 }

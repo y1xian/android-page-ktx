@@ -26,5 +26,8 @@ public interface api {
     Deferred<BaseDatas<List<TestData>>> getTeam(@FieldMap Map<String, String> map);
 
     @GET(ApiConstant.API_TEST_KEY)
-    LiveData<BaseDatas<List<TestData>>> getTest();
+    Deferred<BaseDatas<List<TestData>>> getTest();
+
+    @GET(ApiConstant.API_TEST_KEY)
+    LiveData<BaseDatas<List<TestData>>> getTest2();
 }

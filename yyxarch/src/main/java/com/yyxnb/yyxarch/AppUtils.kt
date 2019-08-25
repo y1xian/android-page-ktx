@@ -14,6 +14,7 @@ import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
 import com.tencent.mmkv.MMKV
+import com.yyxnb.yyxarch.utils.MainThreadUtils
 import com.yyxnb.yyxarch.utils.ToastUtils
 import java.io.Serializable
 import java.lang.ref.WeakReference
@@ -33,9 +34,8 @@ object AppUtils :Serializable{
      * @param context 上下文
      */
     fun init(application: Application) {
-        mApp = application
-        mWeakReferenceContext = WeakReference(application.applicationContext)
-        MMKV.initialize(application.applicationContext)
+            mApp = application
+            mWeakReferenceContext = WeakReference(application.applicationContext)
     }
 
     var mApp: Application? = null

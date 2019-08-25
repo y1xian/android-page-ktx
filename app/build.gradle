@@ -71,8 +71,12 @@ dependencies {
 
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-7'
 
+    implementation 'com.github.smarxpan:NotchScreenTool:0.0.1'
+
     debugImplementation libs.leak_canary_debug
     releaseImplementation libs.leak_canary_release
     // Optional, if you use support library fragments:
     debugImplementation libs.leak_canary_debug_support
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
 }

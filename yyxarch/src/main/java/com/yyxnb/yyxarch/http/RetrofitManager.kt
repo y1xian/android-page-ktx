@@ -6,6 +6,7 @@ import com.tencent.mmkv.MMKV
 import com.yyxnb.yyxarch.http.config.OkHttpConfig
 import com.yyxnb.yyxarch.http.gson.GsonAdapter
 import com.yyxnb.yyxarch.interfaces.ISPKeys
+import com.yyxnb.yyxarch.livedata.LiveDataCallAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -29,6 +30,7 @@ object RetrofitManager {
 
     private val mRetrofitBuilder = Retrofit.Builder().apply {
         addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
+        addCallAdapterFactory(LiveDataCallAdapterFactory())
         addConverterFactory(GsonConverterFactory.create(GsonAdapter.buildGson()))
     }
 

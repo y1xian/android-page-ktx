@@ -2,6 +2,7 @@ package com.yyxnb.arch.frag;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
@@ -9,28 +10,35 @@ import android.widget.TextView;
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.TestDialog;
 import com.yyxnb.arch.vm.TestViewModel;
+import com.yyxnb.yyxarch.base.BaseFragment;
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
+import com.yyxnb.yyxarch.interfaces.BarStyle;
+import com.yyxnb.yyxarch.interfaces.LayoutResId;
+import com.yyxnb.yyxarch.interfaces.StatusBarDarkTheme;
+import com.yyxnb.yyxarch.interfaces.StatusBarTranslucent;
 import com.yyxnb.yyxarch.utils.ToastUtils;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import butterknife.BindView;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OneFragment extends BaseFragmentVM<TestViewModel> {
+@LayoutResId(value = R.layout.fragment_one)
+@StatusBarDarkTheme(value = BarStyle.DarkContent)
+public class OneFragment extends BaseFragment {
 
-    private TextView tvShow;
-    private TextView tvShow2;
-    private TextView textView;
+    @BindView(R.id.tvShow)
+    TextView tvShow;
+    @BindView(R.id.tvShow2)
+    TextView tvShow2;
+    @BindView(R.id.textView)
+    TextView textView;
     private String msg;
-
-    @Override
-    public int initLayoutResID() {
-        return R.layout.fragment_one;
-    }
 
     @Override
     public void initVariables(@NotNull Bundle bundle) {
@@ -41,9 +49,9 @@ public class OneFragment extends BaseFragmentVM<TestViewModel> {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        tvShow = fv(R.id.tvShow);
-        tvShow2 = fv(R.id.tvShow2);
-        textView = fv(R.id.textView);
+//        tvShow = findViewById(R.id.tvShow);
+//        tvShow2 = findViewById(R.id.tvShow2);
+//        textView = findViewById(R.id.textView);
 
     }
 
@@ -52,10 +60,10 @@ public class OneFragment extends BaseFragmentVM<TestViewModel> {
         super.initViewData();
         tvShow.setOnClickListener(v -> {
             Bundle bundle = initArguments();
-            bundle.putString("hehe", "呵呵哒");
-//            startFragment(fragment(new TwoFragment(), bundle), 0x666);
+            bundle.putString("two", "呵呵哒");
+            startFragment(fragment(new TwoFragment(), bundle));
 
-            startFragment(new TwoFragment(),0x666);
+//            startFragment(new TwoFragment());
 
 //            startFragment(fragment(new TwoFragment(), bundle));
 
@@ -96,12 +104,11 @@ public class OneFragment extends BaseFragmentVM<TestViewModel> {
 
     }
 
-
     @Override
-    public void onFragmentResult(int requestCode, int resultCode, @Nullable Bundle result) {
-        super.onFragmentResult(requestCode, resultCode, result);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0x666 && resultCode == 0x110) {
-            ToastUtils.INSTANCE.normal(result.getString("msg", "?"));
+            ToastUtils.INSTANCE.normal(data.getExtras().getString("msg", "?"));
         }
 
         LogUtils.INSTANCE.w("requestCode " + requestCode + " ,resultCode  " + resultCode);

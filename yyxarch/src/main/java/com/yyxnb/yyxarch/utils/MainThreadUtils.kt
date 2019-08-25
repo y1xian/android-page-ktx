@@ -7,7 +7,7 @@ import java.io.Serializable
 /**
  * 方便地将 Runnable post 到主线程执行
  */
-object MainThread : Serializable {
+object MainThreadUtils : Serializable {
 
     private val HANDLER = Handler(Looper.getMainLooper())
 
@@ -24,7 +24,7 @@ object MainThread : Serializable {
         HANDLER.postDelayed(runnable, delayMillis)
     }
 
-    val isMainThread: Boolean
+    private val isMainThread: Boolean
         get() = Looper.getMainLooper() == Looper.myLooper()
 
 }

@@ -1,15 +1,21 @@
 package com.yyxnb.arch;
 
+import android.app.Application;
+
+import com.github.anzewei.parallaxbacklayout.ParallaxHelper;
 import com.squareup.leakcanary.LeakCanary;
+import com.tencent.mmkv.MMKV;
 import com.yyxnb.yyxarch.AppUtils;
 import com.yyxnb.yyxarch.base.BaseApplication;
+import com.yyxnb.yyxarch.common.AppConfig;
 import com.yyxnb.yyxarch.http.RetrofitManager;
 import com.yyxnb.yyxarch.http.config.OkHttpConfig;
+import com.yyxnb.yyxarch.interfaces.BarStyle;
 import com.yyxnb.yyxarch.utils.log.LogUtils;
 
 import okhttp3.OkHttpClient;
 
-public class App extends BaseApplication {
+public class App extends Application {
 
     private final String BASE_URL = "https://api.apiopen.top/";
     private final String BASE_URL2 = "https://api.github.com/";
@@ -20,10 +26,15 @@ public class App extends BaseApplication {
         super.onCreate();
         initRxHttp();
         AppUtils.INSTANCE.init(this);
+        MMKV.initialize(getApplicationContext());
+//        AppConfig.INSTANCE.setStatusBarStyle(BarStyle.DarkContent);
 
         LogUtils.INSTANCE.init()
                 .setTag("Test")//设置全局tag
                 .setShowThreadInfo(false).setDebug(true); //是否显示日志，默认true，发布时最好关闭
+
+
+        registerActivityLifecycleCallbacks(ParallaxHelper.getInstance());
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

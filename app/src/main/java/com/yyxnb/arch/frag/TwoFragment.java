@@ -1,7 +1,6 @@
 package com.yyxnb.arch.frag;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.WindowManager;
@@ -10,40 +9,47 @@ import android.widget.TextView;
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
-import com.yyxnb.yyxarch.utils.BarStyle;
+import com.yyxnb.yyxarch.interfaces.FitsSystemWindows;
+import com.yyxnb.yyxarch.interfaces.LayoutResId;
+import com.yyxnb.yyxarch.interfaces.BarStyle;
+import com.yyxnb.yyxarch.interfaces.StatusBarColor;
+import com.yyxnb.yyxarch.interfaces.StatusBarDarkTheme;
+import com.yyxnb.yyxarch.interfaces.StatusBarTranslucent;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+import butterknife.BindView;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
+@LayoutResId(value = R.layout.fragment_two)
+//@StatusBarColor(color = R.color.purple)
+@FitsSystemWindows(value = false)
+@StatusBarDarkTheme(value = BarStyle.DarkContent)
 public class TwoFragment extends BaseFragmentVM<TestViewModel> {
 
-    private TextView tvShow;
+    @BindView(R.id.tvShow)
+    TextView tvShow;
     private String hehe = "222";
-
-    @Override
-    public int initLayoutResID() {
-        return R.layout.fragment_two;
-    }
 
     @Override
     public void initVariables(@NotNull Bundle bundle) {
         super.initVariables(bundle);
-        hehe = bundle.getString("hehe", "222222");
+        hehe = bundle.getString("two", "two`222222");
     }
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+//        StatusBarUtils.INSTANCE.setStatusBarTranslucent(getWindow(), true,0);
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 //        hehe = getArguments().getString("hehe","");
 
-        tvShow = fv(R.id.tvShow);
+//        tvShow = findViewById(R.id.tvShow);
 
     }
 
@@ -54,7 +60,6 @@ public class TwoFragment extends BaseFragmentVM<TestViewModel> {
 //            startFragment(OneFragment.newInstance());
             Bundle bundle = initArguments();
             bundle.putString("msg", "哈哈哈 " + new Random().nextInt(100));
-            setResult(0x110, bundle);
 
             finish();
         });
@@ -64,25 +69,8 @@ public class TwoFragment extends BaseFragmentVM<TestViewModel> {
 //        setStatusBarHidden(true);
 //        setStatusBarTranslucent(true);
 
-        tvShow.setText(getDebugTag());
+        tvShow.setText(getDebugTag() + "\n\n" + hehe);
 
-    }
-
-    @Override
-    public int preferredStatusBarColor() {
-        return Color.TRANSPARENT;
-    }
-
-    @NotNull
-    @Override
-    public BarStyle preferredStatusBarStyle() {
-        return BarStyle.LightContent;
-    }
-
-
-    @Override
-    public boolean isSwipeBackEnabled() {
-        return true;
     }
 
     public static TwoFragment newInstance() {

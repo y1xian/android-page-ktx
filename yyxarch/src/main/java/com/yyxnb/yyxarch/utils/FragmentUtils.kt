@@ -92,7 +92,6 @@ object FragmentUtils : Serializable {
     private const val ARGS_IS_ADD_STACK = "args_is_add_stack"
 
 
-
     /**
      * 新增fragment
      *
@@ -126,7 +125,7 @@ object FragmentUtils : Serializable {
     fun addFragment(fragmentManager: FragmentManager,
                     fragment: BaseFragment,
                     containerId: Int,
-                    isAddStack: Boolean,
+                    isAddStack: Boolean = true,
                     vararg sharedElement: SharedElement): BaseFragment? {
         putArgs(fragment, Args(containerId, false, isAddStack))
         return operateFragment(fragmentManager, null, fragment, TYPE_ADD_FRAGMENT, *sharedElement)
@@ -211,10 +210,10 @@ object FragmentUtils : Serializable {
      */
     fun replaceFragment(srcFragment: BaseFragment,
                         destFragment: BaseFragment,
-                        isAddStack: Boolean): BaseFragment? {
+                        isAddStack: Boolean = true): BaseFragment? {
         if (srcFragment.arguments == null) return null
         val containerId = srcFragment.arguments!!.getInt(ARGS_ID)
-        return if (containerId == 0) null else replaceFragment(srcFragment.fragmentManager!!, containerId, destFragment, isAddStack)
+        return if (containerId == 0) null else replaceFragment(srcFragment.fragmentManager!!, destFragment, containerId, isAddStack)
     }
 
     /**
@@ -227,9 +226,9 @@ object FragmentUtils : Serializable {
      * @return fragment
      */
     fun replaceFragment(fragmentManager: FragmentManager,
-                        containerId: Int,
                         fragment: BaseFragment,
-                        isAddStack: Boolean): BaseFragment? {
+                        containerId: Int,
+                        isAddStack: Boolean = true): BaseFragment? {
         putArgs(fragment, Args(containerId, false, isAddStack))
         return operateFragment(fragmentManager, null, fragment, TYPE_REPLACE_FRAGMENT)
     }

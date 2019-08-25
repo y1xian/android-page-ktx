@@ -1,4 +1,4 @@
-package com.yyxnb.yyxarch.utils
+package com.yyxnb.yyxarch.interfaces
 
 enum class BarStyle {
 

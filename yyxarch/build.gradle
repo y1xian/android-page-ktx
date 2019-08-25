@@ -14,7 +14,6 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -70,16 +69,12 @@ dependencies {
     api libs.constraint
     //  v7 v4
     api([libs.support_v7, libs.support_v4, libs.recyclerview, libs.design, libs.annotations])
-    // rx全家桶
-//    api([libs.rxjava2, libs.rxandroid2, libs.rxbinding2])
     // retrofit2    https://github.com/square/retrofit
-    api([libs.retrofit2, libs.retrofit2_gson])
-    api libs.retrofit2_kotlin_coroutines
+    api([libs.retrofit2, libs.retrofit2_gson, libs.retrofit2_kotlin_coroutines])
     // okhttp3     https://github.com/square/okhttp
     api([libs.okhttp3, libs.okhttp3_logging])
     // jetpack
     api([libs.arch_comp_java8, libs.arch_comp_runtime, libs.arch_comp_extensions])
-//    kapt libs.arch_comp_compiler
     //gson  https://github.com/google/gson
     api libs.gson
     //避免65K限制       https://developer.android.com/tools/building/multidex.html
@@ -92,4 +87,8 @@ dependencies {
     api libs.mmkv
     //ac 侧滑
     api libs.parallaxbacklayout
+    //butterknife
+    api libs.butterknife
+    kapt libs.butterknife_compiler
+
 }

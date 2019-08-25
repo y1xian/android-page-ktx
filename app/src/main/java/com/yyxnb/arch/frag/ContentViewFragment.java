@@ -9,23 +9,34 @@ import android.widget.Button;
 
 import com.yyxnb.arch.R;
 import com.yyxnb.yyxarch.base.BaseFragment;
+import com.yyxnb.yyxarch.interfaces.BarStyle;
+import com.yyxnb.yyxarch.interfaces.LayoutResId;
+import com.yyxnb.yyxarch.interfaces.StatusBarColor;
+import com.yyxnb.yyxarch.interfaces.StatusBarDarkTheme;
+import com.yyxnb.yyxarch.interfaces.StatusBarTranslucent;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 /**
  * FrameLayout和Fragment的组合使用
  */
+@LayoutResId(value = R.layout.fragment_content_view)
 public class ContentViewFragment extends BaseFragment implements View.OnClickListener {
 
     /**
      * 导航按钮
      */
-    private Button buttonOne;
-    private Button buttonTwo;
-    private Button buttonThree;
+    @BindView(R.id.btn_one)
+    Button buttonOne;
+    @BindView(R.id.btn_two)
+    Button buttonTwo;
+    @BindView(R.id.btn_three)
+    Button buttonThree;
 
     /**
      * 页面集合
@@ -42,20 +53,14 @@ public class ContentViewFragment extends BaseFragment implements View.OnClickLis
     private int currentIndex;
 
     @Override
-    public int initLayoutResID() {
-        return R.layout.fragment_content_view;
-    }
-
-    @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-        buttonOne = fv(R.id.btn_one);
-        buttonTwo = fv(R.id.btn_two);
-        buttonThree = fv(R.id.btn_three);
+//        buttonOne = findViewById(R.id.btn_one);
+//        buttonTwo = findViewById(R.id.btn_two);
+//        buttonThree = findViewById(R.id.btn_three);
 
         buttonOne.setOnClickListener(this);
         buttonTwo.setOnClickListener(this);
         buttonThree.setOnClickListener(this);
-
     }
 
     @Override

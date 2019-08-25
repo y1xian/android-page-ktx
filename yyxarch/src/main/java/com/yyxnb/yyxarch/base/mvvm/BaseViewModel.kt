@@ -4,10 +4,7 @@ import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.CallSuper
-import com.yyxnb.yyxarch.AppUtils
-import com.yyxnb.yyxarch.bean.SharedData
 import com.yyxnb.yyxarch.ext.tryCatch
-import com.yyxnb.yyxarch.livedata.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,15 +19,7 @@ import kotlinx.coroutines.launch
  * @author : yyx
  * @date ：2018/6/13
  */
-abstract class BaseViewModel<T : BaseRepository<*>>() : ViewModel(), DefaultLifecycleObserver {
-
-    protected lateinit var mRepository: T
-
-    val sharedData by lazy { SingleLiveEvent<SharedData>() }
-
-    init {
-        mRepository = AppUtils.getNewInstance<T>(this, 0)!!
-    }
+abstract class BaseViewModel() : ViewModel(), DefaultLifecycleObserver {
 
     val presenterScope: CoroutineScope by lazy {
         CoroutineScope(Dispatchers.Main + Job())
@@ -49,12 +38,10 @@ abstract class BaseViewModel<T : BaseRepository<*>>() : ViewModel(), DefaultLife
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
-        owner.lifecycle.addObserver(mRepository)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
-        owner.lifecycle.removeObserver(mRepository)
     }
 
     @CallSuper

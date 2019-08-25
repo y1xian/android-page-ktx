@@ -10,30 +10,39 @@ import android.widget.Button;
 
 import com.yyxnb.arch.R;
 import com.yyxnb.arch.vm.TestViewModel;
+import com.yyxnb.yyxarch.base.BaseFragment;
 import com.yyxnb.yyxarch.base.BaseFragmentStatePagerAdapter;
 import com.yyxnb.yyxarch.base.mvvm.BaseFragmentVM;
+import com.yyxnb.yyxarch.interfaces.LayoutResId;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 /**
  * ViewPager和Fragment的组合使用
  */
-public class ViewPageFragment extends BaseFragmentVM<TestViewModel> implements View.OnClickListener {
+@LayoutResId(value = R.layout.fragment_view_page)
+public class ViewPageFragment extends BaseFragment implements View.OnClickListener {
 
     /**
      * 四个导航按钮
      */
-    private Button buttonOne;
-    private Button buttonTwo;
-    private Button buttonThree;
+    @BindView(R.id.btn_one)
+    Button buttonOne;
+    @BindView(R.id.btn_two)
+    Button buttonTwo;
+    @BindView(R.id.btn_three)
+    Button buttonThree;
 
     /**
      * 作为页面容器的ViewPager
      */
-    private ViewPager mViewPager;
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
 
     /**
      * 页面集合
@@ -48,17 +57,12 @@ public class ViewPageFragment extends BaseFragmentVM<TestViewModel> implements V
     private ThreeFragment threeFragment;
 
     @Override
-    public int initLayoutResID() {
-        return R.layout.fragment_view_page;
-    }
-
-    @Override
     public void initView(@Nullable Bundle savedInstanceState) {
-        buttonOne = fv(R.id.btn_one);
-        buttonTwo = fv(R.id.btn_two);
-        buttonThree = fv(R.id.btn_three);
+//        buttonOne = findViewById(R.id.btn_one);
+//        buttonTwo = findViewById(R.id.btn_two);
+//        buttonThree = findViewById(R.id.btn_three);
 
-        mViewPager = fv(R.id.viewpager);
+        mViewPager = findViewById(R.id.viewpager);
 
         buttonOne.setOnClickListener(this);
         buttonTwo.setOnClickListener(this);
@@ -70,7 +74,7 @@ public class ViewPageFragment extends BaseFragmentVM<TestViewModel> implements V
     public void initViewData() {
         super.initViewData();
 
-        fragmentList = new ArrayList<Fragment>();
+        fragmentList = new ArrayList();
         oneFragment = new OneFragment();
         twoFragment = new TwoFragment();
         threeFragment = new ThreeFragment();
@@ -80,7 +84,7 @@ public class ViewPageFragment extends BaseFragmentVM<TestViewModel> implements V
         fragmentList.add(threeFragment);
 
         mViewPager.setOffscreenPageLimit(fragmentList.size() - 1);
-        mViewPager.setAdapter(new BaseFragmentStatePagerAdapter(getChildFragmentManager(),fragmentList));
+        mViewPager.setAdapter(new BaseFragmentStatePagerAdapter(getChildFragmentManager(), fragmentList));
 
     }
 
@@ -113,10 +117,5 @@ public class ViewPageFragment extends BaseFragmentVM<TestViewModel> implements V
     //手动设置ViewPager要显示的视图
     private void changeView(int desTab) {
         mViewPager.setCurrentItem(desTab, true);
-    }
-
-    @Override
-    public int preferredStatusBarColor() {
-        return Color.TRANSPARENT;
     }
 }

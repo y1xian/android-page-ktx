@@ -19,6 +19,9 @@
             android:label="盛装Fragment的一个容器(代理)Activity"
             android:screenOrientation="portrait"
             android:theme="@style/BaseAppTheme" />
+
+        <meta-data android:name="android.notch_support" android:value="true"/>
+
     </application>
 
 </manifest>

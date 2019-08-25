@@ -1,11 +1,9 @@
 package com.yyxnb.yyxarch.base.mvvm
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import com.yyxnb.yyxarch.AppUtils
 import com.yyxnb.yyxarch.base.BaseFragment
-import com.yyxnb.yyxarch.bean.SharedData
 
 
 /**
@@ -14,7 +12,7 @@ import com.yyxnb.yyxarch.bean.SharedData
  * @author : yyx
  * @date ：2018/6/10
  */
-abstract class BaseFragmentVM<VM : BaseViewModel<*>> : BaseFragment() {
+abstract class BaseFragmentVM<VM : BaseViewModel> : BaseFragment() {
 
     /**
      * ViewModel
@@ -29,23 +27,7 @@ abstract class BaseFragmentVM<VM : BaseViewModel<*>> : BaseFragment() {
 
     override fun initViewData() {
         super.initViewData()
-        mViewModel.sharedData.observe(this, observer)
         initObservable()
-    }
-
-    // 分发状态
-    private val observer by lazy {
-        Observer<SharedData> { sharedData ->
-            sharedData?.run {
-                when (type) {
-//                    SharedType.SUCCESS -> showSuccess()
-//                    SharedType.ERROR -> showError(msg)
-//                    SharedType.LOADING -> showLoading()
-//                    SharedType.TIPS -> showTips(strRes)
-//                    SharedType.EMPTY -> showEmptyView()
-                }
-            }
-        }
     }
 
     /**

@@ -20,7 +20,7 @@ object ToastUtils : Serializable {
 
     @SuppressLint("ShowToast")
     fun normal(msg: CharSequence) {
-        MainThread.post(Runnable {
+        MainThreadUtils.post(Runnable {
             mToast?.apply {
                 //如果当前Toast没有消失， 直接显示内容，不需要重新设置
                 setText(msg)

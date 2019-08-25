@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.yyxnb.arch.frag.ThreeFragment;
 import com.yyxnb.arch.vm.TestViewModel;
-import com.yyxnb.yyxarch.nav.FragmentHelper;
 import com.yyxnb.yyxarch.utils.ScreenUtils;
 import com.yyxnb.yyxarch.utils.dialog.BaseSheetDialog;
 
@@ -26,7 +25,7 @@ public class TestDialog extends BaseSheetDialog {
 //        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, ContentViewFragment.newInstance());
 //        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, TwoFragment.newInstance());
 //        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, TestFragment.newInstance());
-        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, new ThreeFragment());
+//        FragmentHelper.INSTANCE.addFragment(getChildFragmentManager(), R.id.mFrameLayout1, new ThreeFragment());
 
 //        mViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
 //        mViewModel.reqTeam();
