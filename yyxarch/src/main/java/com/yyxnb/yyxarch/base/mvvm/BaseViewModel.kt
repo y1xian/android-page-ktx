@@ -5,10 +5,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.CallSuper
 import com.yyxnb.yyxarch.ext.tryCatch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 /**
@@ -21,12 +18,12 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseViewModel() : ViewModel(), DefaultLifecycleObserver {
 
-    val presenterScope: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.Main + Job())
+    open val mScope: CoroutineScope by lazy {
+        CoroutineScope(SupervisorJob() + Dispatchers.Main)
     }
 
     fun launchUI(block: suspend CoroutineScope.() -> Unit) {
-        presenterScope.launch {
+        mScope.launch {
             tryCatch({
                 block()
             }, {
@@ -47,5 +44,6 @@ abstract class BaseViewModel() : ViewModel(), DefaultLifecycleObserver {
     @CallSuper
     override fun onCleared() {
         super.onCleared()
+        mScope.cancel()
     }
 }

@@ -12,8 +12,8 @@ class LifecycleDelegate(lifecycleOwner: LifecycleOwner) : LifecycleObserver {
     private val deferredLifecycleDelegate: DeferredLifecycleDelegate = DeferredLifecycleDelegate(lifecycleOwner)
 
     @JvmOverloads
-    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false, interval: Long) {
-        if (deferred) {
+    fun scheduleTaskAtStarted(runnable: Runnable, interval: Long = 100L) {
+        if (interval >= 100L) {
             deferredLifecycleDelegate.scheduleTaskAtStarted(runnable, interval)
         } else {
             immediateLifecycleDelegate.scheduleTaskAtStarted(runnable)

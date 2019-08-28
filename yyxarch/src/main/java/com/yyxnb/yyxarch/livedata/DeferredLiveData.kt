@@ -14,14 +14,14 @@ import kotlin.system.measureTimeMillis
 
 internal class DeferredLiveData<T>(private val deferred: Deferred<T>) : LiveData<T>() {
 
-    private val presenterScope: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.Main + Job())
+    private val mScope: CoroutineScope by lazy {
+        CoroutineScope(SupervisorJob() + Dispatchers.Main)
     }
 
     override fun onActive() {
         super.onActive()
 
-        presenterScope.launch {
+        mScope.launch {
             val time = measureTimeMillis {
 
                 tryCatch({
@@ -38,7 +38,7 @@ internal class DeferredLiveData<T>(private val deferred: Deferred<T>) : LiveData
 
     override fun onInactive() {
         super.onInactive()
-        presenterScope.cancel()
+        mScope.cancel()
     }
 
 }

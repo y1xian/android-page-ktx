@@ -362,8 +362,8 @@ abstract class BaseFragment : Fragment(), CoroutineScope by MainScope() {
     // ------ lifecycle arch -------
 
     @JvmOverloads
-    fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = true, interval: Long = 100L) {
-        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred, interval)
+    fun scheduleTaskAtStarted(runnable: Runnable, interval: Long = 100L) {
+        lifecycleDelegate.scheduleTaskAtStarted(runnable, interval)
     }
 
     fun getDebugTag(): String? {
@@ -449,7 +449,7 @@ abstract class BaseFragment : Fragment(), CoroutineScope by MainScope() {
             intent.putExtra(AppConfig.BUNDLE, initArguments())
             mActivity.startActivity(intent)
             mActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        }, true)
+        })
     }
 
     // ------- statusBar --------

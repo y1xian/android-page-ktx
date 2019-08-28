@@ -237,8 +237,8 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope by MainScope()
     }
 
     @JvmOverloads
-    protected fun scheduleTaskAtStarted(runnable: Runnable, deferred: Boolean = false, interval: Long = 100L) {
-        lifecycleDelegate.scheduleTaskAtStarted(runnable, deferred, interval)
+    protected fun scheduleTaskAtStarted(runnable: Runnable, interval: Long = 100L) {
+        lifecycleDelegate.scheduleTaskAtStarted(runnable, interval)
     }
 
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DEPRECATED_IDENTITY_EQUALS")
