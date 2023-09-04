@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+apply from: rootProject.file('maven-publish-jitpack.gradle')
+
+dependencies {
+    implementation dependenciesExt.reflect
+    implementation dependenciesExt.symbol_processing_api
+    implementation dependenciesExt.kotlinpoet
+    implementation project(":page-annotation")
+}
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
+}

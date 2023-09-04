@@ -1,25 +1,5 @@
-# 不维护咯  [最新点击](https://github.com/y1xian/What)
-# arch-kt [![](https://jitpack.io/v/y1xian/arch-kt.svg)](https://jitpack.io/#y1xian/arch-kt)
-## 使用方式
-#### 1. 作为module导入
-把arch-kt作为一个module导入你的工程。
+## kotlin 页面
 
-#### 2. gradle依赖
-
-```
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-dependencies {
-    //旧版本
-    implementation 'com.github.y1xian:arch-kt:1.1.0'
-    //新版本（AndroidX）
-    implementation 'com.github.y1xian:arch-kt:+'
-}
 ```
 # License
 
