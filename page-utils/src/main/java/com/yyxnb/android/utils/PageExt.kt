@@ -33,7 +33,7 @@ fun Uri.Builder.append(key: String, value: Any?): Uri.Builder {
 /**
  * 在lambda中对Uri进行修改或参数追加
  */
-fun Uri.build(block: Uri.Builder.() -> Unit) = buildUpon().apply(block).build()
+fun Uri.page(block: Uri.Builder.() -> Unit) = buildUpon().apply(block).build()
 
 /**
  * 在lambda中对Uri进行修改或参数追加

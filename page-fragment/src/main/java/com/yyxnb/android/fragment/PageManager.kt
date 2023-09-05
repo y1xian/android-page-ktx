@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.yyxnb.android.fragment.container.PageContainerFragment
 import com.yyxnb.android.fragment.interceptor.Interceptor
 import com.yyxnb.android.fragment.interceptor.Interceptors
+import com.yyxnb.android.utils.isFastClickId
 import java.util.UUID
 
 object PageManager {
@@ -36,7 +37,10 @@ object PageManager {
         from: Fragment? = null,
         onResult: ((Bundle?) -> Unit)? = null
     ) {
-        from.doNavigation(uri, onResult)
+        from?.isFastClickId {
+            // 防止快速点击
+            from.doNavigation(uri, onResult)
+        }
     }
 
     private fun Fragment?.doNavigation(

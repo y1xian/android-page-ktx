@@ -72,7 +72,8 @@ fun fragmentPage(
  * 返回，相当于Activity的finish，但可以返回数据给路由发起者
  */
 fun Fragment.pop(result: Bundle? = null) {
-    (parentFragment as? PageContainerFragment)?.popResult(result) ?: parentFragmentManager.popBackStack()
+    (parentFragment as? PageContainerFragment)?.popResult(result)
+        ?: parentFragmentManager.popBackStack()
 }
 
 /**
@@ -152,8 +153,13 @@ inline fun <reified T> Fragment.enumParams(name: String): Lazy<T?> = lazy {
         val valueInt = value?.toIntOrNull()
         if (valueInt != null) {
             T::class.java.runCatching { enumConstants!![valueInt] }.getOrNull()
-        } else if (value != null){
-            T::class.java.runCatching { getMethod("valueOf", String::class.java).invoke(null, value) }.getOrNull() as T?
+        } else if (value != null) {
+            T::class.java.runCatching {
+                getMethod("valueOf", String::class.java).invoke(
+                    null,
+                    value
+                )
+            }.getOrNull() as T?
         } else null
     } else null
 }
